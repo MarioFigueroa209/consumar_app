@@ -857,11 +857,11 @@ class _ControlReestibasState extends State<ControlReestibas>
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      SingleChildScrollView(
+                      const SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(children: [
                           Row(
-                            children: const [
+                            children: [
                               Text("Vehiculos disponibles: ",
                                   style: TextStyle(
                                       fontSize: 16,
@@ -872,9 +872,9 @@ class _ControlReestibasState extends State<ControlReestibas>
                               )
                             ],
                           ),
-                          const SizedBox(width: 15),
+                          SizedBox(width: 15),
                           Row(
-                            children: const [
+                            children: [
                               Text("Vehiculos registrados: ",
                                   style: TextStyle(
                                       fontSize: 16,

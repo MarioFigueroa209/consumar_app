@@ -19,8 +19,8 @@ class WarningWidgetCubit extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 height: 60,
                 color: Colors.red,
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Icon(Icons.wifi_off),
                     SizedBox(
                       width: 8,

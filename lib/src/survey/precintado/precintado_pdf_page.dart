@@ -1,5 +1,5 @@
 import 'package:consumar_app/src/survey/precintado/precintado_pdf_service.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
 
 class PrecintoPdf extends StatefulWidget {

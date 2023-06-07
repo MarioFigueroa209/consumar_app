@@ -74,8 +74,8 @@ class DamageReportPdfService {
       listaImagenes.add(imagen);
       //print("url esperado lista: $urlFotoDanos");
     }
-    print("numero de fotos" + listaImagenes.length.toString());
-    print("hay estos registros" + damageTypeByIdDrModelList.length.toString());
+    //print("numero de fotos${listaImagenes.length}");
+    //print("hay estos registros${damageTypeByIdDrModelList.length}");
   }
 
   getDamageItem(BigInt idDamageReport) async {

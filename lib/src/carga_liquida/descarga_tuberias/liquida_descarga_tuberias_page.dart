@@ -492,6 +492,7 @@ class _LiquidaDescargaTuberiasState extends State<LiquidaDescargaTuberias>
                         setState(() {
                           getListaDescargaTuberiasByServiceOrder();
                         });
+                        if (context.mounted) return;
                         Navigator.pop(context);
                       },
                       child: const Text(

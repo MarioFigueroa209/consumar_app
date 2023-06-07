@@ -9,7 +9,7 @@ import '../../../models/roro/autoreport/sp_autoreport_update_model.dart';
 import '../../../models/roro/autoreport/sp_dano_zona_acopio_model.dart';
 import '../../../models/roro/autoreport/sp_participantes_inspeccion_model.dart';
 import '../../../models/roro/autoreport/vw_autoreport_data.dart';
-import '../../../models/roro/autoreport/vw_danoAcopio_by_autoreport_model.dart';
+import '../../../models/roro/autoreport/vw_dano_acopio_by_autoreport_model.dart';
 import '../../../models/roro/autoreport/vw_participantes_by_autoreport_model.dart';
 import '../../../services/file_upload_result.dart';
 import '../../../services/roro/autoreport/autoreport_service.dart';
@@ -383,7 +383,7 @@ class _Autoreport2EdicionState extends State<Autoreport2Edicion> {
     } /* else {
       setState(() {});
     } */
-    print("gaaaa");
+    debugPrint("gaaaa");
     //if (_formKey.currentState!.validate()) {
     autoreportService.updateAutoreport(SpAutoreportUpdateModel(
         spUpdateAutoreport: SpUpdateAutoreport(
@@ -454,10 +454,12 @@ class _Autoreport2EdicionState extends State<Autoreport2Edicion> {
       nLlavesSimples = 0;
       nLlavesInteligentes = 0;
     });
+    if (context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("Registro actualizado correctamente"),
       backgroundColor: Colors.greenAccent,
     ));
+    if (context.mounted) return;
     Navigator.pop(context);
     // }
   }

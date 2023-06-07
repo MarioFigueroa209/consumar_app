@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/roro/printer_app/vw_get_count_vehiculos_etiquetados_by_serviceOrder.dart';
+import '../../../models/roro/printer_app/vw_get_count_vehiculos_etiquetados_by_service_order.dart';
 import '../../../models/roro/printer_app/vw_printer_app_list_by_id_service_order.dart';
 import '../../../services/roro/printer_app/printer_app_service.dart';
 import '../../../utils/constants.dart';

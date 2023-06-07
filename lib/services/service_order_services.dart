@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../models/roro/validation_ServiceOrderClose_PrinterRampaDr.dart';
-import '../models/roro/validation_SumSaldo_FinalReestibas.dart';
+import '../models/roro/validation_service_order_close_printer_rampa_dr.dart';
+import '../models/roro/validation_sum_saldo_final_reestibas.dart';
 import '../models/vw_all_service_order.dart';
 import '../models/vw_all_service_order_granel.dart';
 import '../models/vw_all_service_order_liquida.dart';

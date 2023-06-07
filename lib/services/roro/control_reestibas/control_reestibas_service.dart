@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 import '../../../models/roro/control_reestibas/sp_create_reestibas_primer_movimiento_model.dart';
 
 import '../../../models/roro/control_reestibas/sp_create_update_reestibas_firmante.dart';
-import '../../../models/roro/control_reestibas/sp_create_update_reestibas_firmante_segunMov.dart';
-import '../../../models/roro/control_reestibas/sp_update_reestibas_idApm_segunMov.dart';
+import '../../../models/roro/control_reestibas/sp_create_update_reestibas_firmante_segun_mov.dart';
+import '../../../models/roro/control_reestibas/sp_update_reestibas_id_apm_segunmov.dart';
 import '../../../models/roro/control_reestibas/vw_primer_movimiento_data_by_id.dart';
 import '../../../models/roro/control_reestibas/vw_reestibas_final_abordo.dart';
 import '../../../models/roro/control_reestibas/vw_reestibas_final_muelle.dart';

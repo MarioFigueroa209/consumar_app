@@ -103,7 +103,7 @@ class _Autoreport1State extends State<Autoreport1> {
       } else {
         codDr = 'SIN DR';
       }
-      print(vwRampaEmbarqueVehicleDataModel[0].tipoMercaderia);
+      //print(vwRampaEmbarqueVehicleDataModel[0].tipoMercaderia);
       codDr = vwRampaEmbarqueVehicleDataModel[0].codDr!;
       _bLController.text = vwRampaEmbarqueVehicleDataModel[0].billOfLeading!;
       _chasisController.text = vwRampaEmbarqueVehicleDataModel[0].chasis!;
@@ -134,10 +134,8 @@ class _Autoreport1State extends State<Autoreport1> {
       zona = _valueZonaDropdown;
     }
     if (_formKey.currentState!.validate()) {
-      print(zona);
-      print(
-        vwRampaEmbarqueVehicleDataModel[0].tipoMercaderia!,
-      );
+      //print(zona);
+      //print(        vwRampaEmbarqueVehicleDataModel[0].tipoMercaderia!,      );
       Navigator.push(
           context,
           MaterialPageRoute(

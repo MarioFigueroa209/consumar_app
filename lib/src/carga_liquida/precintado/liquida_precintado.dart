@@ -45,7 +45,7 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
       listLiquidaPrecinto = value;
     });
 
-    print(listLiquidaPrecinto.length);
+    debugPrint(listLiquidaPrecinto.length as String?);
   }
 
   getPrecintosById(int id) async {
@@ -658,7 +658,7 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      LiquidaPrecintadoPdf()));
+                                      const LiquidaPrecintadoPdf()));
                         },
                         child: const Text(
                           "Imprimir",

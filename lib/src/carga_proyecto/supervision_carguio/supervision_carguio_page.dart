@@ -890,7 +890,7 @@ class _SupervisionCarguioPageState extends State<SupervisionCarguioPage>
                 ),
               ]),
             )),
-            SingleChildScrollView(child: Column()),
+            const SingleChildScrollView(child: Column()),
           ],
         ),
       ),
@@ -905,7 +905,7 @@ class _SupervisionCarguioPageState extends State<SupervisionCarguioPage>
 
       final imageTemporary = File(imageChasis.path);
 
-      setState(() => this.imageGuiaRemision = imageTemporary);
+      setState(() => imageGuiaRemision = imageTemporary);
     } on PlatformException catch (e) {
       e.message;
     }
@@ -920,7 +920,7 @@ class _SupervisionCarguioPageState extends State<SupervisionCarguioPage>
 
       final imageTemporary = File(imageInicioParalizacion.path);
 
-      setState(() => this.imageTransporte = imageTemporary);
+      setState(() => imageTransporte = imageTemporary);
     } on PlatformException catch (e) {
       e.message;
     }

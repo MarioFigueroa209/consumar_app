@@ -1,14 +1,14 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:consumar_app/models/roro/control_reestibas/sp_create_update_reestibas_firmante_segunMov.dart';
+import 'package:consumar_app/models/roro/control_reestibas/sp_create_update_reestibas_firmante_segun_mov.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:signature/signature.dart';
 
 import '../../../models/file_upload_result.dart';
 import '../../../models/roro/control_reestibas/sp_create_update_reestibas_firmante.dart';
-import '../../../models/roro/control_reestibas/sp_update_reestibas_idApm_segunMov.dart';
+import '../../../models/roro/control_reestibas/sp_update_reestibas_id_apm_segunmov.dart';
 import '../../../models/roro/control_reestibas/vw_reestibas_final_abordo.dart';
 import '../../../models/roro/control_reestibas/vw_reestibas_final_muelle.dart';
 import '../../../models/vw_get_user_data_by_cod_user.dart';
@@ -79,14 +79,14 @@ class _ReestibasListState extends State<ReestibasList>
   getVwReestibasFinalMuelle() {
     vwReestibasFinalMuelle = controlReestibasService
         .getVwReestibasFinalMuelle(widget.idServiceOrder);
-    print(vwReestibasFinalMuelle);
+    debugPrint(vwReestibasFinalMuelle as String?);
   }
 
   getVwReestibasFinalAbordo() {
     vwReestibasFinalAbordo = controlReestibasService
         .getVwReestibasFinalAbordo(widget.idServiceOrder);
 
-    print(vwReestibasFinalAbordo);
+    debugPrint(vwReestibasFinalAbordo as String?);
   }
 
   subiendofotoXD() async {
@@ -445,9 +445,9 @@ class _ReestibasListState extends State<ReestibasList>
                                                         .add(e)
                                                     : selectedReestibasFinalMuelle
                                                         .remove(e);
-                                                print(
+                                                debugPrint(
                                                     selectedReestibasFinalMuelle
-                                                        .length);
+                                                        .length as String?);
                                               }),
                                               cells: <DataCell>[
                                                 DataCell(
@@ -644,9 +644,9 @@ class _ReestibasListState extends State<ReestibasList>
                                                           .add(e)
                                                       : selectedReestibasFinalAbordo
                                                           .remove(e);
-                                                  print(
+                                                  debugPrint(
                                                       selectedReestibasFinalAbordo
-                                                          .length);
+                                                          .length as String?);
                                                 }),
                                                 cells: <DataCell>[
                                                   DataCell(
@@ -846,6 +846,7 @@ class _ReestibasListState extends State<ReestibasList>
                                 getVwReestibasFinalAbordo;
                               });
                               clearTextFields();
+                              if (context.mounted) return;
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(const SnackBar(
                                 content: Text("reestibas firmadas"),
@@ -1057,6 +1058,7 @@ class _ReestibasListState extends State<ReestibasList>
                                     getVwReestibasFinalAbordo;
                                   });
                                   clearTextFields();
+                                  if (context.mounted) return;
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(const SnackBar(
                                     content: Text("reestibas firmadas"),

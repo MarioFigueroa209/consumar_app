@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../models/survey/RecepcionAlmacen/sp_create_recepcion_almacen.dart';
-import '../../models/survey/RecepcionAlmacen/vw_lectura_by_qrCarguio.dart';
-import '../../models/survey/RecepcionAlmacen/vw_listaPrecinto_by_idPrecinto.dart';
+import '../../models/survey/RecepcionAlmacen/vw_lectura_by_qr_carguio.dart';
+import '../../models/survey/RecepcionAlmacen/vw_lista_precinto_by_id_precinto.dart';
 import '../api_services.dart';
 
 class RegistroAlmacenService {

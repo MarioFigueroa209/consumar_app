@@ -44,7 +44,7 @@ class _Precintadostate extends State<Precintado>
       listGranelPrecinto = value;
     });
 
-    print(listGranelPrecinto.length);
+    debugPrint(listGranelPrecinto.length as String?);
   }
 
   getPrecintosById(int id) async {
@@ -833,7 +833,7 @@ class _Precintadostate extends State<Precintado>
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PrecintoPdf()));
+                                  builder: (context) => const PrecintoPdf()));
                         },
                         child: const Text(
                           "Imprimir",

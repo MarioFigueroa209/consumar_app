@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/carga_liquida/recepcionAlmacen/vw_lectura_by_qrCarguio_liquida.dart';
+import '../../../models/carga_liquida/recepcionAlmacen/vw_lectura_by_qr_carguio_liquida.dart';
 import '../../../models/carga_liquida/validacionPeso/sp_create_liquida_validacion_peso.dart';
 import '../../../models/carga_liquida/validacionPeso/vw_lista_liquida_pesos_historicos.dart';
 import '../../../services/carga_liquida/liquida_recepcion_almacen_service.dart';
@@ -117,7 +117,7 @@ class _LiquidaValidacionPesoState extends State<LiquidaValidacionPeso> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('VALIDACION PESO'),
+        title: const Text('VALIDACION PESO'),
       ),
       body: SingleChildScrollView(
         child: Padding(

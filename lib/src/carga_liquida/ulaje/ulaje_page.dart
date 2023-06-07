@@ -128,20 +128,16 @@ class _UlajePageState extends State<UlajePage>
   obtenerUlajeList() async {
     liteSqliteUlaje = await dbLiteUlaje.getUlajeListSqlLite();
 
-    print("lista a enviar de ulaje ${liteSqliteUlaje.length}");
   }
 
   obtenerListTanquesFoto() async {
     liteSqliteUlajeTanqueFotos = await dbLiteUlaje.getListTanquesFotos();
 
-    print("lista a enviar de tanque foto ${liteSqliteUlajeTanqueFotos.length}");
   }
 
   obtenerObservadosFoto() async {
     listSqliteUlajeObservadosFotos = await dbLiteUlaje.getListObservadosFotos();
 
-    print(
-        "lista a enviar de ObservadoFoto ${listSqliteUlajeObservadosFotos.length}");
   }
 
   listFutureTableUlajeSqLite() {
@@ -554,8 +550,8 @@ class _UlajePageState extends State<UlajePage>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: const [
+                        const Row(
+                          children: [
                             SizedBox(
                               width: 20,
                             ),
@@ -869,8 +865,8 @@ class _UlajePageState extends State<UlajePage>
                                 padding: const EdgeInsets.all(16),
                                 height: 60,
                                 color: Colors.red,
-                                child: Row(
-                                  children: const [
+                                child: const Row(
+                                  children: [
                                     Icon(Icons.wifi_off),
                                     SizedBox(
                                       width: 8,
@@ -893,8 +889,8 @@ class _UlajePageState extends State<UlajePage>
                                 padding: const EdgeInsets.all(16),
                                 height: 60,
                                 color: Colors.green,
-                                child: Row(
-                                  children: const [
+                                child: const Row(
+                                  children: [
                                     Icon(Icons.cell_wifi),
                                     SizedBox(
                                       width: 8,
@@ -1150,7 +1146,7 @@ class _UlajePageState extends State<UlajePage>
 
       final imageTemporary = File(image.path);
 
-      setState(() => this.imageTanque = imageTemporary);
+      setState(() => imageTanque = imageTemporary);
     } on PlatformException catch (e) {
       // print('Failed to pick image: $e');
       e.message;
@@ -1165,7 +1161,7 @@ class _UlajePageState extends State<UlajePage>
 
       final imageTemporary = File(image.path);
 
-      setState(() => this.imageDano = imageTemporary);
+      setState(() => imageDano = imageTemporary);
     } on PlatformException catch (e) {
       // print('Failed to pick image: $e');
       e.message;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/roro/validation_ServiceOrderClose_PrinterRampaDr.dart';
-import '../../../models/roro/validation_SumSaldo_FinalReestibas.dart';
+import '../../../models/roro/validation_service_order_close_printer_rampa_dr.dart';
+import '../../../models/roro/validation_sum_saldo_final_reestibas.dart';
 import '../../../services/service_order_services.dart';
 import '../../../utils/constants.dart';
 

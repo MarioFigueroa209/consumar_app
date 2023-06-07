@@ -117,8 +117,8 @@ class DrListadoState extends State<DrListado> {
     List<VwGetDamageReportListModel> value = await damageReportConsultaService
         .getDamageReportList(widget.idServiceOrder);
 
-    debugPrint("Id Service Order: " + widget.idServiceOrder.toString());
-    debugPrint("Cantidad de registros:" + value.length.toString());
+    debugPrint("Id Service Order: ${widget.idServiceOrder}");
+    debugPrint("Cantidad de registros:${value.length}");
 
     setState(() {
       getDamageReportList = value;
@@ -241,7 +241,7 @@ class DrListadoState extends State<DrListado> {
     obtenerDamageReportList();
     getVVwTicketDrListado(widget.idServiceOrder);
     _controller.addListener(() {});
-    print("datos de dr list" + vwTicketDrListado.length.toString());
+    debugPrint("datos de dr list${vwTicketDrListado.length}");
   }
 
   @override
@@ -1406,7 +1406,7 @@ class DrListadoState extends State<DrListado> {
       final listDR =
           DateFormat("yyyy-MM-dd").format(drList.fechaCompleta!).toLowerCase();
       final input = query!.toLowerCase();
-      print("si da");
+
       return listDR.contains(input);
     }).toList();
     setState(() => allDR = suggestion);

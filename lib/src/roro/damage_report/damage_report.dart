@@ -203,7 +203,7 @@ class _DamageReportState extends State<DamageReport>
 
   String _damageInformation = 'Seleccione un Item';
 
-  String _damageFound = 'BEFORE DISCHARGE';
+  final String _damageFound = 'BEFORE DISCHARGE';
 
   String _damageOcurred = 'Seleccione un Item';
 
@@ -2252,14 +2252,14 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                       ),
                                     ),
                                     onConfirm: (results) {
-                                      selectedZona = results as List<Zone>;
-                                      print(selectedZona.length);
+                                      selectedZona = results;
+                                      //print(selectedZona.length);
                                       cityNames = selectedZona
                                           .map((city) => city.zona)
                                           .toList();
                                       stringList = cityNames.join(", ");
 
-                                      print(stringList);
+                                      debugPrint(stringList);
                                     },
                                   ),
                                   const SizedBox(
@@ -2883,8 +2883,8 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                     padding: const EdgeInsets.all(16),
                                     height: 60,
                                     color: Colors.red,
-                                    child: Row(
-                                      children: const [
+                                    child: const Row(
+                                      children: [
                                         Icon(Icons.wifi_off),
                                         SizedBox(
                                           width: 8,
@@ -2907,8 +2907,8 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                     padding: const EdgeInsets.all(16),
                                     height: 60,
                                     color: Colors.green,
-                                    child: Row(
-                                      children: const [
+                                    child: const Row(
+                                      children: [
                                         Icon(Icons.cell_wifi),
                                         SizedBox(
                                           width: 8,
@@ -3320,6 +3320,7 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                 //crearDamageReportLista();
                                 await imprimirListaDamageItem();
                                 await imprimirListaDamageReport();
+                                if (context.mounted) return;
                                 Navigator.pop(context);
                                 _tabController
                                     .animateTo((_tabController.index = 1));

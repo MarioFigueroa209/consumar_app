@@ -32,7 +32,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
             icon: ValueListenableBuilder(
               valueListenable: cameraController.torchState,
               builder: (context, state, child) {
-                switch (state as TorchState) {
+                switch (state) {
                   case TorchState.off:
                     return const Icon(
                       Icons.flash_off,

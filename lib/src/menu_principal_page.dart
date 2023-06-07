@@ -203,7 +203,7 @@ class MenuPrincipal extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CargaProyectoPage()));
+                                builder: (context) => const CargaProyectoPage()));
                       },
                     ),
                     const SizedBox(width: 20),

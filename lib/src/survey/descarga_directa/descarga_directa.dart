@@ -391,6 +391,7 @@ class _DescargaDirectastate extends State<DescargaDirecta>
                         setState(() {
                           getListaDescargaByServiceOrder();
                         });
+                        if (context.mounted) return;
                         Navigator.pop(context);
                       },
                       child: const Text(

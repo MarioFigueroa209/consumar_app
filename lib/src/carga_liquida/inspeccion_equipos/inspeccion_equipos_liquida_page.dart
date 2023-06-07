@@ -108,7 +108,7 @@ class _InspeccionEquiposLiquidaPageState
 
     equipoController.text = vwEquiposRegistradosLiquida[0].equipo!;
     idEquipo = vwEquiposRegistradosLiquida[0].idEquipo!;
-    print(idEquipo);
+    debugPrint(idEquipo as String?);
   }
 
   Future<List<SpCreateLiquidaInspeccionFoto>> parseInspeccionFoto() async {

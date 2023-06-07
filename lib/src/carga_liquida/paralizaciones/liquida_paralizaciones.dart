@@ -1133,7 +1133,7 @@ class _LiquidaParalizacionesState extends State<LiquidaParalizaciones> {
       time.hour,
       time.minute,
     );
-    setState(() => this.dateInicio = dateTime1);
+    setState(() => dateInicio = dateTime1);
   }
 
   Future<TimeOfDay?> pickTime1() => showTimePicker(
@@ -1154,7 +1154,7 @@ class _LiquidaParalizacionesState extends State<LiquidaParalizaciones> {
       time.hour,
       time.minute,
     );
-    setState(() => this.dateTermino = dateTime2);
+    setState(() => dateTermino = dateTime2);
   }
 
   Future<TimeOfDay?> pickTime2() => showTimePicker(

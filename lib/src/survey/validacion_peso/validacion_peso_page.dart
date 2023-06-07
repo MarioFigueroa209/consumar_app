@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/survey/RecepcionAlmacen/vw_lectura_by_qrCarguio.dart';
+import '../../../models/survey/RecepcionAlmacen/vw_lectura_by_qr_carguio.dart';
 import '../../../models/survey/ValidacionPesos/sp_create_validacion_peso.dart';
 import '../../../models/survey/ValidacionPesos/vw_lista_pesos_historicos.dart';
 import '../../../services/survey/registro_almacen_service.dart';
@@ -10,7 +10,7 @@ import '../../../utils/lists.dart';
 import '../../scanner_screen.dart';
 
 class ValidacionPeso extends StatefulWidget {
-  ValidacionPeso(
+  const ValidacionPeso(
       {Key? key,
       required this.jornada,
       required this.idUsuario,
@@ -93,7 +93,7 @@ class _ValidacionPesoState extends State<ValidacionPeso> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('VALIDACION PESO'),
+        title: const Text('VALIDACION PESO'),
       ),
       body: SingleChildScrollView(
         child: Padding(

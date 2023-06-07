@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/carga_liquida/recepcionAlmacen/create_recepcion_liquida_almacen.dart';
-import '../../../models/carga_liquida/recepcionAlmacen/vw_lectura_by_qrCarguio_liquida.dart';
-import '../../../models/carga_liquida/recepcionAlmacen/vw_listaPrecinto_liquida_by_idPrecinto.dart';
+import '../../../models/carga_liquida/recepcionAlmacen/vw_lectura_by_qr_carguio_liquida.dart';
+import '../../../models/carga_liquida/recepcionAlmacen/vw_lista_precinto_liquida_by_id_precinto.dart';
 import '../../../models/carga_liquida/validacionPeso/sp_create_liquida_peso_historico.dart';
 import '../../../services/carga_liquida/liquida_recepcion_almacen_service.dart';
 import '../../../services/carga_liquida/liquida_validacion_pesos_service.dart';
@@ -118,9 +118,10 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
       vwListaPrecintoLiquidaByIdPrecinto = value;
     });
 
-    print(vwListaPrecintoLiquidaByIdPrecinto.length);
+   debugPrint(vwListaPrecintoLiquidaByIdPrecinto.length as String?);
 
-    if (vwListaPrecintoLiquidaByIdPrecinto.length != 0) {
+    if (vwListaPrecintoLiquidaByIdPrecinto.isNotEmpty) {
+      if (context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
             "Registros Encontrados ${vwListaPrecintoLiquidaByIdPrecinto[0].codigoPrecinto}"),

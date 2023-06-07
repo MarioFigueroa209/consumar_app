@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:consumar_app/src/roro/cerrar_proceso/cerrarProceso_serviceOrder.dart';
+import 'package:consumar_app/src/roro/cerrar_proceso/cerrar_proceso_service_order.dart';
 import 'package:consumar_app/src/roro/printer_app/printer_app_listado_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -8,8 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../models/roro/damage_report/damage_report_consulta.dart';
-import '../../models/roro/validation_ServiceOrderClose_PrinterRampaDr.dart';
-import '../../models/roro/validation_SumSaldo_FinalReestibas.dart';
+import '../../models/roro/validation_service_order_close_printer_rampa_dr.dart';
+import '../../models/roro/validation_sum_saldo_final_reestibas.dart';
 import '../../models/service_order_model.dart';
 import '../../models/usuario_model.dart';
 import '../../models/vw_all_service_order.dart';
@@ -1091,12 +1091,12 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                             EasyLoading.dismiss();
                             ////print(e);
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
+                          child: const Padding(
+                            padding: EdgeInsets.all(20),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Icon(Icons.cloud_download,
                                     color: Colors.white, size: 50),
                                 SizedBox(
@@ -1336,12 +1336,12 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                             await insertListaEmbarqueDescarga();
                             EasyLoading.dismiss();
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
+                          child: const Padding(
+                            padding: EdgeInsets.all(20),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Icon(Icons.cloud_download,
                                     color: Colors.white, size: 50),
                                 SizedBox(

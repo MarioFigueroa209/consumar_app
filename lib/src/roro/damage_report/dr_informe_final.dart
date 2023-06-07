@@ -15,7 +15,7 @@ import '../../../utils/constants.dart';
 import '../../widgets/custom_snack_bar.dart';
 
 class DrInformeFinal extends StatefulWidget {
-  DrInformeFinal(
+  const DrInformeFinal(
       {super.key,
       required this.idDamageReport,
       required this.idServiceOrder,
@@ -30,14 +30,14 @@ class DrInformeFinal extends StatefulWidget {
 
   final BigInt idDamageReport;
   final BigInt idServiceOrder;
-  String? codResponsableNave;
-  String? responsableNave;
-  String? nombreResponsableNave;
+  final String? codResponsableNave;
+  final String? responsableNave;
+  final String? nombreResponsableNave;
   final String responsable;
-  int? idCoordinador;
-  int? idSupervisorApmtc;
+  final int? idCoordinador;
+  final int? idSupervisorApmtc;
   final int jornada;
-  Uint8List? urlImgFirma;
+  final Uint8List? urlImgFirma;
 
   @override
   State<DrInformeFinal> createState() => _DrInformeFinal();
@@ -234,7 +234,7 @@ class _DrInformeFinal extends State<DrInformeFinal> {
     //print(widget.idDamageReport);
     getDamageItem(widget.idDamageReport);
     getDamageTypeListByIdDR(widget.idDamageReport);
-    print(codDR);
+    debugPrint(codDR);
 
     //print(damageTypeByIdDrModelList.length);
   }
@@ -1097,9 +1097,9 @@ class _DrInformeFinal extends State<DrInformeFinal> {
                           if (widget.urlImgFirma != null) {
                             await subiendofotoXD();
                             createDRListado(estadoAprobado);
-                            Navigator.pop(context);
-                            Navigator.pop(context);
                             if (context.mounted) return;
+                            Navigator.pop(context);
+                            Navigator.pop(context);
                           } else {
                             createDRListado(estadoAprobado);
                             Navigator.pop(context);

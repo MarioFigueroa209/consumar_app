@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../models/carga_liquida/recepcionAlmacen/create_recepcion_liquida_almacen.dart';
-import '../../models/carga_liquida/recepcionAlmacen/vw_lectura_by_qrCarguio_liquida.dart';
-import '../../models/carga_liquida/recepcionAlmacen/vw_listaPrecinto_liquida_by_idPrecinto.dart';
+import '../../models/carga_liquida/recepcionAlmacen/vw_lectura_by_qr_carguio_liquida.dart';
+import '../../models/carga_liquida/recepcionAlmacen/vw_lista_precinto_liquida_by_id_precinto.dart';
 import '../api_services.dart';
 
 class LiquidaRegistroAlmacenService {

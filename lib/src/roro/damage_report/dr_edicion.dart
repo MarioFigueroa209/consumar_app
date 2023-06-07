@@ -128,20 +128,20 @@ class _DamageReportEdicionState extends State<DamageReportEdicion> {
                   const SizedBox(width: 8),
                   Visibility(
                       visible: isVisible,
-                      child: Row(
+                      child: const Row(
                         children: [
-                          const Text(
+                          Text(
                             "ID JOB APMTC",
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(0, 0, 85, 1),
                             ),
                           ),
-                          const SizedBox(
+                          SizedBox(
                             width: 10,
                           ),
                           Column(
-                            children: const [
+                            children: [
                               SizedBox(
                                 height: 30,
                                 width: 170,
@@ -316,9 +316,9 @@ class _DamageReportEdicionState extends State<DamageReportEdicion> {
                     width: 400,
                     height: 20,
                     color: const Color.fromRGBO(0, 0, 85, 1),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
+                      children: [
                         Text("MAKER",
                             style:
                                 TextStyle(fontSize: 15, color: Colors.white)),
@@ -338,9 +338,9 @@ class _DamageReportEdicionState extends State<DamageReportEdicion> {
                     width: 400,
                     height: 20,
                     color: const Color.fromRGBO(0, 0, 85, 1),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [
+                      children: [
                         Text("CONSIGNEE",
                             style:
                                 TextStyle(fontSize: 15, color: Colors.white)),
@@ -410,10 +410,10 @@ class _DamageReportEdicionState extends State<DamageReportEdicion> {
             ),
           ),
           const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 150),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 150),
             child: Row(
-              children: const [
+              children: [
                 Flexible(
                   child: TextField(
                     decoration: InputDecoration(
@@ -583,11 +583,11 @@ class _DamageReportEdicionState extends State<DamageReportEdicion> {
           const SizedBox(
             height: 10,
           ),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Column(
-                children: const [
+                children: [
                   Text(
                     "Daños por Registrar",
                     style: TextStyle(
@@ -599,7 +599,7 @@ class _DamageReportEdicionState extends State<DamageReportEdicion> {
                 ],
               ),
               Column(
-                children: const [
+                children: [
                   Text(
                     "Daños Registrados",
                     style: TextStyle(

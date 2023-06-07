@@ -308,8 +308,8 @@ class _PrinterAppState extends State<PrinterApp>
                               padding: const EdgeInsets.all(16),
                               height: 60,
                               color: Colors.red,
-                              child: Row(
-                                children: const [
+                              child: const Row(
+                                children: [
                                   Icon(Icons.wifi_off),
                                   SizedBox(
                                     width: 8,
@@ -331,8 +331,8 @@ class _PrinterAppState extends State<PrinterApp>
                               padding: const EdgeInsets.all(16),
                               height: 60,
                               color: Colors.green,
-                              child: Row(
-                                children: const [
+                              child: const Row(
+                                children: [
                                   Icon(Icons.cell_wifi),
                                   SizedBox(
                                     width: 8,

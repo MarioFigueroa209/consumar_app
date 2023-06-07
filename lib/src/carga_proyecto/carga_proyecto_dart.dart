@@ -386,7 +386,7 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                EtiquetadoPage(
+                                                const EtiquetadoPage(
                                                   idServiceOrder: 1,
                                                   idUsuario: 1,
                                                   jornada: 1,
@@ -401,7 +401,7 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                CondicionEstadoPage(
+                                                const CondicionEstadoPage(
                                                   idServiceOrder: 1,
                                                   idUsuario: 1,
                                                   jornada: 1,
@@ -422,7 +422,7 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                SupervisionCarguioPage(
+                                                const SupervisionCarguioPage(
                                                   idServiceOrder: 1,
                                                   idUsuario: 1,
                                                   jornada: 1,
@@ -480,7 +480,7 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                ProyectoInspeccionEquipos(
+                                                const ProyectoInspeccionEquipos(
                                                   idServiceOrder: 1,
                                                   idUsuario: 1,
                                                   jornada: 1,

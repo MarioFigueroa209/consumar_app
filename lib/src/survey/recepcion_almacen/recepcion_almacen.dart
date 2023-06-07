@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/survey/RecepcionAlmacen/sp_create_recepcion_almacen.dart';
-import '../../../models/survey/RecepcionAlmacen/vw_lectura_by_qrCarguio.dart';
-import '../../../models/survey/RecepcionAlmacen/vw_listaPrecinto_by_idPrecinto.dart';
+import '../../../models/survey/RecepcionAlmacen/vw_lectura_by_qr_carguio.dart';
+import '../../../models/survey/RecepcionAlmacen/vw_lista_precinto_by_id_precinto.dart';
 import '../../../models/survey/ValidacionPesos/sp_create_peso_historico.dart';
 import '../../../services/survey/registro_almacen_service.dart';
 import '../../../services/survey/validacion_pesos_service.dart';
@@ -95,9 +95,10 @@ class _RecepcionAlmacenState extends State<RecepcionAlmacen> {
       vwListaPrecintoByIdPrecinto = value;
     });
 
-    print(vwListaPrecintoByIdPrecinto.length);
+    debugPrint(vwListaPrecintoByIdPrecinto.length as String?);
 
-    if (vwListaPrecintoByIdPrecinto.length != 0) {
+    if (vwListaPrecintoByIdPrecinto.isNotEmpty) {
+      if (context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
             "Registros Encontrados ${vwListaPrecintoByIdPrecinto[0].codigoPrecinto}"),

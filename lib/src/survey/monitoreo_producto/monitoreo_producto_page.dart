@@ -900,8 +900,8 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               SizedBox(
                                 width: 20,
                               ),
@@ -1238,8 +1238,8 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
                                 padding: const EdgeInsets.all(16),
                                 height: 60,
                                 color: Colors.red,
-                                child: Row(
-                                  children: const [
+                                child: const Row(
+                                  children: [
                                     Icon(Icons.wifi_off),
                                     SizedBox(
                                       width: 8,
@@ -1262,8 +1262,8 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
                                 padding: const EdgeInsets.all(16),
                                 height: 60,
                                 color: Colors.green,
-                                child: Row(
-                                  children: const [
+                                child: const Row(
+                                  children: [
                                     Icon(Icons.cell_wifi),
                                     SizedBox(
                                       width: 8,
