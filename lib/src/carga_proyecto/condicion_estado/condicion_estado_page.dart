@@ -484,7 +484,7 @@ class _CondicionEstadoPageState extends State<CondicionEstadoPage> {
 
       final imageTemporary = File(imageInicioParalizacion.path);
 
-      setState(() => this.imageInspeccionFoto = imageTemporary);
+      setState(() => imageInspeccionFoto = imageTemporary);
     } on PlatformException catch (e) {
       e.message;
     }
