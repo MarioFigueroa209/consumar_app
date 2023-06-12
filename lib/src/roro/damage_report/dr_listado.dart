@@ -117,8 +117,8 @@ class DrListadoState extends State<DrListado> {
     List<VwGetDamageReportListModel> value = await damageReportConsultaService
         .getDamageReportList(widget.idServiceOrder);
 
-    debugPrint("Id Service Order: ${widget.idServiceOrder}");
-    debugPrint("Cantidad de registros:${value.length}");
+    /*  debugPrint("Id Service Order: ${widget.idServiceOrder}");
+    debugPrint("Cantidad de registros:${value.length}"); */
 
     setState(() {
       getDamageReportList = value;
@@ -241,7 +241,7 @@ class DrListadoState extends State<DrListado> {
     obtenerDamageReportList();
     getVVwTicketDrListado(widget.idServiceOrder);
     _controller.addListener(() {});
-    debugPrint("datos de dr list${vwTicketDrListado.length}");
+    //debugPrint("datos de dr list${vwTicketDrListado.length}");
   }
 
   @override

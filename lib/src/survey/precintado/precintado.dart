@@ -44,7 +44,7 @@ class _Precintadostate extends State<Precintado>
       listGranelPrecinto = value;
     });
 
-    debugPrint(listGranelPrecinto.length as String?);
+    //debugPrint(listGranelPrecinto.length as String?);
   }
 
   getPrecintosById(int id) async {

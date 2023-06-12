@@ -1,6 +1,11 @@
+import 'package:consumar_app/src/carga_proyecto/condicion_estado/condicion_estado_page.dart';
 import 'package:consumar_app/src/carga_proyecto/etiquetado/etiquetado_page.dart';
 import 'package:consumar_app/src/carga_proyecto/inspeccion_equipos/proyecto_inspeccion_equipo_page.dart';
+import 'package:consumar_app/src/carga_proyecto/recepcion_almacen/recepcion_almacen_1_page.dart';
+import 'package:consumar_app/src/carga_proyecto/reporte_danos/reporte_danosDr_page.dart';
 import 'package:consumar_app/src/carga_proyecto/supervision_carguio/supervision_carguio_page.dart';
+import 'package:consumar_app/src/carga_proyecto/supervision_descarga/supervision_descarga_page.dart';
+import 'package:consumar_app/src/carga_proyecto/supervision_embarque/supervision_embarque_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
@@ -12,7 +17,6 @@ import '../../utils/jornada_model.dart';
 import '../../utils/lists.dart';
 import '../scanner_screen.dart';
 import '../widgets/boton_menu.dart';
-import 'condicion_estado/condicion_estado_page.dart';
 
 class CargaProyectoPage extends StatefulWidget {
   const CargaProyectoPage({super.key});
@@ -386,7 +390,7 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const EtiquetadoPage(
+                                                EtiquetadoPage(
                                                   idServiceOrder: 1,
                                                   idUsuario: 1,
                                                   jornada: 1,
@@ -401,7 +405,7 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const CondicionEstadoPage(
+                                                CondicionEstadoPage(
                                                   idServiceOrder: 1,
                                                   idUsuario: 1,
                                                   jornada: 1,
@@ -422,7 +426,7 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const SupervisionCarguioPage(
+                                                SupervisionCarguioPage(
                                                   idServiceOrder: 1,
                                                   idUsuario: 1,
                                                   jornada: 1,
@@ -434,6 +438,15 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                   title: 'RECEPCION ALMACEN',
                                   icon: Icons.error_outline,
                                   onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                RecepcionAlmacen1(
+                                                  idServiceOrder: 1,
+                                                  idUsuario: 1,
+                                                  jornada: 1,
+                                                )));
                                     //  validationLiquidaParalizaciones();
                                     //validationDamageReport();
                                     //Insertar un showDialog
@@ -448,6 +461,15 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                   title: 'RUPERVISIÓN DESCARGA',
                                   icon: Icons.verified_user,
                                   onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SupervisionDescargaPage(
+                                                  idServiceOrder: 1,
+                                                  idUsuario: 1,
+                                                  jornada: 1,
+                                                )));
                                     //  validationLiquidaPrecintos();
                                     //validationDamageReport();
                                     //Insertar un showDialog
@@ -457,6 +479,15 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                   title: 'RUPERVISIÓN EMBARQUE',
                                   icon: Icons.warehouse,
                                   onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SupervisionEmbarquePage(
+                                                  idServiceOrder: 1,
+                                                  idUsuario: 1,
+                                                  jornada: 1,
+                                                )));
                                     //   validationLiquidaRecepcionAlmacen();
                                   }),
                             ],
@@ -469,6 +500,15 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                   title: 'REPORTE DE DAÑOS',
                                   icon: Icons.balance,
                                   onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ReporteDanosDrPage(
+                                                  idServiceOrder: 1,
+                                                  idUsuario: 1,
+                                                  jornada: 1,
+                                                )));
                                     //  validationLiquidaValidacionPeso();
                                   }),
                               const SizedBox(width: 20),
@@ -480,7 +520,7 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const ProyectoInspeccionEquipos(
+                                                ProyectoInspeccionEquipos(
                                                   idServiceOrder: 1,
                                                   idUsuario: 1,
                                                   jornada: 1,

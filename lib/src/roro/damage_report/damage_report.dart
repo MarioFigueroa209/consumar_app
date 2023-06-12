@@ -2244,7 +2244,7 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                           .toList();
                                       stringList = cityNames.join(", ");
 
-                                      debugPrint(stringList);
+                                      //debugPrint(stringList);
                                     },
                                   ),
                                   const SizedBox(

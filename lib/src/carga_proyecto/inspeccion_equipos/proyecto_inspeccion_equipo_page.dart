@@ -318,7 +318,7 @@ class _ProyectoInspeccionEquiposState extends State<ProyectoInspeccionEquipos> {
 
       final imageTemporary = File(imageInicioParalizacion.path);
 
-      setState(() => imageFoto = imageTemporary);
+      setState(() => this.imageFoto = imageTemporary);
     } on PlatformException catch (e) {
       e.message;
     }
