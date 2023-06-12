@@ -535,9 +535,9 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const ScannerScreen()));
-
-                                    idUsuarioController.text = result;
+                                                 ScannerScreen()));
+print('Resultado: '+result.toString());
+                                    idUsuarioController.text = result.toString();
                                   }),
                               suffixIcon: IconButton(
                                   icon: const Icon(Icons.search),

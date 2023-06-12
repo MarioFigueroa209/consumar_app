@@ -1,7 +1,6 @@
 import 'package:consumar_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'controllers/rampa_descarga/rampa_descarga_controller.dart';
 import 'src/auth/login_page.dart';
@@ -10,10 +9,10 @@ import 'utils/check_internet_connection.dart';
 final internetChecker = CheckInternetConnection();
 
 void main() {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  //WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  //FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(const MyApp());
-  FlutterNativeSplash.remove();
+  //FlutterNativeSplash.remove();
 }
 
 class MyApp extends StatelessWidget {

@@ -54,11 +54,11 @@ class _ScannerScreenState extends State<ScannerScreen> {
       body: Stack(
         children: [
           MobileScanner(
-            allowDuplicates: false,
+            //allowDuplicates: false,
             controller: cameraController,
-            onDetect: (barcode, args) {
-              Navigator.pop(context, barcode.rawValue!);
-              //debug//print('Barcode found! ${barcode.rawValue!}');
+            onDetect: (barcode) {
+              print(barcode.barcodes.single.rawValue);
+              Navigator.pop(context,barcode.barcodes.single.rawValue.toString());
             },
           ),
           QRScannerOverlay(overlayColour: Colors.black.withOpacity(0.5)),
