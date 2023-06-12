@@ -234,7 +234,7 @@ class _DrInformeFinal extends State<DrInformeFinal> {
     //print(widget.idDamageReport);
     getDamageItem(widget.idDamageReport);
     getDamageTypeListByIdDR(widget.idDamageReport);
-    debugPrint(codDR);
+    //debugPrint(codDR);
 
     //print(damageTypeByIdDrModelList.length);
   }

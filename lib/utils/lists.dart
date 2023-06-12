@@ -265,6 +265,18 @@ final usuarioList = [
   'COD. RETIRO',
 ];
 
+final puestoList = [
+  'INSPECTOR JUNIOR',
+  'INSPECTOR SENIOR',
+  'SUPERVISOR',
+  'COORDINADOR',
+  'ASISTENTE OPERACIONES',
+  'JEFE DE OPERACIONES',
+  'GERENTE DE OPERACIONES',
+  'GERENTE PROYECTOS',
+  'GERENTE ADM',
+];
+
 final listaOperacionPrinterApp = [
   'DESCARGA',
   'EMBARQUE',

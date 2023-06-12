@@ -1,3 +1,7 @@
+// To parse this JSON data, do
+//
+//     final vwgetUserDataByCodUser = vwgetUserDataByCodUserFromJson(jsonString);
+
 import 'dart:convert';
 
 VwgetUserDataByCodUser vwgetUserDataByCodUserFromJson(String str) =>
@@ -7,9 +11,19 @@ String vwgetUserDataByCodUserToJson(VwgetUserDataByCodUser data) =>
     json.encode(data.toJson());
 
 class VwgetUserDataByCodUser {
+  int? idUsuario;
+  String? codFotocheck;
+  String? puesto;
+  String? nombres;
+  String? apellidos;
+  String? tipoUsuario;
+  String? firmaName;
+  String? firmaUrl;
+
   VwgetUserDataByCodUser({
     this.idUsuario,
     this.codFotocheck,
+    this.puesto,
     this.nombres,
     this.apellidos,
     this.tipoUsuario,
@@ -17,18 +31,11 @@ class VwgetUserDataByCodUser {
     this.firmaUrl,
   });
 
-  int? idUsuario;
-  String? codFotocheck;
-  String? nombres;
-  String? apellidos;
-  String? tipoUsuario;
-  String? firmaName;
-  String? firmaUrl;
-
   factory VwgetUserDataByCodUser.fromJson(Map<String, dynamic> json) =>
       VwgetUserDataByCodUser(
         idUsuario: json["idUsuario"],
         codFotocheck: json["codFotocheck"],
+        puesto: json["puesto"],
         nombres: json["nombres"],
         apellidos: json["apellidos"],
         tipoUsuario: json["tipoUsuario"],
@@ -39,6 +46,7 @@ class VwgetUserDataByCodUser {
   Map<String, dynamic> toJson() => {
         "idUsuario": idUsuario,
         "codFotocheck": codFotocheck,
+        "puesto": puesto,
         "nombres": nombres,
         "apellidos": apellidos,
         "tipoUsuario": tipoUsuario,

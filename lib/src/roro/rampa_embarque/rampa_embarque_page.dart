@@ -743,7 +743,7 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
     } else {
       item.idShipOrigen = null;
     }
-    debugPrint(item.idShipOrigen as String?);
+    //debugPrint(item.idShipOrigen as String?);
     item.idShipDestino = int.parse(idNaveEmbarque.toString());
     item.idBl = int.parse(idBl.toString());
     addRampaEmbarqueItem(item);
