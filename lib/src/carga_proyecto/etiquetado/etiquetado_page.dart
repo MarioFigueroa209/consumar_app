@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../utils/constants.dart';
-import 'etiquetado_qr_code_page.dart';
+import 'etiquetado_qrCode_page.dart';
 
 class EtiquetadoPage extends StatefulWidget {
   const EtiquetadoPage(
@@ -390,7 +390,7 @@ class _EtiquetadoPageState extends State<EtiquetadoPage>
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  const EtiquetadoQrPage()));
+                                                  EtiquetadoQrPage()));
                                     }),
                                   )),
                                   /*  DataCell(IconButton(

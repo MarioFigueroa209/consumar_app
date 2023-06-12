@@ -43,6 +43,8 @@ class _CondicionEstadoPageState extends State<CondicionEstadoPage> {
 
   final TextEditingController qrCodigoController = TextEditingController();
 
+  final TextEditingController ubicacionController = TextEditingController();
+
   final TextEditingController qrLecturaController = TextEditingController();
 
   final TextEditingController fechaController = TextEditingController();
@@ -380,7 +382,7 @@ class _CondicionEstadoPageState extends State<CondicionEstadoPage> {
                             fontSize: 20.0,
                           ),
                           hintText: 'Ingrese la Ubicación'),
-                      controller: qrCodigoController,
+                      controller: ubicacionController,
                       /* validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor, ingrese el Qr';
@@ -484,7 +486,7 @@ class _CondicionEstadoPageState extends State<CondicionEstadoPage> {
 
       final imageTemporary = File(imageInicioParalizacion.path);
 
-      setState(() => imageInspeccionFoto = imageTemporary);
+      setState(() => this.imageInspeccionFoto = imageTemporary);
     } on PlatformException catch (e) {
       e.message;
     }

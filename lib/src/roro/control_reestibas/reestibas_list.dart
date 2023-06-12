@@ -79,14 +79,14 @@ class _ReestibasListState extends State<ReestibasList>
   getVwReestibasFinalMuelle() {
     vwReestibasFinalMuelle = controlReestibasService
         .getVwReestibasFinalMuelle(widget.idServiceOrder);
-    debugPrint(vwReestibasFinalMuelle as String?);
+    //debugPrint(vwReestibasFinalMuelle as String?);
   }
 
   getVwReestibasFinalAbordo() {
     vwReestibasFinalAbordo = controlReestibasService
         .getVwReestibasFinalAbordo(widget.idServiceOrder);
 
-    debugPrint(vwReestibasFinalAbordo as String?);
+    //debugPrint(vwReestibasFinalAbordo as String?);
   }
 
   subiendofotoXD() async {
@@ -445,9 +445,9 @@ class _ReestibasListState extends State<ReestibasList>
                                                         .add(e)
                                                     : selectedReestibasFinalMuelle
                                                         .remove(e);
-                                                debugPrint(
+                                                /*  debugPrint(
                                                     selectedReestibasFinalMuelle
-                                                        .length as String?);
+                                                        .length as String?); */
                                               }),
                                               cells: <DataCell>[
                                                 DataCell(
@@ -644,9 +644,9 @@ class _ReestibasListState extends State<ReestibasList>
                                                           .add(e)
                                                       : selectedReestibasFinalAbordo
                                                           .remove(e);
-                                                  debugPrint(
+                                                  /*      debugPrint(
                                                       selectedReestibasFinalAbordo
-                                                          .length as String?);
+                                                          .length as String?); */
                                                 }),
                                                 cells: <DataCell>[
                                                   DataCell(

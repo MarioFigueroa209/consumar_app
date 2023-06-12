@@ -19,7 +19,7 @@ class _DamageReportPDFState extends State<DamageReportPDF> {
   void initState() {
     // TODO: implement initState
     super.initState();
-debugPrint("el Id de Dr es ${widget.idDamageReport}");
+    //debugPrint("el Id de Dr es ${widget.idDamageReport}");
   }
 
   @override

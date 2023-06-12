@@ -45,7 +45,7 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
       listLiquidaPrecinto = value;
     });
 
-    debugPrint(listLiquidaPrecinto.length as String?);
+    // debugPrint(listLiquidaPrecinto.length as String?);
   }
 
   getPrecintosById(int id) async {
