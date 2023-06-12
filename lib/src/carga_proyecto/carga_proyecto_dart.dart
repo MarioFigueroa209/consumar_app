@@ -458,7 +458,7 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               BotonMenu(
-                                  title: 'RUPERVISIÓN DESCARGA',
+                                  title: 'SUPERVISIÓN DESCARGA',
                                   icon: Icons.verified_user,
                                   onTap: () {
                                     Navigator.push(
@@ -476,7 +476,7 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                   }),
                               const SizedBox(width: 20),
                               BotonMenu(
-                                  title: 'RUPERVISIÓN EMBARQUE',
+                                  title: 'SUPERVISIÓN EMBARQUE',
                                   icon: Icons.warehouse,
                                   onTap: () {
                                     Navigator.push(
