@@ -266,9 +266,15 @@ final usuarioList = [
 ];
 
 final puestoList = [
-  'PRACTICANTE',
   'INSPECTOR JUNIOR',
   'INSPECTOR SENIOR',
+  'SUPERVISOR',
+  'COORDINADOR',
+  'ASISTENTE OPERACIONES',
+  'JEFE DE OPERACIONES',
+  'GERENTE DE OPERACIONES',
+  'GERENTE PROYECTOS',
+  'GERENTE ADM',
 ];
 
 final listaOperacionPrinterApp = [
