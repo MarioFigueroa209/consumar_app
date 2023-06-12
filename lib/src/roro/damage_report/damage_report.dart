@@ -47,21 +47,6 @@ class DamageReport extends StatefulWidget {
   State<DamageReport> createState() => _DamageReportState();
 }
 
-/*class DamageReportTable {
-  int? num;
-  String? codDr;
-  String? chasis;
-  String? marca;
-  String? cantidaDano;
-  DamageReportTable({
-    this.num,
-    this.chasis,
-    this.marca,
-    this.cantidaDano,
-  });
-}
-*/
-
 final GlobalKey<FormFieldState> _key1 = GlobalKey<FormFieldState>();
 final GlobalKey<FormFieldState> _key2 = GlobalKey<FormFieldState>();
 

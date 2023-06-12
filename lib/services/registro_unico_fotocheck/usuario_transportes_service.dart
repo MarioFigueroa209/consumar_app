@@ -36,6 +36,7 @@ class UsuarioTransporteService {
       aux.codFotocheck = value[count].codFotocheck;
       aux.fechaRegistro = DateTime.now();
       aux.tipoUsuario = value[count].usuario;
+      aux.puesto = value[count].puesto;
       aux.nombres = value[count].nombres;
       aux.apellidos = value[count].apellidos;
       aux.firmaUrl = value[count].urlFirmaIMG;

@@ -83,18 +83,24 @@ class _PrinterAppListadoState extends State<PrinterAppListado> {
                 const SizedBox(
                   height: 10,
                 ),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(
-                      "Vehiculos Sin Etiquetar: ${cantidadTotal - vhEtiquetados}",
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold)),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  Text("Vehiculos Etiquetados: ${vhEtiquetados.toString()}",
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold))
-                ]),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                            "Vehiculos Sin Etiquetar: ${cantidadTotal - vhEtiquetados}",
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Text(
+                            "Vehiculos Etiquetados: ${vhEtiquetados.toString()}",
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold))
+                      ]),
+                ),
                 const SizedBox(
                   height: 20,
                 ),

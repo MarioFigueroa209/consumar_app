@@ -100,6 +100,20 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
   bool value1 = false;
   bool isVisible = true;
 
+  bool ignoreDamageReport = false;
+  bool ignoreDamageReportList = false;
+  bool ignoreReetibas = false;
+  bool ignoreReetibasList = false;
+  bool ignoreDetalleAccesorio = false;
+  bool ignoreRampaEmbarque = false;
+  bool ignoreRampaDescarga = false;
+  bool ignoreDistribucionEmbarque = false;
+  bool ignoreAutoreport = false;
+  bool ignoreAutoreportList = false;
+  bool ignorePrinterApp = false;
+  bool ignorePrinterAppList = false;
+  bool ignoreCerrarOperacion = false;
+
   MobileScannerController cameraController = MobileScannerController();
 
   DamageReportConsultaService damageReportConsultaService =
@@ -182,6 +196,8 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
           "${vwgetUserDataByCodUser.nombres!} ${vwgetUserDataByCodUser.apellidos!}";
       nombreUsuario =
           "${vwgetUserDataByCodUser.nombres!} ${vwgetUserDataByCodUser.apellidos!}";
+
+      print("XD" + vwgetUserDataByCodUser.puesto!);
       setState(() {
         enableServiceOrderDropdown = false;
         enableJornadaDropdown = false;
@@ -493,6 +509,34 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
     }
   }
 
+  validationUserAcceso() {
+    print(vwgetUserDataByCodUser.puesto);
+    if (vwgetUserDataByCodUser.puesto == 'INSPECTOR JUNIOR') {
+      setState(() {
+        ignoreDamageReport = true;
+        ignoreDamageReportList = true;
+        ignoreReetibas = true;
+        ignoreReetibasList = true;
+        ignoreDetalleAccesorio = true;
+        ignoreDistribucionEmbarque = true;
+        ignoreAutoreportList = true;
+        ignorePrinterApp = true;
+        ignorePrinterAppList = true;
+        ignoreCerrarOperacion = true;
+      });
+    } else if (vwgetUserDataByCodUser.puesto == 'INSPECTOR SENIOR') {
+      setState(() {
+        // ignoreDamageReportList = true;
+        ignoreReetibas = true;
+        ignoreReetibasList = true;
+        ignoreDistribucionEmbarque = true;
+        ignorePrinterApp = true;
+        ignorePrinterAppList = true;
+        ignoreCerrarOperacion = true;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -544,6 +588,7 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                   onPressed: () {
                                     //getUsuarioPorIdJob();
                                     getUserDataByCodUser();
+                                    validationUserAcceso();
                                   }),
                               labelText: 'Id.Job',
                               labelStyle: TextStyle(
@@ -551,9 +596,10 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                 fontSize: 20.0,
                               ),
                               hintText: 'Ingrese el numero de ID Job'),
-                          onChanged: (value) {
+                          onChanged: (value) async {
                             //getUsuarioPorIdJob();
-                            getUserDataByCodUser();
+                            await getUserDataByCodUser();
+                            validationUserAcceso();
                           },
                           controller: idUsuarioController,
                           validator: (value) {
@@ -805,7 +851,16 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                   title: 'Damage Report',
                                   icon: Icons.feed,
                                   onTap: () {
-                                    validationDamageReport();
+                                    if (ignoreDamageReport == false) {
+                                      validationDamageReport();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "No cuenta con autorizacion para ingresar a este modulo"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                     //Insertar un showDialog
                                   }),
                               const SizedBox(width: 20),
@@ -813,7 +868,18 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                   title: 'Damage Report Listado',
                                   icon: Icons.list,
                                   onTap: () {
-                                    validationDamageReportListado();
+                                    if (ignoreDamageReportList == false) {
+                                      print("xd2");
+                                      validationDamageReportListado();
+                                    } else {
+                                      print("xd");
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "No cuenta con autorizacion para ingresar a este modulo"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                   }),
                             ],
                           ),
@@ -825,14 +891,32 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                   title: 'Reestibas',
                                   icon: Icons.compare_arrows,
                                   onTap: () {
-                                    validationControlReestibas();
+                                    if (ignoreReetibas == false) {
+                                      validationControlReestibas();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "No cuenta con autorizacion para ingresar a este modulo"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                   }),
                               const SizedBox(width: 20),
                               BotonMenu(
                                   title: 'Reestibas Listados',
                                   icon: Icons.list,
                                   onTap: () {
-                                    validationsReestibasList();
+                                    if (ignoreReetibasList == false) {
+                                      validationsReestibasList();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "No cuenta con autorizacion para ingresar a este modulo"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                   }),
                             ],
                           ),
@@ -844,14 +928,32 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                   title: 'Detalle Accesorio',
                                   icon: Icons.details,
                                   onTap: () {
-                                    validationsDetalleAccesorio();
+                                    if (ignoreDetalleAccesorio == false) {
+                                      validationsDetalleAccesorio();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "No cuenta con autorizacion para ingresar a este modulo"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                   }),
                               const SizedBox(width: 20),
                               BotonMenu(
                                   title: 'Rampa de Descarga',
                                   icon: Icons.download,
                                   onTap: () {
-                                    validationRampaDescarga();
+                                    if (ignoreRampaDescarga == false) {
+                                      validationRampaDescarga();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "No cuenta con autorizacion para ingresar a este modulo"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                   }),
                             ],
                           ),
@@ -863,14 +965,32 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                   title: 'Distribución Embarque',
                                   icon: Icons.horizontal_distribute,
                                   onTap: () {
-                                    validationDistribucionEmbarque();
+                                    if (ignoreDistribucionEmbarque == false) {
+                                      validationDistribucionEmbarque();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "No cuenta con autorizacion para ingresar a este modulo"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                   }),
                               const SizedBox(width: 20),
                               BotonMenu(
                                   title: 'Rampa de Embarque',
                                   icon: Icons.ramp_left,
                                   onTap: () {
-                                    validationRampaEmbarque();
+                                    if (ignoreRampaEmbarque == false) {
+                                      validationRampaEmbarque();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "No cuenta con autorizacion para ingresar a este modulo"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                   }),
                             ],
                           ),
@@ -882,14 +1002,32 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                   title: 'Autoreport',
                                   icon: Icons.directions_car,
                                   onTap: () {
-                                    validationAutoreport();
+                                    if (ignoreAutoreport == false) {
+                                      validationAutoreport();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "No cuenta con autorizacion para ingresar a este modulo"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                   }),
                               const SizedBox(width: 20),
                               BotonMenu(
                                   title: 'Autoreport Listado',
                                   icon: Icons.list,
                                   onTap: () {
-                                    validationAutoreportListado();
+                                    if (ignoreAutoreportList == false) {
+                                      validationAutoreportListado();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "No cuenta con autorizacion para ingresar a este modulo"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                     //  validationAutoreportListado();
                                   }),
                             ],
@@ -902,7 +1040,16 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                   title: 'Printer App',
                                   icon: Icons.qr_code,
                                   onTap: () {
-                                    validationPrinterApp();
+                                    if (ignorePrinterApp == false) {
+                                      validationPrinterApp();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "No cuenta con autorizacion para ingresar a este modulo"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                     //
                                   }),
                               const SizedBox(width: 20),
@@ -910,7 +1057,16 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                   title: 'Printer App Listado',
                                   icon: Icons.list,
                                   onTap: () {
-                                    validationPrinterAppListado();
+                                    if (ignorePrinterAppList == false) {
+                                      validationPrinterAppListado();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "No cuenta con autorizacion para ingresar a este modulo"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                   }),
                             ],
                           ),
@@ -922,32 +1078,20 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                   title: 'Cerrar Operacion',
                                   icon: Icons.report,
                                   onTap: () {
-                                    validationCloseOperation();
+                                    if (ignoreCerrarOperacion == false) {
+                                      validationCloseOperation();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text(
+                                            "No cuenta con autorizacion para ingresar a este modulo"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                     //
                                   }),
                             ],
                           ),
-                          /* const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              BotonMenu(
-                                  title: 'IMAGEN',
-                                  icon: Icons.image,
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                UploadImageScreen()));
-                                  }),
-                              const SizedBox(width: 20),
-                              BotonMenu(
-                                  title: 'IMAGEN Listado',
-                                  icon: Icons.image,
-                                  onTap: () {}),
-                            ],
-                          ), */
                         ],
                       ),
                     ],
