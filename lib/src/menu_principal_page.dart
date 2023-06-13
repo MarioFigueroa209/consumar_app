@@ -1,3 +1,4 @@
+import 'package:consumar_app/src/silos/silos_page.dart';
 import 'package:consumar_app/src/widgets/boton_menu.dart';
 import 'package:consumar_app/src/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
@@ -137,9 +138,13 @@ class MenuPrincipal extends StatelessWidget {
                       title: 'SILOS',
                       icon: Icons.storage,
                       onTap: () {
-                        CustomSnackBar.infoSnackBar(
-                            context, 'Función Silos disponible proximamente.');
                         //Navigator.push(context, MaterialPageRoute(builder: (context) => silos()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Silos(),
+                          ),
+                        );
                       },
                     ),
                     const SizedBox(width: 20),
