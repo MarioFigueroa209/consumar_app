@@ -98,7 +98,7 @@ class _RecepcionAlmacenState extends State<RecepcionAlmacen> {
     //debugPrint(vwListaPrecintoByIdPrecinto.length as String?);
 
     if (vwListaPrecintoByIdPrecinto.isNotEmpty) {
-      if (context.mounted) return;
+      //if (context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
             "Registros Encontrados ${vwListaPrecintoByIdPrecinto[0].codigoPrecinto}"),

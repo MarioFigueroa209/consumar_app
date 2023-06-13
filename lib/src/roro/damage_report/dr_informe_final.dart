@@ -753,20 +753,26 @@ class _DrInformeFinal extends State<DrInformeFinal> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
+                                          /* Text(
                                             "Codigo de daño: ${damageTypeByIdDrModelList[i].codigoDano!}",
-                                          ),
+                                          ), */
                                           Text(
                                             "Daño: ${damageTypeByIdDrModelList[i].danoRegistrado!}",
                                           ),
                                           Text(
                                             "Parte: ${damageTypeByIdDrModelList[i].parteVehiculo!}",
                                           ),
-                                          Text(
-                                            "Zona: ${damageTypeByIdDrModelList[i].zonaVehiculo!}",
+                                          SizedBox(
+                                            width: 120,
+                                            child: Text(
+                                              "Zona: ${damageTypeByIdDrModelList[i].zonaVehiculo!}",
+                                            ),
                                           ),
-                                          Text(
-                                            "Faltantes: ${damageTypeByIdDrModelList[i].zonaVehiculo!}",
+                                          SizedBox(
+                                            width: 120,
+                                            child: Text(
+                                              "Faltantes: ${damageTypeByIdDrModelList[i].descipcionFaltantes!}",
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -1097,14 +1103,14 @@ class _DrInformeFinal extends State<DrInformeFinal> {
                           if (widget.urlImgFirma != null) {
                             await subiendofotoXD();
                             createDRListado(estadoAprobado);
-                            if (context.mounted) return;
+                            //if (context.mounted) return;
                             Navigator.pop(context);
                             Navigator.pop(context);
                           } else {
                             createDRListado(estadoAprobado);
+                            //if (context.mounted) return;
                             Navigator.pop(context);
                             Navigator.pop(context);
-                            if (context.mounted) return;
                           }
                         },
                         child: const Text(

@@ -2411,81 +2411,71 @@ addDamageReportTable(DamageReportListSqlLite item) {
                               onPressed: () {
                                 setState(() {
                                   if (imageDanoRegistro != null) {
-                                    if (selectedZona.isNotEmpty) {
-                                      if (damageList.length <
-                                          int.parse(_cantidadDanos)) {
-                                        if (isVisible2 == false) {
-                                          if (selectedZona.length <= 3) {
-                                            String? menuDanos;
-                                            String? menuParteVeh;
+                                    if (damageList.length <
+                                        int.parse(_cantidadDanos)) {
+                                      if (isVisible2 == false) {
+                                        if (selectedZona.length <= 3) {
+                                          String? menuDanos;
+                                          String? menuParteVeh;
 
-                                            if (_desplegableDano == 'Others') {
-                                              menuDanos =
-                                                  _otherDamageDescriptionController
-                                                      .text;
-                                            } else {
-                                              menuDanos = _desplegableDano;
-                                            }
-
-                                            if (_desplegableParte == 'Others') {
-                                              menuParteVeh =
-                                                  _otherPartVehicleController
-                                                      .text;
-                                            } else {
-                                              menuParteVeh = _desplegableParte;
-                                            }
-
-                                            damageList.add(DamageItem(
-                                                //idDamageTypeRegister: 2,
-                                                codigoDao: "",
-                                                daoRegistrado: menuDanos,
-                                                parteVehiculo: menuParteVeh,
-                                                zonaVehiculo: stringList,
-                                                descripcionFaltantes:
-                                                    faltantesController.text,
-                                                fotoDao:
-                                                    imageDanoRegistro!.path,
-                                                fotoViewDao:
-                                                    imageDanoRegistro!));
-                                            clearDamageItem();
-                                            setState(() {
-                                              selectedZona.clear();
-                                              cityNames.clear();
-                                              stringList = "";
-                                            });
+                                          if (_desplegableDano == 'Others') {
+                                            menuDanos =
+                                                _otherDamageDescriptionController
+                                                    .text;
                                           } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  "Maximo 3 items en Zone"),
-                                              backgroundColor: Colors.redAccent,
-                                            ));
+                                            menuDanos = _desplegableDano;
                                           }
-                                        } else {
+
+                                          if (_desplegableParte == 'Others') {
+                                            menuParteVeh =
+                                                _otherPartVehicleController
+                                                    .text;
+                                          } else {
+                                            menuParteVeh = _desplegableParte;
+                                          }
+
                                           damageList.add(DamageItem(
                                               //idDamageTypeRegister: 2,
                                               codigoDao: "",
-                                              daoRegistrado: "",
-                                              parteVehiculo: "",
-                                              zonaVehiculo: "",
+                                              daoRegistrado: menuDanos,
+                                              parteVehiculo: menuParteVeh,
+                                              zonaVehiculo: stringList,
                                               descripcionFaltantes:
                                                   faltantesController.text,
                                               fotoDao: imageDanoRegistro!.path,
                                               fotoViewDao: imageDanoRegistro!));
                                           clearDamageItem();
+                                          setState(() {
+                                            selectedZona.clear();
+                                            cityNames.clear();
+                                            stringList = "";
+                                          });
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                            content:
+                                                Text("Maximo 3 items en Zone"),
+                                            backgroundColor: Colors.redAccent,
+                                          ));
                                         }
                                       } else {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content: Text(
-                                              "Solo se puede agregar $_cantidadDanos datos"),
-                                          backgroundColor: Colors.redAccent,
-                                        ));
+                                        damageList.add(DamageItem(
+                                            //idDamageTypeRegister: 2,
+                                            codigoDao: "",
+                                            daoRegistrado: "",
+                                            parteVehiculo: "",
+                                            zonaVehiculo: "",
+                                            descripcionFaltantes:
+                                                faltantesController.text,
+                                            fotoDao: imageDanoRegistro!.path,
+                                            fotoViewDao: imageDanoRegistro!));
+                                        clearDamageItem();
                                       }
                                     } else {
                                       ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                        content: Text("Elige zona del daño"),
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                            "Solo se puede agregar $_cantidadDanos datos"),
                                         backgroundColor: Colors.redAccent,
                                       ));
                                     }
@@ -3285,7 +3275,7 @@ addDamageReportTable(DamageReportListSqlLite item) {
                           height: 10,
                         ),
                         Text(
-                          "CONFIRMA USTED QUE EL REESPONSABLE DEL DAÑO ES EL APMTC",
+                          "CONFIRMA USTED QUE EL RESPONSABLE DEL DAÑO ES EL APMTC",
                           style: TextStyle(
                             color: Colors.red.shade900,
                             fontSize: 20.0,
@@ -3305,7 +3295,7 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                 //crearDamageReportLista();
                                 await imprimirListaDamageItem();
                                 await imprimirListaDamageReport();
-                                if (context.mounted) return;
+                                //if (context.mounted) return;
                                 Navigator.pop(context);
                                 _tabController
                                     .animateTo((_tabController.index = 1));

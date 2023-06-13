@@ -79,10 +79,10 @@ class _EditDamageReport extends State<EditDamageReport> {
         usuarioModel.nombres != 'No encontrado') {
       nombreUsuarioController.text = usuarioModel.nombres!;
 
-      if (context.mounted) return;
+      //if (context.mounted) return;
       CustomSnackBar.successSnackBar(context, "Supervisor APMTC Encontrado");
     } else {
-      if (context.mounted) return;
+      //if (context.mounted) return;
       CustomSnackBar.errorSnackBar(context, "Supervisor APMTC no Encontrado");
     }
   }
