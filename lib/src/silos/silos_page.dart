@@ -1,3 +1,4 @@
+import 'package:consumar_app/src/silos/Control%20de%20Tickets/Control_Tickets.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -5,6 +6,7 @@ import '../../models/vw_all_service_order_granel.dart';
 import '../../utils/constants.dart';
 import '../../utils/lists.dart';
 import '../scanner_screen.dart';
+import '../widgets/boton_menu.dart';
 
 class Silos extends StatefulWidget {
   const Silos({Key? key}) : super(key: key);
@@ -63,29 +65,34 @@ class _SilosState extends State<Silos> {
                 children: [
                   TextFormField(
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        prefixIcon: IconButton(
-                          icon: const Icon(Icons.qr_code),
-                          onPressed: () async {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                const ScannerScreen()));
-                            idUsuarioController.text = result;
-                        }),
-                        suffixIcon: IconButton(
-                            icon: const Icon(Icons.search),
-                            onPressed: () {
-                            }),
-                        labelText: 'Id.Job',
-                        labelStyle: TextStyle(
-                          color: kColorAzul,
-                          fontSize: 20.0,
-                        ),
-                        hintText: 'Ingrese el numero de ID Job'),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      prefixIcon: IconButton(
+                        icon: const Icon(Icons.qr_code),
+                        onPressed: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                              const ScannerScreen()
+                            )
+                          );
+                          idUsuarioController.text = result;
+                        }
+                      ),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.search),
+                        onPressed: () {
+                        }
+                      ),
+                      labelText: 'Id.Job',
+                      labelStyle: TextStyle(
+                        color: kColorAzul,
+                        fontSize: 20.0,
+                      ),
+                      hintText: 'Ingrese el numero de ID Job'
+                    ),
                     onChanged: (value) {
                     },
                     controller: idUsuarioController,
@@ -96,116 +103,23 @@ class _SilosState extends State<Silos> {
                       return null;
                     },
                   ),
-                  
-                  const SizedBox(height: 20),
                 ],
               ),
             ),
             Form(
-                key: _formKey2,
-                child: Column(
-                  children: [
-                    IgnorePointer(
-                      ignoring: enableServiceOrderDropdown,
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            labelText: 'Orden de servicio',
-                            hintText: 'Selecione Orden de servicio',
-                            labelStyle: TextStyle(
-                              color: kColorAzul,
-                              fontSize: 20.0,
-                            ),
-                          ),
-                          icon: const Icon(
-                            Icons.arrow_drop_down_circle_outlined,
-                          ),
-                          items:
-                              getServiceOrdersDropDownItems(serviceOrdersList),
-                          onChanged: (value) {
-                          },
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Por favor, elige order de servicio';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 20),
-
-                    IgnorePointer(
-                      ignoring: enableServiceOrderDropdown,
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            labelText: 'Lado',
-                            hintText: 'Seleccione el lado',
-                            labelStyle: TextStyle(
-                              color: kColorAzul,
-                              fontSize: 20.0,
-                            ),
-                          ),
-                          icon: const Icon(
-                            Icons.arrow_drop_down_circle_outlined,
-                          ),
-                          items:
-                              getServiceOrdersDropDownItems(serviceOrdersList),
-                          onChanged: (value) {
-                          },
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Por favor, elige el lado';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    TextFormField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.calendar_month,
-                          color: kColorAzul,
-                        ),
-                        labelText: 'Fecha',
-                        labelStyle: TextStyle(
-                          color: kColorAzul,
-                          //fontSize: 20.0,
-                        ),
-                      ),
-                      controller: _fechaController,
-                      style: TextStyle(
-                        color: kColorAzul,
-                        fontSize: 20.0,
-                      ),
-                      enabled: false,
-                    ),
-                    
-                    const SizedBox(height: 20),
-                    
-                    IgnorePointer(
-                      ignoring: enableJornadaDropdown,
+              key: _formKey2,
+              child: Column(
+                children: [
+                  IgnorePointer(
+                    ignoring: enableServiceOrderDropdown,
+                    child: DropdownButtonHideUnderline(
                       child: DropdownButtonFormField(
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
-                          labelText: 'Jornada',
+                          labelText: 'Orden de servicio',
+                          hintText: 'Selecione Orden de servicio',
                           labelStyle: TextStyle(
                             color: kColorAzul,
                             fontSize: 20.0,
@@ -214,38 +128,176 @@ class _SilosState extends State<Silos> {
                         icon: const Icon(
                           Icons.arrow_drop_down_circle_outlined,
                         ),
-                        items: listaJornada.map((String a) {
-                          return DropdownMenuItem<String>(
-                            value: a,
-                            child: Center(
-                                child: Text(a, textAlign: TextAlign.left)),
-                          );
-                        }).toList(),
-                        onChanged: (value) => {
-                          setState(() {
-                            _valueJornadaDropdown = value as String;
-                          })
+                        items: getServiceOrdersDropDownItems(serviceOrdersList),
+                        onChanged: (value) {
                         },
                         validator: (value) {
-                          if (value != _valueJornadaDropdown) {
-                            return 'Por favor, elige jornada';
+                          if (value == null) {
+                            return 'Por favor, elige order de servicio';
                           }
                           return null;
                         },
-                        hint: Text(_valueJornadaDropdown),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      "OPERACION",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
+                  ),
+                  
+                  const SizedBox(height: 20),
+                  IgnorePointer(
+                    ignoring: enableServiceOrderDropdown,
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          labelText: 'Lado',
+                          hintText: 'Seleccione el lado',
+                          labelStyle: TextStyle(
+                            color: kColorAzul,
+                            fontSize: 20.0,
+                          ),
+                        ),
+                        icon: const Icon(
+                          Icons.arrow_drop_down_circle_outlined,
+                        ),
+                        items: getServiceOrdersDropDownItems(serviceOrdersList),
+                        onChanged: (value) {
+                        },
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Por favor, elige el lado';
+                          }
+                          return null;
+                        },
                       ),
                     ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  TextFormField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.calendar_month,
+                        color: kColorAzul,
+                      ),
+                      labelText: 'Fecha',
+                      labelStyle: TextStyle(
+                        color: kColorAzul,
+                        //fontSize: 20.0,
+                      ),
+                    ),
+                    controller: _fechaController,
+                    style: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                    enabled: false,
+                  ),
+                    
+                  const SizedBox(height: 20),
+                    
+                  IgnorePointer(
+                    ignoring: enableJornadaDropdown,
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        labelText: 'Jornada',
+                        labelStyle: TextStyle(
+                          color: kColorAzul,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                      icon: const Icon(
+                        Icons.arrow_drop_down_circle_outlined,
+                      ),
+                      items: listaJornada.map((String a) {
+                        return DropdownMenuItem<String>(
+                          value: a,
+                          child: Center(
+                            child: Text(a, textAlign: TextAlign.left)),
+                        );
+                      }).toList(),
+                      onChanged: (value) => {
+                        setState(() {
+                          _valueJornadaDropdown = value as String;
+                        })
+                      },
+                      validator: (value) {
+                        if (value != _valueJornadaDropdown) {
+                          return 'Por favor, elige jornada';
+                        }
+                        return null;
+                      },
+                      hint: Text(_valueJornadaDropdown),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "OPERACION",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          BotonMenu(
+                            title: 'Control de Tickets',
+                            icon: Icons.content_paste_search,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ControlTickets()          
+                                )
+                              );
+                              //Insertar un showDialog
+                            }
+                          ),
+                          const SizedBox(width: 20),
+                          BotonMenu(
+                            title: 'Seleccionar placa',
+                            icon: Icons.domain_verification,
+                            onTap: () {
+                            }
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          BotonMenu(
+                            title: 'Control visual',
+                            icon: Icons.format_list_numbered_sharp,
+                            onTap: () {
+                            }
+                          ),
+                          const SizedBox(width: 20),
+                          BotonMenu(
+                            title: 'Distribucion de Silos',
+                            icon: Icons.error_outline,
+                            onTap: () {
+                            }
+                          ),
+                        ],
+                      ),
+                          
                   ],
-                ))
-                
+                ),
+                ],
+          )),               
           ]),
         ),
       ),
