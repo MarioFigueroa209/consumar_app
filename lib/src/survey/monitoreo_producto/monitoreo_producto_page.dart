@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,13 +11,16 @@ import '../../../models/survey/MonitoreoProducto/create_monitoreo_producto.dart'
 import '../../../models/survey/sqlLiteModels/monitoreo_producto_sql_lite_model.dart';
 import '../../../models/survey/sqlLiteModels/mp_bodega_foto.dart';
 import '../../../models/survey/sqlLiteModels/mp_observado_foto.dart';
+import '../../../models/vw_get_user_data_by_cod_user.dart';
 import '../../../services/file_upload_result.dart';
 import '../../../services/survey/monitoreo_producto_service.dart';
+import '../../../services/usuario_service.dart';
 import '../../../utils/check_internet_connection.dart';
 import '../../../utils/connection_status_cubit.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/lists.dart';
 import '../../../utils/survey/sqlLiteDB/db_monitoreo_producto.dart';
+import '../../scanner_screen.dart';
 
 class MonitoreoProducto extends StatefulWidget {
   const MonitoreoProducto(
@@ -80,6 +84,10 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
   Future<List<MonitoreoProductoSqlLiteModel>>?
       futureMonitoreoProductoSqlLiteModel;
 
+  final idSupervisorController = TextEditingController();
+  final TextEditingController nombresSupervisorController =
+      TextEditingController();
+
   //Lista independiente para mostrar imagenes en el front
   List<ListFotoBodega> listFotoBodega = [];
 
@@ -94,6 +102,8 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
   List<MpObservadoFoto> listToUploadMpObservadoFoto = [];
 
   List<MonitoreoProductoSqlLiteModel> monitoreoProductoSqlLiteModel = [];
+
+  VwgetUserDataByCodUser vwgetUserDataByCodUser = VwgetUserDataByCodUser();
 
   bool valueInspeccionFito = false;
 
@@ -319,6 +329,21 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
   listTableMonitoreoProductoSqLite() {
     futureMonitoreoProductoSqlLiteModel =
         dbLiteMonitoreoProducto.listMonitoreoProductoTableSqlLite();
+  }
+
+  int? idApmtc;
+
+  getSupervisorByCodUser() async {
+    UsuarioService usuarioService = UsuarioService();
+    //nombresAPMTCController.text = '';
+
+    vwgetUserDataByCodUser =
+        await usuarioService.getUserDataByCodUser(idSupervisorController.text);
+
+    nombresSupervisorController.text =
+        "${vwgetUserDataByCodUser.nombres!} ${vwgetUserDataByCodUser.apellidos!}";
+    idApmtc = vwgetUserDataByCodUser.idUsuario;
+    //print(idApmtc);
   }
 
   @override
@@ -918,7 +943,12 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
                             onChanged: (value) => setState(
                               () {
                                 value2 = value;
-                                isVisible3 = !isVisible3;
+                                if (value2 == true) {
+                                  dialogoConfirmarMercaderia(context);
+                                }
+                                if (value == false) {
+                                  isVisible3 = false;
+                                }
                               },
                             ),
                             activeTrackColor: Colors.lightGreenAccent,
@@ -1534,6 +1564,125 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
                     ),
                     TextButton(
                       onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "Cancelar",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ));
+  }
+
+  dialogoConfirmarMercaderia(BuildContext context) {
+    showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+              insetPadding: const EdgeInsets.all(70),
+              actions: [
+                const Center(
+                  child: SizedBox(
+                    width: 230,
+                    child: Text(
+                      'Validar Mercaderia Observada Supervisor',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      prefixIcon: IconButton(
+                          icon: Icon(Icons.qr_code, color: kColorAzul),
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ScannerScreen()));
+
+                            idSupervisorController.text = result;
+                          }),
+                      suffixIcon: IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: () {
+                            getSupervisorByCodUser();
+                          }),
+                      labelText: 'Id.Job',
+                      labelStyle: TextStyle(
+                        color: kColorAzul,
+                        fontSize: 20.0,
+                      ),
+                      hintText: 'Ingrese el numero de ID Job'),
+                  onChanged: (value) {
+                    getSupervisorByCodUser();
+                  },
+                  controller: idSupervisorController,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.badge,
+                      color: kColorAzul,
+                    ),
+                    labelText: 'Nombre usuario',
+                    labelStyle: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  enabled: false,
+                  controller: nombresSupervisorController,
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        if (idApmtc != null) {
+                          setState(() {
+                            isVisible3 = true;
+                          });
+                          Navigator.pop(context);
+                          idSupervisorController.clear();
+                          nombresSupervisorController.clear();
+                        } else {
+                          print("Nop");
+                          Flushbar(
+                            backgroundColor: Colors.red,
+                            message: 'NO CUENTA CON AUTORIZACION',
+                            duration: Duration(seconds: 3),
+                          ).show(context);
+                        }
+                      },
+                      child: const Text(
+                        "Aceptar",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          value2 = false;
+                          isVisible3 = false;
+                        });
                         Navigator.pop(context);
                       },
                       child: const Text(
