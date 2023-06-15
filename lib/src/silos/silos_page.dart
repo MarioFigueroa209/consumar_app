@@ -1,4 +1,6 @@
-import 'package:consumar_app/src/silos/Control%20de%20Tickets/Control_Tickets.dart';
+import 'package:consumar_app/src/silos/Control_Tickets/Control_Tickets.dart';
+import 'package:consumar_app/src/silos/Control_Visual/Control_Visual.dart';
+import 'package:consumar_app/src/silos/Seleccionar_Placa/Seleccionar%20Placa.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -18,7 +20,6 @@ class Silos extends StatefulWidget {
 class _SilosState extends State<Silos> {
   
   final _formKey = GlobalKey<FormState>();
-  final _formKey2 = GlobalKey<FormState>();
 
   final _fechaController = TextEditingController();
   final idUsuarioController = TextEditingController();
@@ -103,13 +104,9 @@ class _SilosState extends State<Silos> {
                       return null;
                     },
                   ),
-                ],
-              ),
-            ),
-            Form(
-              key: _formKey2,
-              child: Column(
-                children: [
+                  
+                  const SizedBox(height: 20),
+
                   IgnorePointer(
                     ignoring: enableServiceOrderDropdown,
                     child: DropdownButtonHideUnderline(
@@ -270,6 +267,12 @@ class _SilosState extends State<Silos> {
                             title: 'Seleccionar placa',
                             icon: Icons.domain_verification,
                             onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SeleccionarPlaca()          
+                                )
+                              );
                             }
                           ),
                         ],
@@ -282,6 +285,12 @@ class _SilosState extends State<Silos> {
                             title: 'Control visual',
                             icon: Icons.format_list_numbered_sharp,
                             onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ControlVisual()          
+                                )
+                              );
                             }
                           ),
                           const SizedBox(width: 20),
