@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../utils/constants.dart';
-import '../../scanner_screen.dart';
 
 class ControlVisual extends StatefulWidget {
   const ControlVisual({Key? key}) : super(key: key);
