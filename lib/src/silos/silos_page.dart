@@ -9,6 +9,7 @@ import '../../utils/constants.dart';
 import '../../utils/lists.dart';
 import '../scanner_screen.dart';
 import '../widgets/boton_menu.dart';
+import 'Distribucion_Silos/Distribucion_Silos.dart';
 
 class Silos extends StatefulWidget {
   const Silos({Key? key}) : super(key: key);
@@ -298,7 +299,14 @@ class _SilosState extends State<Silos> {
                             title: 'Distribucion de Silos',
                             icon: Icons.error_outline,
                             onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DistribucionSilos()          
+                                )
+                              );
                             }
+                            
                           ),
                         ],
                       ),
