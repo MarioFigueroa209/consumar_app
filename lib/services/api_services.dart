@@ -396,10 +396,15 @@ final urlCreatePesoHistorico =
     Uri.parse("${urlApiBase}ValidacionPeso/createPesoHistorico");
 
 /*------------------- CARGA LIQUIDA ----------------------*/
+String urlGetShipAndTravelByIdServiceOrderLiquida =
+    "${urlApiBase}ServiceOrder/getShipAndTravelByIdServiceOrderLiquida/";
 
 /*------------ Ulaje -------------------*/
 final urlCreateUlajeList =
     Uri.parse("${urlApiBase}Ulaje/CreateLiquidaUlajeList");
+
+String urlGetTanquePesosLiquidaByIdServiceOrder =
+    "${urlApiBase}Ulaje/getTanquePesosLiquidaByIdServiceOrder?idServiceOrder=";
 
 /*------------------ Liquida Registro Equipos---------*/
 final urlCreateLiquidaRegistroEquipos = Uri.parse(

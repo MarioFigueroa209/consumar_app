@@ -8,10 +8,12 @@ import 'package:consumar_app/src/carga_liquida/validacion_peso/liquida_validacio
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../models/carga_liquida/ulaje/vw_tanque_pesos_liquida_by_idServOrder.dart';
+import '../../models/carga_liquida/vw_ship_and_travel_by_id_service_order_liquida.dart';
 import '../../models/vw_all_service_order_liquida.dart';
 import '../../models/vw_get_user_data_by_cod_user.dart';
 import '../../models/vw_ship_and_travel_by_id_service_order_model.dart';
-import '../../services/roro/distribucion_embarque/distribucion_embarque_services.dart';
+import '../../services/carga_liquida/ulaje_service.dart';
 import '../../services/service_order_services.dart';
 import '../../services/usuario_service.dart';
 import '../../utils/constants.dart';
@@ -37,7 +39,7 @@ class _CargaLiquidaState extends State<CargaLiquida> {
     JornadaModel(idJornada: 3, jornada: "23:00 - 07:00"),
   ];
 
-  String _valueJornadaDropdown = 'Seleccione Jornada';
+  //String _valueJornadaDropdown = 'Seleccione Jornada';
 
   final TextEditingController idUsuarioController = TextEditingController();
 
@@ -53,6 +55,12 @@ class _CargaLiquidaState extends State<CargaLiquida> {
   List<VwAllServiceOrderLiquida> serviceOrdersList =
       <VwAllServiceOrderLiquida>[];
 
+  List<VwTanquePesosLiquidaByIdServOrder> tanquePesosLiquidaByIdServOrder = [];
+
+  int jornadaNumber = 0;
+
+  final TextEditingController _jornadaController = TextEditingController();
+
   //String _selectedServiceOrder = 'Seleccione Orden';
 
   late int idUsuario;
@@ -63,12 +71,24 @@ class _CargaLiquidaState extends State<CargaLiquida> {
 
   VwgetUserDataByCodUser vwgetUserDataByCodUser = VwgetUserDataByCodUser();
 
+  UlajeService ulajeService = UlajeService();
+
+  getTanquePesosLiquida() async {
+    tanquePesosLiquidaByIdServOrder =
+        await ulajeService.getTanquePesoConsulta(idServiceOrder);
+
+    print('Cantidad de registros${tanquePesosLiquidaByIdServOrder.length}');
+  }
+
   getNaveAndTravelServiceOrder() async {
-    DistribucionEmbarqueService distribucionEmbarqueSerice =
-        DistribucionEmbarqueService();
+    VwShipAndTravelByIdServiceOrderLiquida
+        vwShipAndTravelByIdServiceOrderModel =
+        VwShipAndTravelByIdServiceOrderLiquida();
+
+    ServiceOrderService serviceOrderService = ServiceOrderService();
 
     vwShipAndTravelByIdServiceOrderModel =
-        await distribucionEmbarqueSerice.getShipAndTravelByIdOrderService(
+        await serviceOrderService.getShipAndTravelByIdOrderServiceLiquida(
             BigInt.parse(idServiceOrder.toString()));
 
     _nombreNaveController.text =
@@ -143,6 +163,31 @@ class _CargaLiquidaState extends State<CargaLiquida> {
   Widget build(BuildContext context) {
     _fechaController.value =
         TextEditingValue(text: DateFormat('dd-MM-yyyy').format(DateTime.now()));
+
+    int? jornadaDate;
+
+    jornadaDate = DateTime.now().hour;
+
+    if (jornadaDate >= 7 && jornadaDate < 15) {
+      _jornadaController.text = "07:00 - 15:00";
+      setState(() {
+        jornadaNumber = 1;
+      });
+      print(jornadaNumber);
+    } else if (jornadaDate >= 15 && jornadaDate < 23) {
+      _jornadaController.text = "15:00 - 23:00";
+      setState(() {
+        jornadaNumber = 2;
+      });
+      print(jornadaNumber);
+    } else if (jornadaDate >= 23 && jornadaDate < 7) {
+      _jornadaController.text = "23:00 - 07:00";
+      setState(() {
+        jornadaNumber = 3;
+      });
+      print(jornadaNumber);
+    }
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -241,7 +286,7 @@ class _CargaLiquidaState extends State<CargaLiquida> {
                           onChanged: (value) {
                             idServiceOrder = int.parse(value.toString());
                             getNaveAndTravelServiceOrder();
-
+                            getTanquePesosLiquida();
                             setState(() {
                               //_selectedServiceOrder = value.toString();
                             });
@@ -307,39 +352,6 @@ class _CargaLiquidaState extends State<CargaLiquida> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    IgnorePointer(
-                      ignoring: enableJornadaDropdown,
-                      child: DropdownButtonFormField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          labelText: 'Jornada',
-                          labelStyle: TextStyle(
-                            color: kColorAzul,
-                            fontSize: 20.0,
-                          ),
-                        ),
-                        icon: const Icon(
-                          Icons.arrow_drop_down_circle_outlined,
-                        ),
-                        items: getJornadaDropDownItems(jornadaList),
-                        onChanged: (value) => {
-                          setState(() {
-                            _valueJornadaDropdown = value.toString();
-                          }),
-                          //print("La Jornada es: $_valueJornadaDropdown")
-                        },
-                        validator: (value) {
-                          if (value != _valueJornadaDropdown) {
-                            return 'Por favor, elige jornada';
-                          }
-                          return null;
-                        },
-                        hint: Text(_valueJornadaDropdown),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
                     TextFormField(
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -362,6 +374,30 @@ class _CargaLiquidaState extends State<CargaLiquida> {
                       ),
                       enabled: false,
                     ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        /* prefixIcon: Icon(
+                          Icons.calendar_month,
+                          color: kColorAzul,
+                        ), */
+                        labelText: 'Jornada',
+                        labelStyle: TextStyle(
+                          color: kColorAzul,
+                          //fontSize: 20.0,
+                        ),
+                      ),
+                      controller: _jornadaController,
+                      style: TextStyle(
+                        color: kColorAzul,
+                        fontSize: 20.0,
+                      ),
+                      enabled: false,
+                    ),
+                    const SizedBox(height: 10),
                     const Text(
                       "OPERACION",
                       style: TextStyle(
@@ -462,16 +498,18 @@ class _CargaLiquidaState extends State<CargaLiquida> {
     );
   }
 
-  validationUlaje() {
+  validationUlaje() async {
     if (_formKey.currentState!.validate()) {
       if (_formKey2.currentState!.validate()) {
+        await ulajeService
+            .insertTanquePesosLiquida(tanquePesosLiquidaByIdServOrder);
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => UlajePage(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -496,7 +534,7 @@ class _CargaLiquidaState extends State<CargaLiquida> {
                 builder: (context) => MenuLiquidaEquipos(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -521,7 +559,7 @@ class _CargaLiquidaState extends State<CargaLiquida> {
                 builder: (context) => LiquidaControlCarguio(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -546,7 +584,7 @@ class _CargaLiquidaState extends State<CargaLiquida> {
                 builder: (context) => LiquidaParalizaciones(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -571,7 +609,7 @@ class _CargaLiquidaState extends State<CargaLiquida> {
                 builder: (context) => LiquidaPrecintado(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -596,7 +634,7 @@ class _CargaLiquidaState extends State<CargaLiquida> {
                 builder: (context) => LiquidaRecepcionAlmacen(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -621,7 +659,7 @@ class _CargaLiquidaState extends State<CargaLiquida> {
                 builder: (context) => LiquidaValidacionPeso(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -646,7 +684,7 @@ class _CargaLiquidaState extends State<CargaLiquida> {
                 builder: (context) => LiquidaDescargaTuberias(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../models/roro/rampa_embarque/vw_rampa_embarque_vehicle_data_model.dart';
 import '../../../models/vehicle_model.dart';
 import '../../../models/vw_ship_and_travel_by_id_service_order_model.dart';
-import '../../../services/roro/distribucion_embarque/distribucion_embarque_services.dart';
 import '../../../services/roro/rampa_embarque/rampa_embarque_services.dart';
+import '../../../services/service_order_services.dart';
 import '../../../services/vehicle_service.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/lists.dart';
@@ -61,10 +61,9 @@ class _Autoreport1State extends State<Autoreport1> {
   late String codDr;
 
   getShipAndTravelIdServiceOrder() async {
-    DistribucionEmbarqueService distribucionEmbarqueService =
-        DistribucionEmbarqueService();
+    ServiceOrderService serviceOrderService = ServiceOrderService();
 
-    vwShipAndTravelByIdServiceOrderModel = await distribucionEmbarqueService
+    vwShipAndTravelByIdServiceOrderModel = await serviceOrderService
         .getShipAndTravelByIdOrderService(widget.idServiceOrder);
 
     _naveController.text = vwShipAndTravelByIdServiceOrderModel.nombreNave!;

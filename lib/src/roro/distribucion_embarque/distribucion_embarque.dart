@@ -10,6 +10,7 @@ import '../../../../utils/constants.dart';
 import '../../../models/vehicle_model.dart';
 import '../../../services/roro/distribucion_embarque/distribucion_embarque_services.dart';
 import '../../../services/roro/rampa_embarque/rampa_embarque_services.dart';
+import '../../../services/service_order_services.dart';
 import '../../../utils/lists.dart';
 import '../../../utils/roro/distribucion_embarque_models.dart';
 import 'distribucion_embarque_edit.dart';
@@ -98,10 +99,9 @@ class _DistribucionEmbarqueState extends State<DistribucionEmbarque2>
   late int idShip;
 
   getIdServiceOrder() async {
-    DistribucionEmbarqueService distribucionEmbarqueSerice =
-        DistribucionEmbarqueService();
+    ServiceOrderService serviceOrderService = ServiceOrderService();
 
-    vwShipAndTravelByIdServiceOrderModel = await distribucionEmbarqueSerice
+    vwShipAndTravelByIdServiceOrderModel = await serviceOrderService
         .getShipAndTravelByIdOrderService(widget.idServiceOrder);
 
     _nombreNaveController.text =

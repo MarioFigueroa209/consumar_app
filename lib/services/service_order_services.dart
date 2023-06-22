@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../models/carga_liquida/vw_ship_and_travel_by_id_service_order_liquida.dart';
 import '../models/roro/validation_service_order_close_printer_rampa_dr.dart';
 import '../models/roro/validation_sum_saldo_final_reestibas.dart';
+import '../models/survey/vw_ship_and_travel_by_id_service_order_granel.dart';
 import '../models/vw_all_service_order.dart';
 import '../models/vw_all_service_order_granel.dart';
 import '../models/vw_all_service_order_liquida.dart';
+import '../models/vw_ship_and_travel_by_id_service_order_model.dart';
 import 'api_services.dart';
 
 class ServiceOrderService {
@@ -65,6 +68,69 @@ class ServiceOrderService {
       return parseAllServiceOrdersLiquida(res.body);
     } else {
       throw Exception('No se pudo obtener las ordenes');
+    }
+  }
+
+  Future<VwShipAndTravelByIdServiceOrderModel> getShipAndTravelByIdOrderService(
+      BigInt idServiceOrder) async {
+    var url = Uri.parse(
+        urlGetShipAndTravelByIdOrderService + idServiceOrder.toString());
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return VwShipAndTravelByIdServiceOrderModel.fromJson(
+          jsonDecode(response.body));
+    } else if (response.statusCode == 404) {
+      VwShipAndTravelByIdServiceOrderModel value =
+          VwShipAndTravelByIdServiceOrderModel();
+      value.nombreNave = 'no encontrado';
+      value.numeroViaje = 'no encontrado';
+      return value;
+    } else {
+      throw Exception('Fallo al cargar');
+    }
+  }
+
+  Future<VwShipAndTravelByIdServiceOrderGranel>
+      getShipAndTravelByIdOrderServiceGranel(BigInt idServiceOrder) async {
+    var url = Uri.parse(
+        urlGetShipAndTravelByIdServiceOrderGranel + idServiceOrder.toString());
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return VwShipAndTravelByIdServiceOrderGranel.fromJson(
+          jsonDecode(response.body));
+    } else if (response.statusCode == 404) {
+      VwShipAndTravelByIdServiceOrderGranel value =
+          VwShipAndTravelByIdServiceOrderGranel();
+      value.nombreNave = 'no encontrado';
+      value.numeroViaje = 'no encontrado';
+      return value;
+    } else {
+      throw Exception('Fallo al cargar');
+    }
+  }
+
+  Future<VwShipAndTravelByIdServiceOrderLiquida>
+      getShipAndTravelByIdOrderServiceLiquida(BigInt idServiceOrder) async {
+    var url = Uri.parse(
+        urlGetShipAndTravelByIdServiceOrderLiquida + idServiceOrder.toString());
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return VwShipAndTravelByIdServiceOrderLiquida.fromJson(
+          jsonDecode(response.body));
+    } else if (response.statusCode == 404) {
+      VwShipAndTravelByIdServiceOrderLiquida value =
+          VwShipAndTravelByIdServiceOrderLiquida();
+      value.nombreNave = 'no encontrado';
+      value.numeroViaje = 'no encontrado';
+      return value;
+    } else {
+      throw Exception('Fallo al cargar');
     }
   }
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -76,8 +77,7 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
         .getInspeccionEquiposByIdServiceOrder(widget.idServiceOrder);
   }
 
-  List<VwEquiposRegistradosGranel> vwEquiposRegistradosGranelList =
-      <VwEquiposRegistradosGranel>[];
+  List<VwEquiposRegistradosGranel> vwEquiposRegistradosGranelList = [];
 
   List<VwGranelListaBodegas> vwGranelListaBodegas = <VwGranelListaBodegas>[];
 
@@ -97,12 +97,22 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
     return dropDownItems;
   }
 
+  List<String> equiposList = [];
+
   getListEquipos() async {
-    List<VwEquiposRegistradosGranel> value =
+    vwEquiposRegistradosGranelList =
         await registroEquipoService.getEquiposRegistradosGranel();
-    setState(() {
-      vwEquiposRegistradosGranelList = value;
-    });
+
+    print(vwEquiposRegistradosGranelList);
+
+    /* setState(() {
+      pepe = vwEquiposRegistradosGranelList.map((e) => e as String).toList();
+    }); */
+
+    /*  final map = Map<String, dynamic>();
+    vwEquiposRegistradosGranelList = (map['codEquipo'] as List)
+        .map((item) => item as VwEquiposRegistradosGranel)
+        .toList(); */
   }
 
   getEquipoByCod() async {
@@ -252,6 +262,9 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
 
   @override
   Widget build(BuildContext context) {
+    equiposList =
+        vwEquiposRegistradosGranelList.map((city) => city.codEquipo!).toList();
+
     return DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -362,9 +375,8 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
                         hint: Text(_valueBodegaDropdown),
                       ),
                       const SizedBox(height: 20),
-                      /*  DropdownSearch<String>(
-                        items: getServiceOrdersDropDownItems(
-                            vwEquiposRegistradosGranelList),
+                      DropdownSearch<String>(
+                        items: equiposList,
                         popupProps: const PopupProps.menu(
                           showSearchBox: true,
                           title: Text('Busque el Codigo del Equipo'),
@@ -386,12 +398,33 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
                         onChanged: (value) => {
                           setState(() {
                             _valueEquipoDropdown = value as String;
-                            codEquipo = _valueEquipoDropdown;
+                            // codEquipo = _valueEquipoDropdown;
                           }),
                           getEquipoByCod(),
                         },
+                      ),
+                      /*   DropdownSearch<String>(
+                        mode: Mode.MENU,
+                        showSelectedItems: true,
+                        items: [
+                          "Brazil",
+                          "Italia (Disabled)",
+                          "Tunisia",
+                          'Canada'
+                        ],
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: "Menu mode",
+                          hintText: "country in menu mode",
+                        ),
+                        popupItemDisabled: isItemDisabled,
+                        onChanged: itemSelectionChanged,
+                        //selectedItem: "",
+                        showSearchBox: true,
+                        searchFieldProps: TextFieldProps(
+                          cursorColor: Colors.blue,
+                        ),
                       ), */
-                      DropdownButtonFormField(
+                      /*     DropdownButtonFormField(
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20.0),
@@ -420,7 +453,7 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
                           }
                           return null;
                         },
-                      ),
+                      ), */
                       const SizedBox(height: 20),
                       TextFormField(
                         decoration: InputDecoration(

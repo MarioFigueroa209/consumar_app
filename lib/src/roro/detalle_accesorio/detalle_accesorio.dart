@@ -14,8 +14,8 @@ import '../../../models/vw_ship_and_travel_by_id_service_order_model.dart';
 import '../../../models/vw_vehicle_data_model.dart';
 import '../../../services/file_upload_result.dart';
 import '../../../services/roro/detalle_accesorio/detalle_accesorio_service.dart';
-import '../../../services/roro/distribucion_embarque/distribucion_embarque_services.dart';
 import '../../../services/roro/rampa_embarque/rampa_embarque_services.dart';
+import '../../../services/service_order_services.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/roro/detalle_accesorio_models.dart';
 import '../../scanner_screen.dart';
@@ -186,10 +186,9 @@ class _DetalleAccesorioState extends State<DetalleAccesorio>
   }
 
   getIdServiceOrder() async {
-    DistribucionEmbarqueService distribucionEmbarqueSerice =
-        DistribucionEmbarqueService();
+    ServiceOrderService serviceOrderService = ServiceOrderService();
 
-    vwShipAndTravelByIdServiceOrderModel = await distribucionEmbarqueSerice
+    vwShipAndTravelByIdServiceOrderModel = await serviceOrderService
         .getShipAndTravelByIdOrderService(widget.idServiceOrder);
 
     _nombreNaveController.text =

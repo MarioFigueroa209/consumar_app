@@ -6,12 +6,10 @@ import '../../models/survey/vw_ship_and_travel_by_id_service_order_granel.dart';
 import '../../models/usuario_model.dart';
 import '../../models/vw_all_service_order_granel.dart';
 import '../../models/vw_get_user_data_by_cod_user.dart';
-import '../../services/roro/distribucion_embarque/distribucion_embarque_services.dart';
 import '../../services/service_order_services.dart';
 import '../../services/usuario_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/jornada_model.dart';
-import '../../utils/lists.dart';
 import '../scanner_screen.dart';
 import '../widgets/boton_menu.dart';
 
@@ -80,11 +78,10 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
     VwShipAndTravelByIdServiceOrderGranel vwShipAndTravelByIdServiceOrderModel =
         VwShipAndTravelByIdServiceOrderGranel();
 
-    DistribucionEmbarqueService distribucionEmbarqueSerice =
-        DistribucionEmbarqueService();
+    ServiceOrderService serviceOrderService = ServiceOrderService();
 
     vwShipAndTravelByIdServiceOrderModel =
-        await distribucionEmbarqueSerice.getShipAndTravelByIdOrderServiceGranel(
+        await serviceOrderService.getShipAndTravelByIdOrderServiceGranel(
             BigInt.parse(idServiceOrder.toString()));
 
     _nombreNaveController.text =

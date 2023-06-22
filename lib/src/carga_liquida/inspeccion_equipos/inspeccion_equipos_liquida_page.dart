@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:consumar_app/src/carga_liquida/inspeccion_equipos/imagenes_equipos_liquida_page.dart';
 import 'package:consumar_app/src/carga_liquida/inspeccion_equipos/reinspeccion_liquida_page.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -58,12 +59,16 @@ class _InspeccionEquiposLiquidaPageState
 
   TextEditingController equipoController = TextEditingController();
 
+  TextEditingController detalleController = TextEditingController();
+
   final TextEditingController comentariosController = TextEditingController();
 
   List<VwEquiposRegistradosLiquida> vwEquiposRegistradosLiquida =
       <VwEquiposRegistradosLiquida>[];
 
-  String _valueTanqueDropdown = 'Seleccione el Tanque';
+  List<String> equiposList = [];
+
+  //String _valueTanqueDropdown = 'Seleccione el Tanque';
 
   String _valueEquipoDropdown = 'Seleccione el Equipo';
 
@@ -107,6 +112,7 @@ class _InspeccionEquiposLiquidaPageState
             .getEquipoLiquidaRegistradoByCod(_valueEquipoDropdown);
 
     equipoController.text = vwEquiposRegistradosLiquida[0].equipo!;
+    detalleController.text = vwEquiposRegistradosLiquida[0].detalle!;
     idEquipo = vwEquiposRegistradosLiquida[0].idEquipo!;
     //debugPrint(idEquipo as String?);
   }
@@ -134,10 +140,10 @@ class _InspeccionEquiposLiquidaPageState
 
     spCreateLiquidaInspeccionFoto = await parseInspeccionFoto();
 
-    await inspeccionEquipoLiquidaService.createLiquidaInspeccionEquipos(
-        CreateLiquidaInspeccionEquipos(
+    await inspeccionEquipoLiquidaService
+        .createLiquidaInspeccionEquipos(CreateLiquidaInspeccionEquipos(
             spCreateLiquidaInspeccionEquipos: SpCreateLiquidaInspeccionEquipos(
-                tanque: _valueTanqueDropdown,
+                //tanque: _valueTanqueDropdown,
                 jornada: widget.jornada,
                 primInsp: _valueEstadoDropdown,
                 comentario: comentariosController.text,
@@ -153,9 +159,9 @@ class _InspeccionEquiposLiquidaPageState
     setState(() {
       imageEquipos = null;
       listFotoEquiposLiquida.clear();
-      _valueTanqueDropdown = 'Seleccione el Tanque';
-      _valueEquipoDropdown = 'Seleccione el Equipo';
-      _valueEstadoDropdown = 'Seleccione el Estado';
+      //_valueTanqueDropdown = 'Seleccione el Tanque';
+      /*  _valueEquipoDropdown = 'Seleccione el Equipo';
+      _valueEstadoDropdown = 'Seleccione el Estado'; */
       equipoController.clear();
       comentariosController.clear();
     });
@@ -173,6 +179,9 @@ class _InspeccionEquiposLiquidaPageState
 
   @override
   Widget build(BuildContext context) {
+    equiposList =
+        vwEquiposRegistradosLiquida.map((city) => city.codEquipo!).toList();
+
     return DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -209,7 +218,7 @@ class _InspeccionEquiposLiquidaPageState
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     children: [
-                      DropdownButtonFormField(
+                      /* DropdownButtonFormField(
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20.0),
@@ -243,7 +252,7 @@ class _InspeccionEquiposLiquidaPageState
                         },
                         hint: Text(_valueTanqueDropdown),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 20), */
                       /*  DropdownSearch<String>(
                         items: getServiceOrdersDropDownItems(
                             vwEquiposRegistradosGranelList),
@@ -273,34 +282,32 @@ class _InspeccionEquiposLiquidaPageState
                           getEquipoByCod(),
                         },
                       ), */
-                      DropdownButtonFormField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          labelText: 'Lista Codigo Equipo',
-                          hintText: 'Seleccione Equipo',
-                          labelStyle: TextStyle(
-                            color: kColorAzul,
-                            fontSize: 20.0,
+                      DropdownSearch<String>(
+                        items: equiposList,
+                        popupProps: const PopupProps.menu(
+                          showSearchBox: true,
+                          title: Text('Busque el Codigo del Equipo'),
+                        ),
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            labelText: "Lista Codigo Equipo",
+                            labelStyle: TextStyle(
+                              color: kColorAzul,
+                              fontSize: 20.0,
+                            ),
+                            hintText: "Seleccione Equipo",
+                            filled: true,
                           ),
                         ),
-                        icon: const Icon(
-                          Icons.arrow_drop_down_circle_outlined,
-                        ),
-                        items:
-                            getEquipoDropDownItems(vwEquiposRegistradosLiquida),
-                        onChanged: (value) {
+                        onChanged: (value) => {
                           setState(() {
-                            _valueEquipoDropdown = value.toString();
-                          });
-                          getEquipoByCod();
-                        },
-                        validator: (value) {
-                          if (value == null) {
-                            return 'Por favor, elige order de equipo';
-                          }
-                          return null;
+                            _valueEquipoDropdown = value as String;
+                            // codEquipo = _valueEquipoDropdown;
+                          }),
+                          getEquipoByCod(),
                         },
                       ),
                       const SizedBox(height: 20),
@@ -314,6 +321,29 @@ class _InspeccionEquiposLiquidaPageState
                             color: kColorAzul,
                           ),
                           labelText: 'EQUIPO',
+                          labelStyle: TextStyle(
+                            color: kColorAzul,
+                            //fontSize: 20.0,
+                          ),
+                        ),
+                        controller: equipoController,
+                        style: TextStyle(
+                          color: kColorAzul,
+                          fontSize: 20.0,
+                        ),
+                        enabled: false,
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          prefixIcon: Icon(
+                            Icons.calendar_month,
+                            color: kColorAzul,
+                          ),
+                          labelText: 'DETALLE',
                           labelStyle: TextStyle(
                             color: kColorAzul,
                             //fontSize: 20.0,
@@ -626,9 +656,9 @@ class _InspeccionEquiposLiquidaPageState
                                 DataColumn(
                                   label: Text("Nº"),
                                 ),
-                                DataColumn(
+                                /*     DataColumn(
                                   label: Text("Tanque"),
-                                ),
+                                ), */
                                 DataColumn(
                                   label: Text("Cod. Equipo"),
                                 ),
@@ -639,7 +669,16 @@ class _InspeccionEquiposLiquidaPageState
                                   label: Text("Comentario"),
                                 ),
                                 DataColumn(
-                                  label: Text("Reinspeccion Equipo"),
+                                  label: Text("1.INSP"),
+                                ),
+                                DataColumn(
+                                  label: Text("2.INSP"),
+                                ),
+                                DataColumn(
+                                  label: Text("3.INSP"),
+                                ),
+                                DataColumn(
+                                  label: Text("Fotografias"),
                                 ),
                                 DataColumn(
                                   label: Text("Delete"),
@@ -659,8 +698,8 @@ class _InspeccionEquiposLiquidaPageState
                                         },
                                         cells: <DataCell>[
                                           DataCell(Text(e.idVista.toString())),
-                                          DataCell(Text(e.tanque.toString(),
-                                              textAlign: TextAlign.center)),
+                                          /*  DataCell(Text(e.tanque.toString(),
+                                              textAlign: TextAlign.center)), */
                                           DataCell(Text(e.codEquipo.toString(),
                                               textAlign: TextAlign.center)),
                                           DataCell(Text(
@@ -668,6 +707,57 @@ class _InspeccionEquiposLiquidaPageState
                                               textAlign: TextAlign.center)),
                                           DataCell(Text(e.comentario.toString(),
                                               textAlign: TextAlign.center)),
+                                          DataCell(e.primeraInspeccion ==
+                                                  "APROBADO"
+                                              ? const Icon(
+                                                  Icons.check_outlined,
+                                                  color: Colors.green,
+                                                )
+                                              : e.primeraInspeccion ==
+                                                      "RECHAZADO"
+                                                  ? const Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                    )
+                                                  : const Icon(
+                                                      Icons.warning,
+                                                      color: Color.fromARGB(
+                                                          174, 197, 197, 10),
+                                                    )),
+                                          DataCell(e.segundoInspeccion ==
+                                                  "APROBADO"
+                                              ? const Icon(
+                                                  Icons.check_outlined,
+                                                  color: Colors.green,
+                                                )
+                                              : e.segundoInspeccion ==
+                                                      "RECHAZADO"
+                                                  ? const Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                    )
+                                                  : const Icon(
+                                                      Icons.warning,
+                                                      color: Color.fromARGB(
+                                                          174, 197, 197, 10),
+                                                    )),
+                                          DataCell(e.terceraInspeccion ==
+                                                  "APROBADO"
+                                              ? const Icon(
+                                                  Icons.check_outlined,
+                                                  color: Colors.green,
+                                                )
+                                              : e.terceraInspeccion ==
+                                                      "RECHAZADO"
+                                                  ? const Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                    )
+                                                  : const Icon(
+                                                      Icons.warning,
+                                                      color: Color.fromARGB(
+                                                          174, 197, 197, 10),
+                                                    )),
                                           DataCell(IconButton(
                                             icon: const Icon(Icons.image),
                                             onPressed: (() {
