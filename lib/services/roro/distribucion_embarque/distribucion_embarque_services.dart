@@ -31,6 +31,27 @@ class DistribucionEmbarqueService {
     }
   }
 
+  Future<VwShipAndTravelByIdServiceOrderModel>
+      getShipAndTravelByIdOrderServiceLiquida(BigInt idServiceOrder) async {
+    var url = Uri.parse(
+        urlGetShipAndTravelByIdOrderServiceLiquida + idServiceOrder.toString());
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return VwShipAndTravelByIdServiceOrderModel.fromJson(
+          jsonDecode(response.body));
+    } else if (response.statusCode == 404) {
+      VwShipAndTravelByIdServiceOrderModel value =
+          VwShipAndTravelByIdServiceOrderModel();
+      value.nombreNave = 'no encontrado';
+      value.numeroViaje = 'no encontrado';
+      return value;
+    } else {
+      throw Exception('Fallo al cargar');
+    }
+  }
+
   Future<VwShipAndTravelByIdServiceOrderGranel>
       getShipAndTravelByIdOrderServiceGranel(BigInt idServiceOrder) async {
     var url = Uri.parse(

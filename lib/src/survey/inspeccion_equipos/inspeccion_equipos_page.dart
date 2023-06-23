@@ -288,48 +288,49 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Row(
-                            children: [
-                              Text("Muelle",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: kColorAzul,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(width: 5),
-                              Switch(
-                                value: valueMuelle,
-                                onChanged: (value) => setState(() {
-                                  valueMuelle = value;
-                                }),
-                                activeTrackColor: Colors.lightGreenAccent,
-                                activeColor: Colors.green,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            width: 100,
-                          ),
-                          Row(
-                            children: [
-                              Text("Toldo (Instalado)",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: kColorAzul,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(width: 5),
-                              Switch(
-                                value: valueToldo,
-                                onChanged: (value) => setState(() {
-                                  valueToldo = value;
-                                }),
-                                activeTrackColor: Colors.lightGreenAccent,
-                                activeColor: Colors.green,
-                              ),
-                            ],
-                          ),
-                        ],
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Muelle",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: kColorAzul,
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(width: 5),
+                                Switch(
+                                  value: valueMuelle,
+                                  onChanged: (value) => setState(() {
+                                    valueMuelle = value;
+                                  }),
+                                  activeTrackColor: Colors.lightGreenAccent,
+                                  activeColor: Colors.green,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text("Toldo (Instalado)",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: kColorAzul,
+                                        fontWeight: FontWeight.w500)),
+                                const SizedBox(width: 5),
+                                Switch(
+                                  value: valueToldo,
+                                  onChanged: (value) => setState(() {
+                                    valueToldo = value;
+                                  }),
+                                  activeTrackColor: Colors.lightGreenAccent,
+                                  activeColor: Colors.green,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 20),
                       DropdownButtonFormField(

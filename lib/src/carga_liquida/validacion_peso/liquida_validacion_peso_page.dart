@@ -280,7 +280,8 @@ class _LiquidaValidacionPesoState extends State<LiquidaValidacionPeso> {
                                       DataCell(Text(e.pesoBruto.toString())),
                                       DataCell(Text(e.taraCamion.toString(),
                                           textAlign: TextAlign.center)),
-                                      DataCell(Text(e.pesoNeto.toString(),
+                                      DataCell(Text(
+                                          e.pesoNeto!.toStringAsFixed(2),
                                           textAlign: TextAlign.center)),
                                     ],
                                   )))

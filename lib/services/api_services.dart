@@ -360,7 +360,7 @@ final urlUpdateParalizacionById =
 String urlGetPrecintoById = "${urlApiBase}Precintados/getGranelPrecintoById/";
 
 String urlGetPrecintoCarguio =
-    "${urlApiBase}Precintados/getGranelPrecintoCarguio?idServiceOrder=";
+    "${urlApiBase}Precintados/getGranelPrecintoCarguioByIdServiceOrder?idServiceOrder=";
 
 final urlCreatePrecintados =
     Uri.parse("${urlApiBase}Precintados/createPrecintado");
@@ -396,6 +396,8 @@ final urlCreatePesoHistorico =
     Uri.parse("${urlApiBase}ValidacionPeso/createPesoHistorico");
 
 /*------------------- CARGA LIQUIDA ----------------------*/
+String urlGetShipAndTravelByIdOrderServiceLiquida =
+    "${urlApiBase}ServiceOrder/getShipAndTravelByIdServiceOrderLiquida/";
 
 /*------------ Ulaje -------------------*/
 final urlCreateUlajeList =

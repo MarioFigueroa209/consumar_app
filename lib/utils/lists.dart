@@ -311,6 +311,22 @@ final listaTanque = [
   'Tanque 5',
 ];
 
+final listaDetalle = [
+  'Detalle 1',
+  'Detalle 2',
+  'Detalle 3',
+  'Detalle 4',
+  'Detalle 5',
+];
+
+final listaResponsable = [
+  'Responsable 1',
+  'Responsable 2',
+  'Responsable 3',
+  'Responsable 4',
+  'Responsable 5',
+];
+
 final listaFactura = [
   'FAC001',
   'FAC002',
