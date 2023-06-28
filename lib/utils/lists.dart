@@ -355,3 +355,32 @@ final listaPlaca = [
   'PLACA TRACTO',
   'PLACA TOLVA',
 ];
+
+final listaSilosLado = [
+  'NORTE',
+  'SUR',
+];
+
+final listaSilosNave = [
+  'NAVE 1',
+  'NAVE 2',
+  'NAVE 3',
+];
+
+final listaSilosBl = [
+  'Bl 1',
+  'Bl 2',
+  'Bl 3',
+];
+
+final listaPuntoDespacho = [
+  'Punto Despacho 1',
+  'Punto Despacho 2',
+  'Punto Despacho 3',
+];
+
+final listaDescarga = [
+  'Descarga 1',
+  'Descarga 2',
+  'Descarga 3',
+];

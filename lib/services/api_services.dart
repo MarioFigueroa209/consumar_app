@@ -501,3 +501,22 @@ final urlCreateLiquidaDescargaTuberia = Uri.parse(
 
 String urlDeleteLogicLiquidaDescargaTuberia =
     "${urlApiBase}LiquidaDescargaTuberia/DeleteLogicDescargaTuberia/";
+
+/*------------------Operacion Silos --------------------------- */
+final urlCreateSilosControlTicket =
+    Uri.parse("${urlApiBase}Silos/CreateSilosControlTicket");
+
+final urlCreateSilosControlVisual =
+    Uri.parse("${urlApiBase}Silos/CreateSilosControlVisual");
+
+final urlCreateSilosDistribucion =
+    Uri.parse("${urlApiBase}Silos/CreateSilosDistribucion");
+
+String urlGetSilosControlTicketVisualByIdServiceOrder =
+    "${urlApiBase}Silos/getSilosControlTicketVisualByIdServiceOrder?idServiceOrder=";
+
+String urlGetSilosControlTicketById =
+    "${urlApiBase}Silos/getSilosControlTicketById/";
+
+final urlGetDistribucionSilos =
+    Uri.parse("${urlApiBase}Silos/getDistribucionSilos");
