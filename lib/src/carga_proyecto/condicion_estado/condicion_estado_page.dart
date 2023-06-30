@@ -423,9 +423,15 @@ class _CondicionEstadoPageState extends State<CondicionEstadoPage> {
                       minWidth: double.infinity,
                       height: 50.0,
                       color: kColorNaranja,
-                      onPressed: () async {},
+                      onPressed: () async {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text("Datos Registrados con exito"),
+                          backgroundColor: Colors.green,
+                        ));
+                      },
                       child: const Text(
-                        "REGISTRAR CONDICION DE ESTADO",
+                        "REGISTRAR CONDICION ESTADO",
                         style: TextStyle(
                             fontSize: 20,
                             color: Colors.white,

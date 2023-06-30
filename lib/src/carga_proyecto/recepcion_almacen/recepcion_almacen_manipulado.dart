@@ -230,7 +230,12 @@ class _RecepcionAlmacenManipuleoState extends State<RecepcionAlmacenManipuleo> {
             minWidth: double.infinity,
             height: 50.0,
             color: kColorNaranja,
-            onPressed: () async {},
+            onPressed: () async {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Datos Registrados con exito"),
+                backgroundColor: Colors.green,
+              ));
+            },
             child: const Text(
               "REGISTRAR MANIP. MERCADERIA",
               style: TextStyle(
