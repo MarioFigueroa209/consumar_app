@@ -191,7 +191,7 @@ class _ReinspeccionEquipoLiquidaState extends State<ReinspeccionEquipoLiquida> {
                   Icons.calendar_month,
                   color: kColorAzul,
                 ),
-                labelText: 'BODEGA',
+                labelText: 'TANQUE',
                 labelStyle: TextStyle(
                   color: kColorAzul,
                   //fontSize: 20.0,
