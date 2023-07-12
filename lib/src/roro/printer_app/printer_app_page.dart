@@ -1,4 +1,4 @@
-import 'package:consumar_app/src/roro/printer_app/qr_pdf_page.dart';
+import 'package:consumar_app/src/roro/printer_app/qr_pdf_reetiquetado_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -468,13 +468,7 @@ class _PrinterAppState extends State<PrinterApp>
                                       Icons.qr_code,
                                     ),
                                     onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => QrRoroPDF(
-                                                    idVehicle: BigInt.parse(
-                                                        e.idVehicle.toString()),
-                                                  )));
+                                      dialogoReetiquetado(context, e);
                                     },
                                   ))
                                 ])))
@@ -698,5 +692,83 @@ class _PrinterAppState extends State<PrinterApp>
     }).toList();
 
     setState(() => allDREtiqutado = suggestion);
+  }
+
+  dialogoReetiquetado(
+      BuildContext context, CreateSqlLitePrinterApp allDREtiqutado) async {
+    await showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+                //insetPadding: EdgeInsets.all(100),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        /*  Icon(
+                          Icons.warning,
+                          color: Colors.red.shade900,
+                          size: 100,
+                        ), */
+                        /* Text(
+                          "ATENCIÓN ",
+                          style: TextStyle(
+                              color: Colors.red.shade900,
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ), */
+                        Text(
+                          "¿DESEA REETIQUETAR ESTE VEHICULO?",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20.0,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.pop(context);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            QrPdfReetiquetadoPage(
+                                              idVehicle:
+                                                  allDREtiqutado.idVehicle!,
+                                            )));
+                              },
+                              child: const Text(
+                                "ACEPTAR",
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text(
+                                "CANCELAR",
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+                ]));
   }
 }
