@@ -6,12 +6,10 @@ import '../../models/survey/vw_ship_and_travel_by_id_service_order_granel.dart';
 import '../../models/usuario_model.dart';
 import '../../models/vw_all_service_order_granel.dart';
 import '../../models/vw_get_user_data_by_cod_user.dart';
-import '../../services/roro/distribucion_embarque/distribucion_embarque_services.dart';
 import '../../services/service_order_services.dart';
 import '../../services/usuario_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/jornada_model.dart';
-import '../../utils/lists.dart';
 import '../scanner_screen.dart';
 import '../widgets/boton_menu.dart';
 
@@ -41,7 +39,9 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
   final nombreUsuarioController = TextEditingController();
   final TextEditingController _nombreNaveController = TextEditingController();
   final TextEditingController _viajeController = TextEditingController();
-  final _fechaController = TextEditingController();
+  final TextEditingController _fechaController = TextEditingController();
+
+  final TextEditingController _jornadaController = TextEditingController();
 
   VwgetUserDataByCodUser vwgetUserDataByCodUser = VwgetUserDataByCodUser();
 
@@ -50,7 +50,9 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
   late int idUsuario;
   late int idServiceOrder;
 
-  String _valueJornadaDropdown = 'Seleccione jornada';
+  int jornadaNumber = 0;
+
+  //String _valueJornadaDropdown = 'Seleccione jornada';
   bool enableJornadaDropdown = true;
   bool enableServiceOrderDropdown = true;
 
@@ -76,11 +78,10 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
     VwShipAndTravelByIdServiceOrderGranel vwShipAndTravelByIdServiceOrderModel =
         VwShipAndTravelByIdServiceOrderGranel();
 
-    DistribucionEmbarqueService distribucionEmbarqueSerice =
-        DistribucionEmbarqueService();
+    ServiceOrderService serviceOrderService = ServiceOrderService();
 
     vwShipAndTravelByIdServiceOrderModel =
-        await distribucionEmbarqueSerice.getShipAndTravelByIdOrderServiceGranel(
+        await serviceOrderService.getShipAndTravelByIdOrderServiceGranel(
             BigInt.parse(idServiceOrder.toString()));
 
     _nombreNaveController.text =
@@ -136,7 +137,7 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
                 builder: (context) => MonitoreoProducto(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -161,7 +162,7 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
                 builder: (context) => MenuRegistroEquipos(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -186,7 +187,7 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
                 builder: (context) => ControlCarguio(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -211,7 +212,7 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
                 builder: (context) => Paralizaciones(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -236,7 +237,7 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
                 builder: (context) => Precintado(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -261,7 +262,7 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
                 builder: (context) => RecepcionAlmacen(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -286,7 +287,7 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
                 builder: (context) => DescargaDirecta(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -311,7 +312,7 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
                 builder: (context) => ValidacionPeso(
                       idServiceOrder: idServiceOrder,
                       idUsuario: idUsuario,
-                      jornada: int.parse(_valueJornadaDropdown),
+                      jornada: jornadaNumber,
                     )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -338,6 +339,31 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
   Widget build(BuildContext context) {
     _fechaController.value =
         TextEditingValue(text: DateFormat('dd-MM-yyyy').format(DateTime.now()));
+
+    int? jornadaDate;
+
+    jornadaDate = DateTime.now().hour;
+
+    if (jornadaDate >= 7 && jornadaDate < 15) {
+      _jornadaController.text = "07:00 - 15:00";
+      setState(() {
+        jornadaNumber = 1;
+      });
+      print(jornadaNumber);
+    } else if (jornadaDate >= 15 && jornadaDate < 23) {
+      _jornadaController.text = "15:00 - 23:00";
+      setState(() {
+        jornadaNumber = 2;
+      });
+      print(jornadaNumber);
+    } else if (jornadaDate >= 23 && jornadaDate < 7) {
+      _jornadaController.text = "23:00 - 07:00";
+      setState(() {
+        jornadaNumber = 3;
+      });
+      print(jornadaNumber);
+    }
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -523,42 +549,27 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
                       enabled: false,
                     ),
                     const SizedBox(height: 20),
-                    IgnorePointer(
-                      ignoring: enableJornadaDropdown,
-                      child: DropdownButtonFormField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          labelText: 'Jornada',
-                          labelStyle: TextStyle(
-                            color: kColorAzul,
-                            fontSize: 20.0,
-                          ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
-                        icon: const Icon(
-                          Icons.arrow_drop_down_circle_outlined,
+                        /* prefixIcon: Icon(
+                          Icons.calendar_month,
+                          color: kColorAzul,
+                        ), */
+                        labelText: 'Jornada',
+                        labelStyle: TextStyle(
+                          color: kColorAzul,
+                          //fontSize: 20.0,
                         ),
-                        items: listaJornada.map((String a) {
-                          return DropdownMenuItem<String>(
-                            value: a,
-                            child: Center(
-                                child: Text(a, textAlign: TextAlign.left)),
-                          );
-                        }).toList(),
-                        onChanged: (value) => {
-                          setState(() {
-                            _valueJornadaDropdown = value as String;
-                          })
-                        },
-                        validator: (value) {
-                          if (value != _valueJornadaDropdown) {
-                            return 'Por favor, elige jornada';
-                          }
-                          return null;
-                        },
-                        hint: Text(_valueJornadaDropdown),
                       ),
+                      controller: _jornadaController,
+                      style: TextStyle(
+                        color: kColorAzul,
+                        fontSize: 20.0,
+                      ),
+                      enabled: false,
                     ),
                     const SizedBox(height: 20),
                     const Text(

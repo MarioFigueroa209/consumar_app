@@ -403,6 +403,9 @@ String urlGetShipAndTravelByIdOrderServiceLiquida =
 final urlCreateUlajeList =
     Uri.parse("${urlApiBase}Ulaje/CreateLiquidaUlajeList");
 
+String urlGetTanquePesosLiquidaByIdServiceOrder =
+    "${urlApiBase}Ulaje/getTanquePesosLiquidaByIdServiceOrder?idServiceOrder=";
+
 /*------------------ Liquida Registro Equipos---------*/
 final urlCreateLiquidaRegistroEquipos = Uri.parse(
     "${urlApiBase}LiquidaRegistroEquipos/createLiquidaRegistroEquipos");

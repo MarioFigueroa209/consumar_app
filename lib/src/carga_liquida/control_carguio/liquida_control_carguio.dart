@@ -38,14 +38,29 @@ class ListFotoLiquidaCarguio {
   String? urlFoto;
 }
 
-class _LiquidaControlCarguioState extends State<LiquidaControlCarguio> {
+class ListFotoTerminoCarguio {
+  ListFotoTerminoCarguio({this.id, this.fotoCarguio, this.urlFoto});
+
+  int? id;
+  File? fotoCarguio;
+  String? urlFoto;
+}
+
+class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
+    with SingleTickerProviderStateMixin {
   File? imageCarguio;
+
+  File? imageTerminoCarguio;
 
   List<ListFotoLiquidaCarguio> listFotoLiquidaCarguio = [];
 
+  List<ListFotoTerminoCarguio> listFotoTerminoCarguio = [];
+
   String _valueTanqueDropdown = 'Seleccione el Tanque';
 
-  bool valueBarredura = false;
+  String _valuePlacaDropdown = 'Seleccione la Placa';
+
+  bool valueSoplado = false;
 
   late int idConductor;
   late int idTransporte;
@@ -70,6 +85,10 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio> {
   final codigoTransporteController = TextEditingController();
 
   final nombreTransporteController = TextEditingController();
+
+  final cisternaLecturaController = TextEditingController();
+
+  final transporteLecturaController = TextEditingController();
 
   final codigoConductorController = TextEditingController();
 
@@ -119,9 +138,9 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio> {
 
   createLiquidaControlCarguio() async {
     late bool inspeccion;
-    if (valueBarredura == false) {
+    if (valueSoplado == false) {
       inspeccion = false;
-    } else if (valueBarredura == true) {
+    } else if (valueSoplado == true) {
       inspeccion = true;
     }
     List<SpCreateLiquidaFotosCarguio> spCreateLiquidaFotosCarguio = [];
@@ -154,7 +173,7 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio> {
       listFotoLiquidaCarguio.clear();
       damController.clear();
       imageCarguio = null;
-      valueBarredura = false;
+      valueSoplado = false;
       nTicketController.clear();
       codigoTransporteController.clear();
       nombreConductorController.clear();
@@ -169,6 +188,15 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio> {
   DateTime dateInicio = DateTime.now();
   DateTime dateTermino = DateTime.now();
 
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
   @override
   Widget build(BuildContext context) {
     final hours1 = dateInicio.hour.toString().padLeft(2, '0');
@@ -176,728 +204,1101 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio> {
     final hours2 = dateTermino.hour.toString().padLeft(2, '0');
     final minutes2 = dateTermino.minute.toString().padLeft(2, '0');
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text("Liquida Control Carguío"),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(children: [
-            Row(
-              children: [
-                Text("Soplado",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: kColorAzul,
-                        fontWeight: FontWeight.w500)),
-                const SizedBox(width: 5),
-                Switch(
-                  value: valueBarredura,
-                  onChanged: (value) => setState(() {
-                    valueBarredura = value;
-                  }),
-                  activeTrackColor: Colors.lightGreenAccent,
-                  activeColor: Colors.green,
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            DropdownButtonFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                labelText: 'Tanque',
-                labelStyle: TextStyle(
-                  color: kColorAzul,
-                  fontSize: 20.0,
-                ),
-              ),
-              icon: const Icon(
-                Icons.arrow_drop_down_circle_outlined,
-              ),
-              items: listaTanque.map((String a) {
-                return DropdownMenuItem<String>(
-                  value: a,
-                  child: Center(child: Text(a, textAlign: TextAlign.left)),
-                );
-              }).toList(),
-              onChanged: (value) => {
-                setState(() {
-                  _valueTanqueDropdown = value as String;
-                })
-              },
-              validator: (value) {
-                if (value != _valueTanqueDropdown) {
-                  return 'Por favor, elige el tanque';
-                }
-                return null;
-              },
-              hint: Text(_valueTanqueDropdown),
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
+
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+            centerTitle: true,
+            title: const Text("Liquida Control Carguío"),
+            bottom: TabBar(
+                indicatorColor: kColorCeleste,
+                labelColor: kColorCeleste,
+                controller: _tabController,
+                unselectedLabelColor: Colors.white,
+                tabs: const [
+                  Tab(
+                    icon: Icon(
+                      Icons.app_registration,
+                    ),
+                    child: Text(
+                      'INICIO CARGUIO',
+                    ),
                   ),
-                  labelText: 'N° Ticket',
-                  labelStyle: TextStyle(
-                    color: kColorAzul,
-                    fontSize: 20.0,
+                  Tab(
+                    icon: Icon(
+                      Icons.checklist,
+                    ),
+                    child: Text('TERMINO CARGUIO'),
                   ),
-                  hintText: 'Ingrese el N° Ticket'),
-              onChanged: (value) {},
-              controller: nTicketController,
-              /* validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, ingrese la Placa';
-                  }
-                  idUsuario = BigInt.parse(value);
+                ])),
+        body: TabBarView(controller: _tabController, children: [
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(children: [
+                Row(
+                  children: [
+                    Text("Soplado",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: kColorAzul,
+                            fontWeight: FontWeight.w500)),
+                    const SizedBox(width: 5),
+                    Switch(
+                      value: valueSoplado,
+                      onChanged: (value) => setState(() {
+                        valueSoplado = value;
+                      }),
+                      activeTrackColor: Colors.lightGreenAccent,
+                      activeColor: Colors.green,
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                DropdownButtonFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    labelText: 'Tanque',
+                    labelStyle: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  icon: const Icon(
+                    Icons.arrow_drop_down_circle_outlined,
+                  ),
+                  items: listaTanque.map((String a) {
+                    return DropdownMenuItem<String>(
+                      value: a,
+                      child: Center(child: Text(a, textAlign: TextAlign.left)),
+                    );
+                  }).toList(),
+                  onChanged: (value) => {
+                    setState(() {
+                      _valueTanqueDropdown = value as String;
+                    })
+                  },
+                  validator: (value) {
+                    if (value != _valueTanqueDropdown) {
+                      return 'Por favor, elige el tanque';
+                    }
                     return null;
-                }, */
-              //enabled: enableQrUsuario
-            ),
-            const SizedBox(height: 20),
-            Container(
-              height: 40,
-              color: kColorAzul,
-              child: const Center(
-                child: Text("TRANSPORTE",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white)),
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  prefixIcon: IconButton(
-                      icon: const Icon(Icons.closed_caption_off_rounded),
-                      onPressed: () async {
-                        final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ScannerScreen()));
-                        placaController.text = result;
-                      }),
-                  labelText: 'Placa',
-                  labelStyle: TextStyle(
-                    color: kColorAzul,
-                    fontSize: 20.0,
-                  ),
-                  hintText: 'Ingrese la Placa'),
-              onChanged: (value) {},
-              controller: placaController,
-              /* validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, ingrese la Placa';
-                  }
-                  idUsuario = BigInt.parse(value);
-                  return null;
-                }, */
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
+                  },
+                  hint: Text(_valueTanqueDropdown),
                 ),
-                prefixIcon: Icon(
-                  Icons.directions_boat,
-                  color: kColorAzul,
-                ),
-                labelText: 'Cisterna',
-                labelStyle: TextStyle(
-                  color: kColorAzul,
-                  fontSize: 20.0,
-                ),
-                hintText: '',
-              ),
-              controller: cisternaController,
-            ),
-            const SizedBox(height: 20.0),
-            TextFormField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  prefixIcon: IconButton(
-                      icon: const Icon(Icons.code),
-                      onPressed: () async {
-                        final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ScannerScreen()));
-                        codigoTransporteController.text = result;
-                      }),
-                  suffixIcon: IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: () {
-                        getTransporteByCod();
-                      }),
-                  labelText: 'Codigo Transporte',
-                  labelStyle: TextStyle(
-                    color: kColorAzul,
-                    fontSize: 20.0,
-                  ),
-                  hintText: 'Ingrese Codigo de Transporte'),
-              onChanged: (value) {
-                getTransporteByCod();
-              },
-              controller: codigoTransporteController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, Ingrese codigo de transporte';
-                }
-                return null;
-              },
-              //enabled: enableConductorController,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  prefixIcon: Icon(
-                    Icons.badge,
-                    color: kColorAzul,
-                  ),
-                  labelText: 'Nombre Transporte',
-                  labelStyle: TextStyle(
-                    color: kColorAzul,
-                    fontSize: 20.0,
-                  ),
-                  hintText: ''),
-              controller: nombreTransporteController,
-              enabled: false,
-            ),
-            const SizedBox(height: 20.0),
-            TextFormField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  prefixIcon: IconButton(
-                      icon: const Icon(Icons.code),
-                      onPressed: () async {
-                        final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ScannerScreen()));
-                        codigoConductorController.text = result;
-                      }),
-                  suffixIcon: IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: () {
-                        getUserConductorDataByCodUser();
-                      }),
-                  labelText: 'Codigo conductor',
-                  labelStyle: TextStyle(
-                    color: kColorAzul,
-                    fontSize: 20.0,
-                  ),
-                  hintText: 'Ingrese codigo de conductor'),
-              onChanged: (value) {
-                getUserConductorDataByCodUser();
-              },
-              controller: codigoConductorController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, Ingrese codigo de conductor';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  prefixIcon: Icon(
-                    Icons.badge,
-                    color: kColorAzul,
-                  ),
-                  labelText: 'Nombre conductor',
-                  labelStyle: TextStyle(
-                    color: kColorAzul,
-                    fontSize: 20.0,
-                  ),
-                  hintText: ''),
-              controller: nombreConductorController,
-              /* validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, Ingrese datos de conductor';
-                }
-                return null;
-              }, */
-              enabled: false,
-            ),
-            const SizedBox(height: 20.0),
-            TextFormField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  prefixIcon: IconButton(
-                      icon: Icon(
-                        Icons.delivery_dining,
-                        color: kColorAzul,
-                      ),
-                      onPressed: () async {}),
-                  /*   suffixIcon: IconButton(
-                        icon: const Icon(Icons.search), onPressed: () {}), */
-                  labelText: 'Delivery Order',
-                  labelStyle: TextStyle(
-                    color: kColorAzul,
-                    fontSize: 20.0,
-                  ),
-                  hintText: 'Ingrese el Delivery Order'),
-              onChanged: (value) {},
-              controller: deliveryOrderController,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, ingrese el Delivery Order';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 20.0),
-            TextFormField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  prefixIcon: IconButton(
-                      icon: Icon(
-                        Icons.delivery_dining,
-                        color: kColorAzul,
-                      ),
-                      onPressed: () async {}),
-                  /* suffixIcon: IconButton(
-                        icon: const Icon(Icons.search), onPressed: () {}), */
-                  labelText: 'DAM',
-                  labelStyle: TextStyle(
-                    color: kColorAzul,
-                    fontSize: 20.0,
-                  ),
-                  hintText: 'Ingrese el DAM'),
-              onChanged: (value) {},
-              controller: damController,
-              /* validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, ingrese el DAM';
-                  }
-                  idUsuario = BigInt.parse(value);
-                  return null;
-                }, */
-            ),
-            const SizedBox(height: 20.0),
-            Container(
-              height: 40,
-              color: kColorAzul,
-              child: const Center(
-                child: Text("VIAJES",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white)),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    decoration: InputDecoration(
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
-                      prefixIcon: Icon(
-                        Icons.mode_of_travel,
-                        color: kColorAzul,
-                      ),
-                      labelText: 'Viajes Totales',
+                      labelText: 'N° Ticket',
                       labelStyle: TextStyle(
                         color: kColorAzul,
                         fontSize: 20.0,
                       ),
-                      hintText: '',
-                    ),
-                    controller: _viajesTotalesController,
-                    enabled: false,
+                      hintText: 'Ingrese el N° Ticket'),
+                  onChanged: (value) {},
+                  controller: nTicketController,
+                  /* validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, ingrese la Placa';
+                      }
+                      idUsuario = BigInt.parse(value);
+                        return null;
+                    }, */
+                  //enabled: enableQrUsuario
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  height: 40,
+                  color: kColorAzul,
+                  child: const Center(
+                    child: Text("TRANSPORTE",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: TextFormField(
-                    decoration: InputDecoration(
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
-                      prefixIcon: Icon(
-                        Icons.balance,
-                        color: kColorAzul,
-                      ),
-                      labelText: 'Saldo',
+                      prefixIcon: IconButton(
+                          icon: const Icon(Icons.closed_caption_off_rounded),
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ScannerScreen()));
+                            placaController.text = result;
+                          }),
+                      labelText: 'Placa',
                       labelStyle: TextStyle(
                         color: kColorAzul,
                         fontSize: 20.0,
                       ),
-                      hintText: '',
+                      hintText: 'Ingrese la Placa'),
+                  onChanged: (value) {},
+                  controller: placaController,
+                  /* validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, ingrese la Placa';
+                      }
+                      idUsuario = BigInt.parse(value);
+                      return null;
+                    }, */
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
                     ),
-                    controller: _saldoController,
-                    enabled: false,
+                    prefixIcon: Icon(
+                      Icons.directions_boat,
+                      color: kColorAzul,
+                    ),
+                    labelText: 'Cisterna',
+                    labelStyle: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                    hintText: '',
                   ),
+                  controller: cisternaController,
                 ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                prefixIcon: Icon(
-                  Icons.mode_of_travel,
-                  color: kColorAzul,
-                ),
-                labelText: 'Viajes Realizados',
-                labelStyle: TextStyle(
-                  color: kColorAzul,
-                  fontSize: 20.0,
-                ),
-                hintText: '',
-              ),
-              controller: _viajesRealizadosController,
-              enabled: false,
-            ),
-            const SizedBox(height: 20),
-            Container(
-              height: 40,
-              color: kColorAzul,
-              child: const Center(
-                child: Text("HORA DE CARGUIO",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white)),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(children: [
-              Expanded(
-                  flex: 3,
-                  child: Text(
-                    "INICIO CARGUIO:",
-                    style: TextStyle(
-                        fontSize: 20,
+                /*    const SizedBox(height: 20.0),
+                TextFormField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      prefixIcon: IconButton(
+                          icon: const Icon(Icons.code),
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ScannerScreen()));
+                            codigoTransporteController.text = result;
+                          }),
+                      suffixIcon: IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: () {
+                            getTransporteByCod();
+                          }),
+                      labelText: 'Codigo Transporte',
+                      labelStyle: TextStyle(
                         color: kColorAzul,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.5),
-                  )),
-              Expanded(
-                flex: 2,
-                child: TextFormField(
+                        fontSize: 20.0,
+                      ),
+                      hintText: 'Ingrese Codigo de Transporte'),
+                  onChanged: (value) {
+                    getTransporteByCod();
+                  },
+                  controller: codigoTransporteController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, Ingrese codigo de transporte';
+                    }
+                    return null;
+                  },
+                  //enabled: enableConductorController,
+                ),
+                const SizedBox(
+                  height: 20,
+                ), */
+                const SizedBox(height: 20.0),
+                TextFormField(
                   decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       prefixIcon: Icon(
-                        Icons.calendar_month,
+                        Icons.badge,
                         color: kColorAzul,
                       ),
-                      labelText: /* ${dateTime.day}/${dateTime.month}/${dateTime.year} */
-                          '$hours1:$minutes1',
+                      labelText: 'Nombre Transporte',
                       labelStyle: TextStyle(
                         color: kColorAzul,
                         fontSize: 20.0,
                       ),
-                      enabled: false),
+                      hintText: ''),
+                  controller: nombreTransporteController,
+                  enabled: false,
                 ),
-              ),
-            ]),
-            const SizedBox(height: 20.0),
-            MaterialButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                minWidth: double.infinity,
-                height: 50.0,
-                color: kColorCeleste,
-                onPressed: pickDateTime1,
-                child: Text(
-                  "Hora - Inicio Carguio",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: kColorAzul,
-                    fontWeight: FontWeight.bold, /* letterSpacing: 1.5 */
-                  ),
-                )),
-            const SizedBox(height: 20.0),
-            Row(children: [
-              Expanded(
-                  flex: 3,
-                  child: Text(
-                    "TERMINO CARGUIO:",
-                    style: TextStyle(
-                        fontSize: 20,
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      prefixIcon: IconButton(
+                          icon: const Icon(Icons.code),
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ScannerScreen()));
+                            codigoConductorController.text = result;
+                          }),
+                      suffixIcon: IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: () {
+                            getUserConductorDataByCodUser();
+                          }),
+                      labelText: 'Codigo conductor',
+                      labelStyle: TextStyle(
                         color: kColorAzul,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.5),
-                  )),
-              Expanded(
-                flex: 2,
-                child: TextFormField(
+                        fontSize: 20.0,
+                      ),
+                      hintText: 'Ingrese codigo de conductor'),
+                  onChanged: (value) {
+                    getUserConductorDataByCodUser();
+                  },
+                  controller: codigoConductorController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, Ingrese codigo de conductor';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
                   decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       prefixIcon: Icon(
-                        Icons.calendar_month,
+                        Icons.badge,
                         color: kColorAzul,
                       ),
-                      labelText: /* '${dateTime2.day}/${dateTime2.month}/${dateTime2.year}' */
-                          '$hours2:$minutes2',
+                      labelText: 'Nombre conductor',
                       labelStyle: TextStyle(
                         color: kColorAzul,
                         fontSize: 20.0,
                       ),
-                      enabled: false),
+                      hintText: ''),
+                  controller: nombreConductorController,
+                  /* validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, Ingrese datos de conductor';
+                    }
+                    return null;
+                  }, */
+                  enabled: false,
                 ),
-              ),
-            ]),
-            const SizedBox(height: 20.0),
-            MaterialButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                minWidth: double.infinity,
-                height: 50.0,
-                color: kColorCeleste,
-                onPressed: pickDateTime2,
-                child: Text(
-                  "Hora - Termino Carguio",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: kColorAzul,
-                    fontWeight: FontWeight.bold, /* letterSpacing: 1.5 */
-                  ),
-                )),
-            const SizedBox(height: 20),
-            Container(
-              height: 40,
-              color: kColorAzul,
-              child: const Center(
-                child: Text("REGISTRO FOTOGRAFICO",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white)),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                border: Border.all(
-                  width: 1,
-                  color: Colors.grey,
-                ),
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 15),
-                  Text(
-                    "Ingrese Fotos del Carguio",
-                    style: TextStyle(
-                        fontSize: 15,
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      prefixIcon: IconButton(
+                          icon: Icon(
+                            Icons.delivery_dining,
+                            color: kColorAzul,
+                          ),
+                          onPressed: () async {}),
+                      /*   suffixIcon: IconButton(
+                            icon: const Icon(Icons.search), onPressed: () {}), */
+                      labelText: 'Delivery Order',
+                      labelStyle: TextStyle(
                         color: kColorAzul,
-                        fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
+                        fontSize: 20.0,
+                      ),
+                      hintText: 'Ingrese el Delivery Order'),
+                  onChanged: (value) {},
+                  controller: deliveryOrderController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, ingrese el Delivery Order';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      prefixIcon: IconButton(
+                          icon: Icon(
+                            Icons.delivery_dining,
+                            color: kColorAzul,
+                          ),
+                          onPressed: () async {}),
+                      /* suffixIcon: IconButton(
+                            icon: const Icon(Icons.search), onPressed: () {}), */
+                      labelText: 'DAM',
+                      labelStyle: TextStyle(
+                        color: kColorAzul,
+                        fontSize: 20.0,
+                      ),
+                      hintText: 'Ingrese el DAM'),
+                  onChanged: (value) {},
+                  controller: damController,
+                  /* validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, ingrese el DAM';
+                      }
+                      idUsuario = BigInt.parse(value);
+                      return null;
+                    }, */
+                ),
+                const SizedBox(height: 20.0),
+                Container(
+                  height: 40,
+                  color: kColorAzul,
+                  child: const Center(
+                    child: Text("VIAJES",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 1, color: Colors.grey),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          prefixIcon: Icon(
+                            Icons.mode_of_travel,
+                            color: kColorAzul,
+                          ),
+                          labelText: 'Viajes Totales',
+                          labelStyle: TextStyle(
+                            color: kColorAzul,
+                            fontSize: 20.0,
+                          ),
+                          hintText: '',
                         ),
-                        width: 150,
-                        height: 150,
-                        child: imageCarguio != null
-                            ? Image.file(imageCarguio!,
-                                width: 150, height: 150, fit: BoxFit.cover)
-                            : Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Transform.scale(
-                                    scale: 3,
-                                    child: const Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  const Center(
-                                      child: Text(
-                                    "Inserte Foto de la Bodega",
-                                    style: TextStyle(color: Colors.grey),
-                                    textAlign: TextAlign.center,
-                                  )),
-                                ],
-                              ),
+                        controller: _viajesTotalesController,
+                        enabled: false,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          prefixIcon: Icon(
+                            Icons.balance,
+                            color: kColorAzul,
+                          ),
+                          labelText: 'Saldo',
+                          labelStyle: TextStyle(
+                            color: kColorAzul,
+                            fontSize: 20.0,
+                          ),
+                          hintText: '',
+                        ),
+                        controller: _saldoController,
+                        enabled: false,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.mode_of_travel,
+                      color: kColorAzul,
+                    ),
+                    labelText: 'Viajes Realizados',
+                    labelStyle: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                    hintText: '',
+                  ),
+                  controller: _viajesRealizadosController,
+                  enabled: false,
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  height: 40,
+                  color: kColorAzul,
+                  child: const Center(
+                    child: Text("HORA DE CARGUIO",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(children: [
+                  Expanded(
+                      flex: 3,
+                      child: Text(
+                        "INICIO CARGUIO:",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: kColorAzul,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.5),
+                      )),
+                  Expanded(
+                    flex: 2,
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          prefixIcon: Icon(
+                            Icons.calendar_month,
+                            color: kColorAzul,
+                          ),
+                          labelText: /* ${dateTime.day}/${dateTime.month}/${dateTime.year} */
+                              '$hours1:$minutes1',
+                          labelStyle: TextStyle(
+                            color: kColorAzul,
+                            fontSize: 20.0,
+                          ),
+                          enabled: false),
+                    ),
+                  ),
+                ]),
+                const SizedBox(height: 20.0),
+                MaterialButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    minWidth: double.infinity,
+                    height: 50.0,
+                    color: kColorCeleste,
+                    onPressed: pickDateTime1,
+                    child: Text(
+                      "Hora - Inicio Carguio",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: kColorAzul,
+                        fontWeight: FontWeight.bold, /* letterSpacing: 1.5 */
+                      ),
+                    )),
+                const SizedBox(height: 20.0),
+                Container(
+                  height: 40,
+                  color: kColorAzul,
+                  child: const Center(
+                    child: Text("REGISTRO FOTOGRAFICO",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0),
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 15),
+                      Text(
+                        "Ingrese Fotos del Carguio",
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: kColorAzul,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.40,
-                            child: ElevatedButton(
-                                style: TextButton.styleFrom(
-                                  backgroundColor: kColorNaranja,
-                                  padding: const EdgeInsets.all(10.0),
-                                ),
-                                onPressed: (() =>
-                                    pickCarguioFoto(ImageSource.gallery)),
-                                child: const Text(
-                                  "Abrir Galería",
-                                  style: TextStyle(fontSize: 18),
-                                )),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: Colors.grey),
+                            ),
+                            width: 150,
+                            height: 150,
+                            child: imageCarguio != null
+                                ? Image.file(imageCarguio!,
+                                    width: 150, height: 150, fit: BoxFit.cover)
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Transform.scale(
+                                        scale: 3,
+                                        child: const Icon(
+                                          Icons.camera_alt,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      const Center(
+                                          child: Text(
+                                        "Inserte Foto de la Bodega",
+                                        style: TextStyle(color: Colors.grey),
+                                        textAlign: TextAlign.center,
+                                      )),
+                                    ],
+                                  ),
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.40,
-                            child: ElevatedButton(
-                                style: TextButton.styleFrom(
-                                  backgroundColor: kColorNaranja,
-                                  padding: const EdgeInsets.all(10.0),
-                                ),
-                                onPressed: (() =>
-                                    pickCarguioFoto(ImageSource.camera)),
-                                child: const Text(
-                                  "Tomar Foto",
-                                  style: TextStyle(fontSize: 18),
-                                )),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.40,
+                                child: ElevatedButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: kColorNaranja,
+                                      padding: const EdgeInsets.all(10.0),
+                                    ),
+                                    onPressed: (() =>
+                                        pickCarguioFoto(ImageSource.gallery)),
+                                    child: const Text(
+                                      "Abrir Galería",
+                                      style: TextStyle(fontSize: 18),
+                                    )),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.40,
+                                child: ElevatedButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: kColorNaranja,
+                                      padding: const EdgeInsets.all(10.0),
+                                    ),
+                                    onPressed: (() =>
+                                        pickCarguioFoto(ImageSource.camera)),
+                                    child: const Text(
+                                      "Tomar Foto",
+                                      style: TextStyle(fontSize: 18),
+                                    )),
+                              ),
+                            ],
                           ),
                         ],
                       ),
+                      const SizedBox(height: 20),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20.0),
-            MaterialButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              minWidth: double.infinity,
-              height: 50.0,
-              color: kColorCeleste,
-              onPressed: () {
-                setState(() {
-                  listFotoLiquidaCarguio.add(ListFotoLiquidaCarguio(
-                      fotoCarguio: imageCarguio!, urlFoto: imageCarguio!.path));
-                });
-              },
-              child: Text(
-                "AGREGAR FOTO CARGUIO",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: kColorAzul,
-                  fontWeight: FontWeight.bold, /* letterSpacing: 1.5 */
                 ),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    color: Colors.white),
-                height: 400,
-                child: ListView.builder(
-                    itemCount: listFotoLiquidaCarguio.length,
-                    itemBuilder: (_, int i) {
-                      return Column(children: [
-                        const SizedBox(height: 10),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: Colors.grey),
-                          ),
-                          width: 200,
-                          height: 200,
-                          child: listFotoLiquidaCarguio[i].fotoCarguio != null
-                              ? Image.file(
-                                  listFotoLiquidaCarguio[i].fotoCarguio!,
-                                  /* width: 150, height: 150, */ fit:
-                                      BoxFit.cover)
-                              : Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Transform.scale(
-                                      scale: 3,
-                                      child: const Icon(
-                                        Icons.camera_alt,
-                                        color: Colors.grey,
-                                      ),
+                const SizedBox(height: 20.0),
+                MaterialButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  minWidth: double.infinity,
+                  height: 50.0,
+                  color: kColorCeleste,
+                  onPressed: () {
+                    setState(() {
+                      listFotoLiquidaCarguio.add(ListFotoLiquidaCarguio(
+                          fotoCarguio: imageCarguio!,
+                          urlFoto: imageCarguio!.path));
+                    });
+                  },
+                  child: Text(
+                    "AGREGAR FOTO CARGUIO",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: kColorAzul,
+                      fontWeight: FontWeight.bold, /* letterSpacing: 1.5 */
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        color: Colors.white),
+                    height: 400,
+                    child: ListView.builder(
+                        itemCount: listFotoLiquidaCarguio.length,
+                        itemBuilder: (_, int i) {
+                          return Column(children: [
+                            const SizedBox(height: 10),
+                            Container(
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 1, color: Colors.grey),
+                              ),
+                              width: 200,
+                              height: 200,
+                              child: listFotoLiquidaCarguio[i].fotoCarguio !=
+                                      null
+                                  ? Image.file(
+                                      listFotoLiquidaCarguio[i].fotoCarguio!,
+                                      /* width: 150, height: 150, */ fit:
+                                          BoxFit.cover)
+                                  : Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Transform.scale(
+                                          scale: 3,
+                                          child: const Icon(
+                                            Icons.camera_alt,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        const Center(
+                                            child: Text(
+                                          "No Image",
+                                          style: TextStyle(color: Colors.grey),
+                                          textAlign: TextAlign.center,
+                                        )),
+                                      ],
                                     ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    const Center(
-                                        child: Text(
-                                      "No Image",
-                                      style: TextStyle(color: Colors.grey),
-                                      textAlign: TextAlign.center,
-                                    )),
-                                  ],
+                            ),
+                            const Divider(),
+                          ]);
+                        })),
+                const SizedBox(height: 20.0),
+                MaterialButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  minWidth: double.infinity,
+                  height: 50.0,
+                  color: kColorNaranja,
+                  onPressed: () async {
+                    await createLiquidaControlCarguio();
+                    clearFiels();
+                  },
+                  child: const Text(
+                    "Cargar Datos",
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.5),
+                  ),
+                ),
+              ]),
+            ),
+          ),
+          SingleChildScrollView(
+            child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(children: [
+                  DropdownButtonFormField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      labelText: 'Placa',
+                      labelStyle: TextStyle(
+                        color: kColorAzul,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    icon: const Icon(
+                      Icons.arrow_drop_down_circle_outlined,
+                    ),
+                    items: listaPlacas.map((String a) {
+                      return DropdownMenuItem<String>(
+                        value: a,
+                        child:
+                            Center(child: Text(a, textAlign: TextAlign.left)),
+                      );
+                    }).toList(),
+                    onChanged: (value) => {
+                      setState(() {
+                        _valuePlacaDropdown = value as String;
+                      })
+                    },
+                    validator: (value) {
+                      if (value != _valuePlacaDropdown) {
+                        return 'Por favor, elige la Placa';
+                      }
+                      return null;
+                    },
+                    hint: Text(_valuePlacaDropdown),
+                  ),
+                  const SizedBox(height: 20),
+                  Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      color: Colors.white,
+                      //shadowColor: Colors.grey,
+                      elevation: 10,
+                      borderOnForeground: true,
+                      //margin: const EdgeInsets.all(10),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          children: [
+                            //Caja de texto Responsable
+                            TextFormField(
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  prefixIcon: Icon(
+                                    Icons.numbers,
+                                    color: kColorAzul,
+                                  ),
+                                  labelText: 'Transporte',
+                                  labelStyle: TextStyle(
+                                    color: kColorAzul,
+                                    fontSize: 20.0,
+                                  ),
+                                  hintText: ''),
+                              controller: transporteLecturaController,
+                              enabled: false,
+                            ),
+
+                            //Caja de texto Tipo de importación
+                            TextFormField(
+                              decoration: InputDecoration(
+                                /*border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),*/
+                                border: InputBorder.none,
+                                prefixIcon: Icon(
+                                  Icons.directions_car,
+                                  color: kColorAzul,
                                 ),
+                                labelText: 'Cisterna',
+                                labelStyle: TextStyle(
+                                  color: kColorAzul,
+                                  fontSize: 20.0,
+                                ), /* hintText: 'Ingrese cisterna' */
+                              ),
+                              controller: cisternaLecturaController,
+                              enabled: false,
+                            ),
+                          ],
                         ),
-                        const Divider(),
-                      ]);
-                    })),
-            const SizedBox(height: 20.0),
-            MaterialButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              minWidth: double.infinity,
-              height: 50.0,
-              color: kColorNaranja,
-              onPressed: () async {
-                await createLiquidaControlCarguio();
-                clearFiels();
-              },
-              child: const Text(
-                "Cargar Datos",
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5),
-              ),
-            ),
-          ]),
-        ),
+                      )),
+                  const SizedBox(height: 20),
+                  Container(
+                    height: 40,
+                    color: kColorAzul,
+                    child: const Center(
+                      child: Text("TERMINO DE CARGUIO",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(children: [
+                    Expanded(
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          prefixIcon: Icon(
+                            Icons.timer,
+                            color: kColorAzul,
+                          ),
+                          labelText: 'Termino de Carguio',
+                          labelStyle: TextStyle(
+                            color: kColorAzul,
+                            fontSize: 20.0,
+                          ),
+                          hintText: '',
+                          enabled: false,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          prefixIcon: Icon(
+                            Icons.calendar_month,
+                            color: kColorAzul,
+                          ),
+                          labelText: '$hours2:$minutes2',
+                          labelStyle: TextStyle(
+                            color: kColorAzul,
+                            fontSize: 20.0,
+                          ),
+                        ),
+                        enabled: false,
+                        //hintText: 'Ingrese el numero de ID del Job'),
+                        //controller: TransporteController,
+                      ),
+                    )
+                  ]),
+                  const SizedBox(height: 20),
+                  MaterialButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      minWidth: double.infinity,
+                      height: 50.0,
+                      color: kColorCeleste,
+                      onPressed: pickDateTime2,
+                      child: Text(
+                        "Hora - Termino Carguio",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: kColorAzul,
+                          fontWeight: FontWeight.bold, /* letterSpacing: 1.5 */
+                        ),
+                      )),
+                  const SizedBox(height: 20),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 15),
+                        Text(
+                          "Ingrese Fotos del Termino de Carguio",
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: kColorAzul,
+                              fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 1, color: Colors.grey),
+                              ),
+                              width: 150,
+                              height: 150,
+                              child: imageTerminoCarguio != null
+                                  ? Image.file(imageTerminoCarguio!,
+                                      width: 150,
+                                      height: 150,
+                                      fit: BoxFit.cover)
+                                  : Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Transform.scale(
+                                          scale: 3,
+                                          child: const Icon(
+                                            Icons.camera_alt,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        const Center(
+                                            child: Text(
+                                          "Inserte Foto Termino Carguio",
+                                          style: TextStyle(color: Colors.grey),
+                                          textAlign: TextAlign.center,
+                                        )),
+                                      ],
+                                    ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.40,
+                                  child: ElevatedButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: kColorNaranja,
+                                        padding: const EdgeInsets.all(10.0),
+                                      ),
+                                      onPressed: (() => pickCarguioTerminoFoto(
+                                          ImageSource.gallery)),
+                                      child: const Text(
+                                        "Abrir Galería",
+                                        style: TextStyle(fontSize: 18),
+                                      )),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.40,
+                                  child: ElevatedButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: kColorNaranja,
+                                        padding: const EdgeInsets.all(10.0),
+                                      ),
+                                      onPressed: (() => pickCarguioTerminoFoto(
+                                          ImageSource.camera)),
+                                      child: const Text(
+                                        "Tomar Foto",
+                                        style: TextStyle(fontSize: 18),
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  MaterialButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    minWidth: double.infinity,
+                    height: 50.0,
+                    color: kColorCeleste,
+                    onPressed: () {
+                      setState(() {
+                        listFotoTerminoCarguio.add(ListFotoTerminoCarguio(
+                            fotoCarguio: imageTerminoCarguio!,
+                            urlFoto: imageTerminoCarguio!.path));
+                      });
+                    },
+                    child: Text(
+                      "AGREGAR FOTO TERMINO",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: kColorAzul,
+                        fontWeight: FontWeight.bold, /* letterSpacing: 1.5 */
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          color: Colors.white),
+                      height: 400,
+                      child: ListView.builder(
+                          itemCount: listFotoTerminoCarguio.length,
+                          itemBuilder: (_, int i) {
+                            return Column(children: [
+                              const SizedBox(height: 10),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border:
+                                      Border.all(width: 1, color: Colors.grey),
+                                ),
+                                width: 200,
+                                height: 200,
+                                child: listFotoTerminoCarguio[i].fotoCarguio !=
+                                        null
+                                    ? Image.file(
+                                        listFotoTerminoCarguio[i].fotoCarguio!,
+                                        /* width: 150, height: 150, */ fit:
+                                            BoxFit.cover)
+                                    : Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Transform.scale(
+                                            scale: 3,
+                                            child: const Icon(
+                                              Icons.camera_alt,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          const Center(
+                                              child: Text(
+                                            "No Image",
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                            textAlign: TextAlign.center,
+                                          )),
+                                        ],
+                                      ),
+                              ),
+                              const Divider(),
+                            ]);
+                          })),
+                  const SizedBox(height: 20),
+                  MaterialButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    minWidth: double.infinity,
+                    height: 50.0,
+                    color: kColorNaranja,
+                    onPressed: () async {
+                      /*  updateTerminoParalizaciones();
+                      await createFotoParalizaciones(); */
+                      setState(() {
+                        imageTerminoCarguio = null;
+                        listFotoTerminoCarguio.clear();
+                      });
+                    },
+                    child: const Text(
+                      "REGISTRAR TERMINO",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.5),
+                    ),
+                  ),
+                ])),
+          ),
+        ]),
       ),
     );
+  }
+
+  Future pickCarguioTerminoFoto(ImageSource source) async {
+    try {
+      final imageCarguio = await ImagePicker().pickImage(source: source);
+
+      if (imageCarguio == null) return;
+
+      final imageTemporary = File(imageCarguio.path);
+
+      setState(() => this.imageCarguio = imageTemporary);
+    } on PlatformException catch (e) {
+      // print('Failed to pick image: $e');
+      e.message;
+    }
   }
 
   Future pickCarguioFoto(ImageSource source) async {

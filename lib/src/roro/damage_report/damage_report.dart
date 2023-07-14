@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 import '../../../models/file_upload_result.dart';
-import '../../../models/roro/damage_report/damage_report_consulta.dart';
 import '../../../models/roro/damage_report/damage_report_list_sql_lite.dart';
 import '../../../models/roro/damage_report/sp_damage_report.dart';
 import '../../../models/roro/damage_report/sp_damage_report_create_model.dart';
@@ -31,17 +30,15 @@ import '../../scanner_screen.dart';
 import '../../widgets/warning_widget_cubit.dart';
 
 class DamageReport extends StatefulWidget {
-  const DamageReport(
-      {Key? key,
-      required this.jornada,
-      required this.idUsuario,
-      required this.idServiceOrder,
-      required this.damageReportConsultaListApi})
-      : super(key: key);
+  const DamageReport({
+    Key? key,
+    required this.jornada,
+    required this.idUsuario,
+    required this.idServiceOrder,
+  }) : super(key: key);
   final int jornada;
   final BigInt idUsuario;
   final BigInt idServiceOrder;
-  final List<DamageReportConsultaApi> damageReportConsultaListApi;
 
   @override
   State<DamageReport> createState() => _DamageReportState();

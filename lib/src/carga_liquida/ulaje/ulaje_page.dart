@@ -9,6 +9,7 @@ import '../../../models/carga_liquida/SqlLiquidaModels/sqlite_ulaje.dart';
 import '../../../models/carga_liquida/SqlLiquidaModels/sqlite_ulaje_observados_fotos.dart';
 import '../../../models/carga_liquida/SqlLiquidaModels/sqlite_ulaje_tanque_fotos.dart';
 import '../../../models/carga_liquida/ulaje/create_liquida_ulaje_list.dart';
+import '../../../models/carga_liquida/ulaje/vw_tanque_pesos_liquida_by_idServOrder.dart';
 import '../../../models/file_upload_result.dart';
 import '../../../services/carga_liquida/ulaje_service.dart';
 import '../../../services/file_upload_result.dart';
@@ -16,7 +17,6 @@ import '../../../utils/carga_liquida/db_ulaje.dart';
 import '../../../utils/check_internet_connection.dart';
 import '../../../utils/connection_status_cubit.dart';
 import '../../../utils/constants.dart';
-import '../../../utils/lists.dart';
 
 class UlajePage extends StatefulWidget {
   const UlajePage(
@@ -53,6 +53,8 @@ class _UlajePageState extends State<UlajePage>
     with SingleTickerProviderStateMixin {
   DbUlaje dbLiteUlaje = DbUlaje();
 
+  List<VwTanquePesosLiquidaByIdServOrder> tanquePesosLiquidaByIdServOrder = [];
+
   FileUploadService fileUploadService = FileUploadService();
 
   bool valueMarcaderia = false;
@@ -67,6 +69,8 @@ class _UlajePageState extends State<UlajePage>
   final temperaturaController = TextEditingController();
 
   final cantAproxDanoController = TextEditingController();
+
+  final descripcionDanoController = TextEditingController();
 
   final comentariosController = TextEditingController();
 
@@ -103,6 +107,7 @@ class _UlajePageState extends State<UlajePage>
             peso: double.parse(pesoController.text),
             temperatura: double.parse(temperaturaController.text),
             cantidadDano: cantidadDanos,
+            descripcionDano: descripcionDanoController.text,
             descripcionComentarios: comentariosController.text,
             idServiceOrder: widget.idServiceOrder,
             idUsuario: widget.idUsuario),
@@ -110,8 +115,9 @@ class _UlajePageState extends State<UlajePage>
         liteSqliteUlajeTanqueFotos);
     setState(() {
       listFutureTableUlajeSqLite();
-      _valueTanqueDropdown = 'Seleccione Tanque';
+      //_valueTanqueDropdown = 'Seleccione Tanque';
       pesoController.clear();
+      descripcionDanoController.clear();
       imageDano = null;
       imageTanque = null;
       temperaturaController.clear();
@@ -125,13 +131,35 @@ class _UlajePageState extends State<UlajePage>
     _tabController.animateTo((_tabController.index = 1));
   }
 
-  obtenerListTanquesFoto() async {
+  cargarLista() async {
+    DbTanquePesosLiquidaSqlLite dbTanquePesosLiquidaSqlLite =
+        DbTanquePesosLiquidaSqlLite();
+
+    List<VwTanquePesosLiquidaByIdServOrder> value =
+        await dbTanquePesosLiquidaSqlLite.listTanquePesos();
+
+    setState(() {
+      tanquePesosLiquidaByIdServOrder = value;
+    });
+
+    print("llegaron los registros ${tanquePesosLiquidaByIdServOrder.length}");
+  }
+
+  obtenerListados() async {
     liteSqliteUlaje = await dbLiteUlaje.getUlajeListSqlLite();
 
     liteSqliteUlajeTanqueFotos = await dbLiteUlaje.getListTanquesFotos();
 
     listSqliteUlajeObservadosFotos = await dbLiteUlaje.getListObservadosFotos();
+
+    print("cantidad ulajes ${liteSqliteUlaje.length}");
+    print("cantidad tanques ${liteSqliteUlajeTanqueFotos.length}");
+    print("cantidad observado ${listSqliteUlajeObservadosFotos.length}");
   }
+
+  /* obtenerObservadosFoto() async {
+    //print(listSqliteUlajeObservadosFotos[0].ulajeUrlFoto);
+  } */
 
   listFutureTableUlajeSqLite() {
     futureListSqliteUlaje = dbLiteUlaje.getUlajeListSqlLite();
@@ -150,6 +178,8 @@ class _UlajePageState extends State<UlajePage>
           liteSqliteUlaje[count].temperatura;
       spCreateLiquidaUlajeModel.cantidadDano =
           liteSqliteUlaje[count].cantidadDano;
+      spCreateLiquidaUlajeModel.descripcionDano =
+          liteSqliteUlaje[count].descripcionDano;
       spCreateLiquidaUlajeModel.descripcionComentarios =
           liteSqliteUlaje[count].descripcionComentarios;
       spCreateLiquidaUlajeModel.idServiceOrder =
@@ -174,6 +204,7 @@ class _UlajePageState extends State<UlajePage>
           fileUploadResult.urlPhoto;
       spCreateLiquidaUlajeTanquesFoto[count].tanqueNombreFoto =
           fileUploadResult.fileName;
+      print("resultado tanques ${fileUploadResult.urlPhoto}");
     }
     return spCreateLiquidaUlajeTanquesFoto;
   }
@@ -196,6 +227,7 @@ class _UlajePageState extends State<UlajePage>
           fileUploadResult.urlPhoto;
       spCreateLiquidaUlajeObservadosFoto[count].ulajeNombreFoto =
           fileUploadResult.fileName;
+      print("resultado observado ${fileUploadResult.urlPhoto}");
     }
     return spCreateLiquidaUlajeObservadosFoto;
   }
@@ -207,35 +239,48 @@ class _UlajePageState extends State<UlajePage>
 
     List<SpCreateLiquidaUlajeTanquesFoto> spLiquidaUlajeTanquesFoto =
         <SpCreateLiquidaUlajeTanquesFoto>[];
-
     List<SpCreateLiquidaUlajeObservadosFoto> spLiquidaUlajeObservadosFoto =
         <SpCreateLiquidaUlajeObservadosFoto>[];
 
-    await obtenerListTanquesFoto();
-
-    createLiquidaUlaje = parseLiquidaUlaje();
-
-    spLiquidaUlajeTanquesFoto = await parserTanqueFoto();
-
-    spLiquidaUlajeObservadosFoto = await parserObservadoFoto();
-
     CreateLiquidaUlajeList createLiquidaUlajeList = CreateLiquidaUlajeList();
 
+    createLiquidaUlaje = parseLiquidaUlaje();
+    spLiquidaUlajeObservadosFoto = await parserObservadoFoto();
+    spLiquidaUlajeTanquesFoto = await parserTanqueFoto();
+
     createLiquidaUlajeList.spCreateLiquidaUlaje = createLiquidaUlaje;
-    createLiquidaUlajeList.spCreateLiquidaUlajeObservadosFotos =
-        spLiquidaUlajeObservadosFoto;
     createLiquidaUlajeList.spCreateLiquidaUlajeTanquesFotos =
         spLiquidaUlajeTanquesFoto;
+    createLiquidaUlajeList.spCreateLiquidaUlajeObservadosFotos =
+        spLiquidaUlajeObservadosFoto;
 
-    ulajeService.createLiquidaUlajeList(createLiquidaUlajeList);
+    await ulajeService.createLiquidaUlajeList(createLiquidaUlajeList);
+  }
+
+  List<DropdownMenuItem<String>> getTanquePesoItems(
+      List<VwTanquePesosLiquidaByIdServOrder> orders) {
+    List<DropdownMenuItem<String>> dropDownItems = [];
+
+    for (var element in orders) {
+      var newDropDown = DropdownMenuItem(
+        value: element.tanque.toString(),
+        child: Text(
+          element.tanque.toString(),
+        ),
+      );
+      dropDownItems.add(newDropDown);
+    }
+    return dropDownItems;
   }
 
   @override
   void initState() {
     // TODO: implement initState
     _tabController = TabController(length: 2, vsync: this);
+    cargarLista();
     listFutureTableUlajeSqLite();
-    obtenerListTanquesFoto();
+    //obtenerObservadosFoto();
+    obtenerListados();
     super.initState();
   }
 
@@ -298,13 +343,14 @@ class _UlajePageState extends State<UlajePage>
                     icon: const Icon(
                       Icons.arrow_drop_down_circle_outlined,
                     ),
-                    items: listaTanque.map((String a) {
+                    items: getTanquePesoItems(tanquePesosLiquidaByIdServOrder),
+                    /*   items: listaTanque.map((String a) {
                       return DropdownMenuItem<String>(
                         value: a,
                         child:
                             Center(child: Text(a, textAlign: TextAlign.left)),
                       );
-                    }).toList(),
+                    }).toList(), */
                     onChanged: (value) => {
                       setState(() {
                         _valueTanqueDropdown = value as String;
@@ -593,7 +639,7 @@ class _UlajePageState extends State<UlajePage>
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20.0),
                                 ),
-                                labelText: 'Cantidad',
+                                labelText: 'Cantidad ',
                                 labelStyle: TextStyle(
                                   color: kColorAzul,
                                   fontSize: 18.0,
@@ -603,6 +649,28 @@ class _UlajePageState extends State<UlajePage>
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Por favor, ingrese cantidad';
+                              }
+                              return null;
+                            },
+                            enabled: true),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                labelText: 'Descripcion Daño',
+                                labelStyle: TextStyle(
+                                  color: kColorAzul,
+                                  fontSize: 18.0,
+                                ),
+                                hintText: 'Descripción del daño'),
+                            controller: descripcionDanoController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Por favor, ingrese descripcion';
                               }
                               return null;
                             },
@@ -1029,13 +1097,18 @@ class _UlajePageState extends State<UlajePage>
                                 height: 50.0,
                                 color: kColorNaranja,
                                 onPressed: () async {
+                                  await obtenerListados();
                                   await cargarListaCompletaUlaje();
-                                  dbLiteUlaje.clearTables();
+
+                                  // await obtenerObservadosFoto();
+                                  //await obtenerListTanquesFoto();
+
+                                  await dbLiteUlaje.clearTables();
                                   setState(() {
-                                    listFutureTableUlajeSqLite();
                                     listSqliteUlajeObservadosFotos.clear();
                                     liteSqliteUlajeTanqueFotos.clear();
                                     liteSqliteUlaje.clear();
+                                    listFutureTableUlajeSqLite();
                                   });
                                 },
                                 child: const Text(

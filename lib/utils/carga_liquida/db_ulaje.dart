@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import '../../models/carga_liquida/SqlLiquidaModels/sqlite_ulaje.dart';
 import '../../models/carga_liquida/SqlLiquidaModels/sqlite_ulaje_observados_fotos.dart';
 import '../../models/carga_liquida/SqlLiquidaModels/sqlite_ulaje_tanque_fotos.dart';
+import '../../models/carga_liquida/ulaje/vw_tanque_pesos_liquida_by_idServOrder.dart';
 
 class DbUlaje {
   Future<Database> openDBliquidaUlaje() async {
@@ -11,7 +12,7 @@ class DbUlaje {
         onCreate: (db, version) {
       db.execute("DROP TABLE IF EXISTS liquidaUlaje");
       return db.execute(
-          "CREATE TABLE liquidaUlaje (idUlaje INTEGER PRIMARY KEY, jornada INTEGER, fecha DATETIME, tanque TEXT, peso REAL,  temperatura REAL, cantidadDano REAL null, descripcionComentarios REAL null, idServiceOrder INTEGER,idUsuario INTEGER)");
+          "CREATE TABLE liquidaUlaje (idUlaje INTEGER PRIMARY KEY, jornada INTEGER, fecha DATETIME, tanque TEXT, peso REAL,  temperatura REAL, cantidadDano REAL null,descripcionDano TEXT null, descripcionComentarios REAL null, idServiceOrder INTEGER,idUsuario INTEGER)");
     }, version: 1);
   }
 
@@ -78,6 +79,7 @@ class DbUlaje {
       "peso",
       "temperatura",
       "cantidadDano",
+      "descripcionDano",
       "descripcionComentarios",
       "idServiceOrder",
       "idUsuario"
@@ -92,6 +94,7 @@ class DbUlaje {
               peso: maps[i]['peso'],
               temperatura: maps[i]['temperatura'],
               cantidadDano: maps[i]['cantidadDano'],
+              descripcionDano: maps[i]['descripcionDano'],
               descripcionComentarios: maps[i]['descripcionComentarios'],
               idServiceOrder: maps[i]['idServiceOrder'],
               idUsuario: maps[i]['idUsuario'],
@@ -150,4 +153,66 @@ class DbUlaje {
     return database.delete("liquidaUlajeTanquesFotos",
         where: '"idUlaje"=?', whereArgs: [idUlaje]);
   }
+}
+
+class DbTanquePesosLiquidaSqlLite {
+  Future<Database> openDB() async {
+    return openDatabase(join(await getDatabasesPath(), 'tanqueLiquida.db'),
+        onCreate: (db, version) {
+      db.execute("DROP TABLE IF EXISTS tanqueLiquida");
+      return db.execute(
+          "CREATE TABLE tanqueLiquida (idServiceOrder INTEGER, tanque TEXT, peso INTEGER)");
+    }, version: 1);
+  }
+
+  Future<List> insertTanquePesoLiquida(
+      List<VwTanquePesosLiquidaByIdServOrder>
+          tanquePesosLiquidaByIdServOrder) async {
+    Database database = await openDB();
+    database.delete("tanqueLiquida");
+    Batch batch = database.batch();
+    for (int count = 0;
+        count < tanquePesosLiquidaByIdServOrder.length;
+        count++) {
+      batch.insert("tanqueLiquida", {
+        "idServiceOrder": tanquePesosLiquidaByIdServOrder[count].idServiceOrder,
+        "tanque": tanquePesosLiquidaByIdServOrder[count].tanque,
+        "peso": tanquePesosLiquidaByIdServOrder[count].peso,
+      });
+    }
+    final results = await batch.commit();
+    return results;
+  }
+
+  Future<List<VwTanquePesosLiquidaByIdServOrder>> listTanquePesos() async {
+    Database database = await openDB();
+    final List<Map<String, dynamic>> tanquePesoConsultaMap =
+        await database.query(
+      "tanqueLiquida",
+    );
+    return List.generate(
+        tanquePesoConsultaMap.length,
+        (i) => VwTanquePesosLiquidaByIdServOrder(
+              idServiceOrder: tanquePesoConsultaMap[i]['idServiceOrder'],
+              tanque: tanquePesoConsultaMap[i]['tanque'],
+              peso: tanquePesoConsultaMap[i]['peso'],
+            ));
+  }
+
+  /*  Future<List<VwTanquePesosLiquidaByIdServOrder>>
+      getVehicleByIdAndIdServiceOrder(String tanque, int idVehicle) async {
+    Database database = await openDB();
+    List<Map> result = await database.rawQuery(
+      "select * from damageConsulta where idOrdenServicio=$idServiceOrder and idVehicle=$idVehicle", /*[idServiceOrder, idVehicle]*/
+    );
+    return List.generate(
+        result.length,
+        (i) => DamageReportInsertSqlLite(
+              chasis: result[i]['chasis'],
+              marca: result[i]['marca'],
+              modelo: result[i]['modelo'],
+              consigntario: result[i]['consignatario'],
+              billOfLeading: result[i]['bl'],
+            ));
+  } */
 }

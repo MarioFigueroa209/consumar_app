@@ -18,7 +18,6 @@ import '../../models/vw_list_vehicle_data_by_id_service_order_embarque.dart';
 import '../../models/vw_list_vehicle_data_by_idserviceorder_descarga.dart';
 import '../../models/vw_ship_and_travel_by_id_service_order_model.dart';
 import '../../services/roro/damage_report/damage_report_consulta_service.dart';
-import '../../services/roro/distribucion_embarque/distribucion_embarque_services.dart';
 import '../../services/roro/printer_app/printer_app_service.dart';
 import '../../services/service_order_services.dart';
 import '../../services/usuario_service.dart';
@@ -210,10 +209,9 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
   }
 
   getNaveAndTravelServiceOrder() async {
-    DistribucionEmbarqueService distribucionEmbarqueSerice =
-        DistribucionEmbarqueService();
+    ServiceOrderService serviceOrderService = ServiceOrderService();
 
-    vwShipAndTravelByIdServiceOrderModel = await distribucionEmbarqueSerice
+    vwShipAndTravelByIdServiceOrderModel = await serviceOrderService
         .getShipAndTravelByIdOrderService(idServiceOrderRampa);
 
     _nombreNaveController.text =
@@ -1299,8 +1297,6 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                                 _valueJornadaDropdown),
                                             idUsuario: idUsuario,
                                             idServiceOrder: idServiceOrderRampa,
-                                            damageReportConsultaListApi:
-                                                damageReportConsultaApi,
                                           )));
                             },
                             child: const Text(
