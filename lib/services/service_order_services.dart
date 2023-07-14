@@ -116,7 +116,7 @@ class ServiceOrderService {
   Future<VwShipAndTravelByIdServiceOrderLiquida>
       getShipAndTravelByIdOrderServiceLiquida(BigInt idServiceOrder) async {
     var url = Uri.parse(
-        urlGetShipAndTravelByIdServiceOrderLiquida + idServiceOrder.toString());
+        urlGetShipAndTravelByIdOrderServiceLiquida + idServiceOrder.toString());
 
     final response = await http.get(url);
 
