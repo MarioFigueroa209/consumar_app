@@ -118,7 +118,7 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
         _tipoImportacionController.text = "";
         _direccController.text = "";
         //if (context.mounted) return;
-        CustomSnackBar.errorSnackBar(context, "Vehiculo no encontrado");
+        //CustomSnackBar.errorSnackBar(context, "Vehiculo no encontrado");
       }
     }
 
@@ -135,7 +135,7 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
       } else {
         _nombreConductorController.text = "";
         //if (context.mounted) return;
-        CustomSnackBar.errorSnackBar(context, "Conductor no encontrado");
+        // CustomSnackBar.errorSnackBar(context, "Conductor no encontrado");
       }
     }
 

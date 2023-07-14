@@ -43,9 +43,9 @@ class CreateRecepcionLiquidaAlmacen {
       CreateRecepcionLiquidaAlmacen(
         jornada: json["jornada"],
         fecha: DateTime.parse(json["fecha"]),
-        pesoBruto: json["pesoBruto"],
-        taraCamion: json["taraCamion"],
-        pesoNeto: json["pesoNeto"],
+        pesoBruto: json["pesoBruto"].toDouble(),
+        taraCamion: json["taraCamion"].toDouble(),
+        pesoNeto: json["pesoNeto"].toDouble(),
         estadoValvulaIngreso: json["estadoValvulaIngreso"],
         estadoValvulaSalida: json["estadoValvulaSalida"],
         idPrecintado: json["idPrecintado"],

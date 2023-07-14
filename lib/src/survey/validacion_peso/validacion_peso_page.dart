@@ -80,6 +80,24 @@ class _ValidacionPesoState extends State<ValidacionPeso> {
         idCarguio: idCarguio,
         idServiceOrder: widget.idServiceOrder,
         idUsuario: widget.idUsuario));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Datos registrados correctamente"),
+      backgroundColor: Colors.greenAccent,
+    ));
+    clearFields();
+  }
+
+  clearFields() {
+    codPrecintadoController.clear();
+    placaController.clear();
+    tolvaController.clear();
+    transporteController.clear();
+
+    pesoBrutoController.clear();
+    taraCamionController.clear();
+    pesoNetoController.clear();
+
+    nTicketController.clear();
   }
 
   @override
@@ -256,7 +274,8 @@ class _ValidacionPesoState extends State<ValidacionPeso> {
                                       DataCell(Text(e.pesoBruto.toString())),
                                       DataCell(Text(e.taraCamion.toString(),
                                           textAlign: TextAlign.center)),
-                                      DataCell(Text(e.pesoNeto.toString(),
+                                      DataCell(Text(
+                                          e.pesoNeto!.toStringAsFixed(2),
                                           textAlign: TextAlign.center)),
                                     ],
                                   )))

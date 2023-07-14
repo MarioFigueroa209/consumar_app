@@ -360,7 +360,7 @@ final urlUpdateParalizacionById =
 String urlGetPrecintoById = "${urlApiBase}Precintados/getGranelPrecintoById/";
 
 String urlGetPrecintoCarguio =
-    "${urlApiBase}Precintados/getGranelPrecintoCarguio?idServiceOrder=";
+    "${urlApiBase}Precintados/getGranelPrecintoCarguioByIdServiceOrder?idServiceOrder=";
 
 final urlCreatePrecintados =
     Uri.parse("${urlApiBase}Precintados/createPrecintado");
@@ -396,7 +396,7 @@ final urlCreatePesoHistorico =
     Uri.parse("${urlApiBase}ValidacionPeso/createPesoHistorico");
 
 /*------------------- CARGA LIQUIDA ----------------------*/
-String urlGetShipAndTravelByIdServiceOrderLiquida =
+String urlGetShipAndTravelByIdOrderServiceLiquida =
     "${urlApiBase}ServiceOrder/getShipAndTravelByIdServiceOrderLiquida/";
 
 /*------------ Ulaje -------------------*/
@@ -504,3 +504,22 @@ final urlCreateLiquidaDescargaTuberia = Uri.parse(
 
 String urlDeleteLogicLiquidaDescargaTuberia =
     "${urlApiBase}LiquidaDescargaTuberia/DeleteLogicDescargaTuberia/";
+
+/*------------------Operacion Silos --------------------------- */
+final urlCreateSilosControlTicket =
+    Uri.parse("${urlApiBase}Silos/CreateSilosControlTicket");
+
+final urlCreateSilosControlVisual =
+    Uri.parse("${urlApiBase}Silos/CreateSilosControlVisual");
+
+final urlCreateSilosDistribucion =
+    Uri.parse("${urlApiBase}Silos/CreateSilosDistribucion");
+
+String urlGetSilosControlTicketVisualByIdServiceOrder =
+    "${urlApiBase}Silos/getSilosControlTicketVisualByIdServiceOrder?idServiceOrder=";
+
+String urlGetSilosControlTicketById =
+    "${urlApiBase}Silos/getSilosControlTicketById/";
+
+final urlGetDistribucionSilos =
+    Uri.parse("${urlApiBase}Silos/getDistribucionSilos");

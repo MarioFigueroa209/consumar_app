@@ -304,16 +304,20 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
+
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
+
                               children: [
                                 Text("Muelle",
                                     style: TextStyle(
                                         fontSize: 20,
                                         color: kColorAzul,
                                         fontWeight: FontWeight.w500)),
+
                                 const SizedBox(width: 2),
+
                                 Switch(
                                   value: valueMuelle,
                                   onChanged: (value) => setState(() {
@@ -331,7 +335,9 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
                                         fontSize: 20,
                                         color: kColorAzul,
                                         fontWeight: FontWeight.w500)),
+
                                 const SizedBox(width: 2),
+
                                 Switch(
                                   value: valueToldo,
                                   onChanged: (value) => setState(() {

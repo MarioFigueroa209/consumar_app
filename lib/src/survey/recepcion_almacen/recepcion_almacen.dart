@@ -65,6 +65,10 @@ class _RecepcionAlmacenState extends State<RecepcionAlmacen> {
       idCarguio: idCarguio,
       idPrecintado: idPrecinto,
     ));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Datos registrados correctamente"),
+      backgroundColor: Colors.greenAccent,
+    ));
   }
 
   createPesoHistorico() {
@@ -73,6 +77,21 @@ class _RecepcionAlmacenState extends State<RecepcionAlmacen> {
         taraCamion: double.parse(taraCamionController.text),
         pesoNeto: double.parse(pesoNetoController.text),
         producto: "MAIZ"));
+  }
+
+  clearFields() {
+    codPrecintadoController.clear();
+    placaController.clear();
+    tolvaController.clear();
+    transporteController.clear();
+
+    pesoBrutoController.clear();
+    taraCamionController.clear();
+    pesoNetoController.clear();
+
+    compuertaTolvaController.clear();
+    cajaComandoController.clear();
+    toldoController.clear();
   }
 
   getLecturaByQrCarguio() async {
@@ -484,9 +503,11 @@ class _RecepcionAlmacenState extends State<RecepcionAlmacen> {
                 minWidth: double.infinity,
                 height: 50.0,
                 color: kColorNaranja,
-                onPressed: () {
-                  createRegistroAlmacen();
-                  createPesoHistorico();
+                onPressed: () async {
+                  await createRegistroAlmacen();
+                  await createPesoHistorico();
+                  clearFields();
+                  //;
                 },
                 child: const Text(
                   "Cargar Datos",

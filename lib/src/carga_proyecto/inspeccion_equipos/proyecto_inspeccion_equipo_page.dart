@@ -293,7 +293,12 @@ class _ProyectoInspeccionEquiposState extends State<ProyectoInspeccionEquipos> {
               minWidth: double.infinity,
               height: 50.0,
               color: kColorNaranja,
-              onPressed: () {},
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Datos Registrados con exito"),
+                  backgroundColor: Colors.green,
+                ));
+              },
               child: const Text(
                 "REGISTRAR EQUIPOS",
                 style: TextStyle(

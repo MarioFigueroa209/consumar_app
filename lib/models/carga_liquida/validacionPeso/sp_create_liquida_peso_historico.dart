@@ -25,9 +25,9 @@ class SpCreateLiquidaPesoHistorico {
 
   factory SpCreateLiquidaPesoHistorico.fromJson(Map<String, dynamic> json) =>
       SpCreateLiquidaPesoHistorico(
-        pesoBruto: json["pesoBruto"],
-        taraCamion: json["taraCamion"],
-        pesoNeto: json["pesoNeto"],
+        pesoBruto: json["pesoBruto"].toDouble(),
+        taraCamion: json["taraCamion"].toDouble(),
+        pesoNeto: json["pesoNeto"].toDouble(),
         producto: json["producto"],
       );
 

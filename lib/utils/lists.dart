@@ -311,12 +311,30 @@ final listaTanque = [
   'Tanque 5',
 ];
 
+
 final listaPlacas = [
   'Placa 1',
   'Placa 2',
   'Placa 3',
   'Placa 4',
   'Placa 5',
+];
+
+
+final listaDetalle = [
+  'Detalle 1',
+  'Detalle 2',
+  'Detalle 3',
+  'Detalle 4',
+  'Detalle 5',
+];
+
+final listaResponsable = [
+  'Responsable 1',
+  'Responsable 2',
+  'Responsable 3',
+  'Responsable 4',
+  'Responsable 5',
 ];
 
 
@@ -347,4 +365,33 @@ final listaTransporte = [
 final listaPlaca = [
   'PLACA TRACTO',
   'PLACA TOLVA',
+];
+
+final listaSilosLado = [
+  'NORTE',
+  'SUR',
+];
+
+final listaSilosNave = [
+  'NAVE 1',
+  'NAVE 2',
+  'NAVE 3',
+];
+
+final listaSilosBl = [
+  'Bl 1',
+  'Bl 2',
+  'Bl 3',
+];
+
+final listaPuntoDespacho = [
+  'Punto Despacho 1',
+  'Punto Despacho 2',
+  'Punto Despacho 3',
+];
+
+final listaDescarga = [
+  'Descarga 1',
+  'Descarga 2',
+  'Descarga 3',
 ];

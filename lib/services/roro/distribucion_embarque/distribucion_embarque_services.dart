@@ -8,6 +8,71 @@ import '../../../models/roro/distribucion_embarque/sp_create_distribucion_embarq
 import '../../api_services.dart';
 
 class DistribucionEmbarqueService {
+
+  Future<VwShipAndTravelByIdServiceOrderModel> getShipAndTravelByIdOrderService(
+      BigInt idServiceOrder) async {
+    var url = Uri.parse(
+        urlGetShipAndTravelByIdOrderService + idServiceOrder.toString());
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return VwShipAndTravelByIdServiceOrderModel.fromJson(
+          jsonDecode(response.body));
+    } else if (response.statusCode == 404) {
+      VwShipAndTravelByIdServiceOrderModel value =
+          VwShipAndTravelByIdServiceOrderModel();
+      value.nombreNave = 'no encontrado';
+      value.numeroViaje = 'no encontrado';
+      return value;
+    } else {
+      throw Exception('Fallo al cargar');
+    }
+  }
+
+  Future<VwShipAndTravelByIdServiceOrderModel>
+      getShipAndTravelByIdOrderServiceLiquida(BigInt idServiceOrder) async {
+    var url = Uri.parse(
+        urlGetShipAndTravelByIdOrderServiceLiquida + idServiceOrder.toString());
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return VwShipAndTravelByIdServiceOrderModel.fromJson(
+          jsonDecode(response.body));
+    } else if (response.statusCode == 404) {
+      VwShipAndTravelByIdServiceOrderModel value =
+          VwShipAndTravelByIdServiceOrderModel();
+      value.nombreNave = 'no encontrado';
+      value.numeroViaje = 'no encontrado';
+      return value;
+    } else {
+      throw Exception('Fallo al cargar');
+    }
+  }
+
+  Future<VwShipAndTravelByIdServiceOrderGranel>
+      getShipAndTravelByIdOrderServiceGranel(BigInt idServiceOrder) async {
+    var url = Uri.parse(
+        urlGetShipAndTravelByIdServiceOrderGranel + idServiceOrder.toString());
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return VwShipAndTravelByIdServiceOrderGranel.fromJson(
+          jsonDecode(response.body));
+    } else if (response.statusCode == 404) {
+      VwShipAndTravelByIdServiceOrderGranel value =
+          VwShipAndTravelByIdServiceOrderGranel();
+      value.nombreNave = 'no encontrado';
+      value.numeroViaje = 'no encontrado';
+      return value;
+    } else {
+      throw Exception('Fallo al cargar');
+    }
+  }
+
+
   List<VwDistribucionEmbarque> parseDistribucionEmbarque(String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
     return parsed
