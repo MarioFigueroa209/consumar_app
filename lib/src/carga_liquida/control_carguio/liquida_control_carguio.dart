@@ -187,7 +187,7 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio> {
           child: Column(children: [
             Row(
               children: [
-                Text("Barredura",
+                Text("Soplado",
                     style: TextStyle(
                         fontSize: 20,
                         color: kColorAzul,

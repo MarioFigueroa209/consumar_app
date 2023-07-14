@@ -67,8 +67,8 @@ class _CargaLiquidaState extends State<CargaLiquida> {
     DistribucionEmbarqueService distribucionEmbarqueSerice =
         DistribucionEmbarqueService();
 
-    vwShipAndTravelByIdServiceOrderModel =
-        await distribucionEmbarqueSerice.getShipAndTravelByIdOrderService(
+    vwShipAndTravelByIdServiceOrderModel = await distribucionEmbarqueSerice
+        .getShipAndTravelByIdOrderServiceLiquida(
             BigInt.parse(idServiceOrder.toString()));
 
     _nombreNaveController.text =

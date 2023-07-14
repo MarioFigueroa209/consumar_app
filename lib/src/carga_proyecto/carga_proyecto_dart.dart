@@ -10,11 +10,13 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
+import '../../models/vw_all_service_order.dart';
 import '../../models/vw_get_user_data_by_cod_user.dart';
+import '../../services/service_order_services.dart';
 import '../../services/usuario_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/jornada_model.dart';
-import '../../utils/lists.dart';
+
 import '../scanner_screen.dart';
 import '../widgets/boton_menu.dart';
 
@@ -61,6 +63,8 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
 
   VwgetUserDataByCodUser vwgetUserDataByCodUser = VwgetUserDataByCodUser();
 
+  List<VwAllServiceOrder> serviceOrdersList = <VwAllServiceOrder>[];
+
   /*  getNaveAndTravelServiceOrder() async {
     DistribucionEmbarqueService distribucionEmbarqueSerice =
         DistribucionEmbarqueService();
@@ -92,8 +96,8 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
     //print(idUsuario);
   }
 
-  /*  List<DropdownMenuItem<String>> getServiceOrdersDropDownItems(
-      List<VwAllServiceOrderLiquida> orders) {
+  List<DropdownMenuItem<String>> getServiceOrdersDropDownItems(
+      List<VwAllServiceOrder> orders) {
     List<DropdownMenuItem<String>> dropDownItems = [];
 
     for (var element in orders) {
@@ -106,7 +110,7 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
       dropDownItems.add(newDropDown);
     }
     return dropDownItems;
-  } */
+  }
 
   List<DropdownMenuItem<String>> getJornadaDropDownItems(
       List<JornadaModel> jornadas) {
@@ -124,17 +128,17 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
     return dropDownItems;
   }
 
-  /* getOrdenesServicio() async {
+  getOrdenesServicio() async {
     ServiceOrderService serviceOrderService = ServiceOrderService();
 
-    serviceOrdersList = await serviceOrderService.getAllServiceOrdersLiquida();
-  } */
+    serviceOrdersList = await serviceOrderService.getAllServiceOrders();
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    //getOrdenesServicio();
+    getOrdenesServicio();
   }
 
   @override
@@ -235,13 +239,8 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                             Icons.arrow_drop_down_circle_outlined,
                           ),
                           /*PENDIENTE A CAMBIO*/
-                          items: nivelesLista.map((String a) {
-                            return DropdownMenuItem<String>(
-                              value: a,
-                              child: Center(
-                                  child: Text(a, textAlign: TextAlign.left)),
-                            );
-                          }).toList(),
+                          items:
+                              getServiceOrdersDropDownItems(serviceOrdersList),
                           onChanged: (value) {
                             /* idServiceOrder = int.parse(value.toString());
                             getNaveAndTravelServiceOrder();

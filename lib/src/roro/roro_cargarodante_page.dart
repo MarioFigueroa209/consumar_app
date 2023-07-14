@@ -534,6 +534,22 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
         ignorePrinterAppList = true;
         ignoreCerrarOperacion = true;
       });
+    } else {
+      setState(() {
+        ignoreDamageReport = false;
+        ignoreDamageReportList = false;
+        ignoreReetibas = false;
+        ignoreReetibasList = false;
+        ignoreDetalleAccesorio = false;
+        ignoreRampaEmbarque = false;
+        ignoreRampaDescarga = false;
+        ignoreDistribucionEmbarque = false;
+        ignoreAutoreport = false;
+        ignoreAutoreportList = false;
+        ignorePrinterApp = false;
+        ignorePrinterAppList = false;
+        ignoreCerrarOperacion = false;
+      });
     }
   }
 
@@ -579,9 +595,10 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                 ScannerScreen()));
-print('Resultado: '+result.toString());
-                                    idUsuarioController.text = result.toString();
+                                                ScannerScreen()));
+                                    print('Resultado: ' + result.toString());
+                                    idUsuarioController.text =
+                                        result.toString();
                                   }),
                               suffixIcon: IconButton(
                                   icon: const Icon(Icons.search),
@@ -1391,26 +1408,32 @@ print('Resultado: '+result.toString());
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(
-                            'NAVE: ${_nombreNaveController.text}',
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
-                          Text(
-                            'VIAJE: ${_viajeController.text}',
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'NAVE: ${_nombreNaveController.text}',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              'VIAJE: ${_viajeController.text}',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(
                         height: 20,

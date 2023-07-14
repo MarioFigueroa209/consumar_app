@@ -84,14 +84,26 @@ class DamageReportPdfService {
 
     vessel = vwGetDamageReportItemModel.nave!;
     fecha = vwGetDamageReportItemModel.fecha;
-    port = vwGetDamageReportItemModel.puerto!.toUpperCase();
+
+    if (vwGetDamageReportItemModel.puerto != null) {
+      port = vwGetDamageReportItemModel.puerto!.toUpperCase();
+    } else {
+      port = "";
+    }
+
     shift = vwGetDamageReportItemModel.numeroViaje!;
     damageFound = vwGetDamageReportItemModel.damageFound!;
     damageOcurred = vwGetDamageReportItemModel.damageOcurred!;
     operation = vwGetDamageReportItemModel.operation!;
     stowagePosition =
         vwGetDamageReportItemModel.posicionEstibador!.toUpperCase();
-    portLanding = vwGetDamageReportItemModel.puertoAterrizaje!.toUpperCase();
+
+    if (vwGetDamageReportItemModel.puertoAterrizaje != null) {
+      portLanding = vwGetDamageReportItemModel.puertoAterrizaje!.toUpperCase();
+    } else {
+      portLanding = "";
+    }
+
     if (vwGetDamageReportItemModel.puertoDestino != null) {
       portDischard = vwGetDamageReportItemModel.puertoDestino!.toUpperCase();
     } else {
@@ -110,7 +122,13 @@ class DamageReportPdfService {
     }
     lugarAccidente = vwGetDamageReportItemModel.lugarAccidente!.toUpperCase();
     fechaAccidente = vwGetDamageReportItemModel.fechaHoraAccidente;
-    agenciaMaritima = vwGetDamageReportItemModel.agenciaMaritica!;
+
+    if (vwGetDamageReportItemModel.agenciaMaritica != null) {
+      agenciaMaritima =
+          vwGetDamageReportItemModel.agenciaMaritica!.toUpperCase();
+    } else {
+      agenciaMaritima = "";
+    }
 
     vesselOficer =
         vwGetDamageReportItemModel.nombreResponsableNave!.toUpperCase();

@@ -131,7 +131,9 @@ class _Precintadostate extends State<Precintado>
   void initState() {
     // TODO: implement initState
     super.initState();
+    print(widget.idServiceOrder);
     getListaPrecintos();
+
     _tabController = TabController(length: 2, vsync: this);
     //_tabController.addListener(_handleTabIndex);
   }

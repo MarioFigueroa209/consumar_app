@@ -125,19 +125,12 @@ class _UlajePageState extends State<UlajePage>
     _tabController.animateTo((_tabController.index = 1));
   }
 
-  obtenerUlajeList() async {
+  obtenerListTanquesFoto() async {
     liteSqliteUlaje = await dbLiteUlaje.getUlajeListSqlLite();
 
-  }
-
-  obtenerListTanquesFoto() async {
     liteSqliteUlajeTanqueFotos = await dbLiteUlaje.getListTanquesFotos();
 
-  }
-
-  obtenerObservadosFoto() async {
     listSqliteUlajeObservadosFotos = await dbLiteUlaje.getListObservadosFotos();
-
   }
 
   listFutureTableUlajeSqLite() {
@@ -211,14 +204,19 @@ class _UlajePageState extends State<UlajePage>
     UlajeService ulajeService = UlajeService();
 
     List<SpCreateLiquidaUlaje> createLiquidaUlaje = <SpCreateLiquidaUlaje>[];
-    createLiquidaUlaje = parseLiquidaUlaje();
 
     List<SpCreateLiquidaUlajeTanquesFoto> spLiquidaUlajeTanquesFoto =
         <SpCreateLiquidaUlajeTanquesFoto>[];
-    spLiquidaUlajeTanquesFoto = await parserTanqueFoto();
 
     List<SpCreateLiquidaUlajeObservadosFoto> spLiquidaUlajeObservadosFoto =
         <SpCreateLiquidaUlajeObservadosFoto>[];
+
+    await obtenerListTanquesFoto();
+
+    createLiquidaUlaje = parseLiquidaUlaje();
+
+    spLiquidaUlajeTanquesFoto = await parserTanqueFoto();
+
     spLiquidaUlajeObservadosFoto = await parserObservadoFoto();
 
     CreateLiquidaUlajeList createLiquidaUlajeList = CreateLiquidaUlajeList();
@@ -237,9 +235,7 @@ class _UlajePageState extends State<UlajePage>
     // TODO: implement initState
     _tabController = TabController(length: 2, vsync: this);
     listFutureTableUlajeSqLite();
-    obtenerObservadosFoto();
     obtenerListTanquesFoto();
-    obtenerUlajeList();
     super.initState();
   }
 
@@ -597,7 +593,7 @@ class _UlajePageState extends State<UlajePage>
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20.0),
                                 ),
-                                labelText: 'Observacion',
+                                labelText: 'Cantidad',
                                 labelStyle: TextStyle(
                                   color: kColorAzul,
                                   fontSize: 18.0,
@@ -1033,11 +1029,8 @@ class _UlajePageState extends State<UlajePage>
                                 height: 50.0,
                                 color: kColorNaranja,
                                 onPressed: () async {
-                                  await obtenerUlajeList();
-                                  await obtenerListTanquesFoto();
-                                  await obtenerObservadosFoto();
-                                  cargarListaCompletaUlaje();
-                                  await dbLiteUlaje.clearTables();
+                                  await cargarListaCompletaUlaje();
+                                  dbLiteUlaje.clearTables();
                                   setState(() {
                                     listFutureTableUlajeSqLite();
                                     listSqliteUlajeObservadosFotos.clear();
