@@ -399,6 +399,9 @@ final urlCreatePesoHistorico =
 String urlGetShipAndTravelByIdOrderServiceLiquida =
     "${urlApiBase}ServiceOrder/getShipAndTravelByIdServiceOrderLiquida/";
 
+final urlGetLiquidaListTanque =
+    Uri.parse("${urlApiBase}LiquidaControlCarguio/getLiquidaListTanque");
+
 /*------------ Ulaje -------------------*/
 final urlCreateUlajeList =
     Uri.parse("${urlApiBase}Ulaje/CreateLiquidaUlajeList");
@@ -445,9 +448,35 @@ String urlDeleteLogicLiquidaInspeccionEquipo =
     "${urlApiBase}LiquidaInspeccionEquipo/deleteLogicLiquidaInspeccionEquipos/";
 
 /*---------- Liquida Control de Carguio ------------*/
+final urlGetListTanque =
+    Uri.parse("${urlApiBase}LiquidaControlCarguio/getLiquidaListTanque");
 
 final urlCreateLiquidaControlCarguio =
     Uri.parse("${urlApiBase}LiquidaControlCarguio/createLiquidaControlCarguio");
+
+final urlCreateLiquidaFotosControlCarguioList = Uri.parse(
+    "${urlApiBase}LiquidaControlCarguio/createLiquidaFotosControlCarguioList");
+
+final urlUpdateLiquidaControlCarguioTermino = Uri.parse(
+    "${urlApiBase}LiquidaControlCarguio/UpdateLiquidaControlCarguioTermino");
+
+String urlGetLiquidaTransporteByPlacaAndIdService =
+    "${urlApiBase}LiquidaControlCarguio/getLiquidaTransporteByPlacaAndIdService?IdServiceOrder=";
+
+String urlGetGranelLiquidaCodConductores =
+    "${urlApiBase}LiquidaControlCarguio/getGranelLiquidaCodConductores/";
+
+String urlGetLiquidaDoDamByIdServiceOrder =
+    "${urlApiBase}LiquidaControlCarguio/getLiquidaDoDamByIdServiceOrder?IdServiceOrder=";
+
+String urlGetLiquidaListaPlacasInicioCarguioByIdServiceOrder =
+    "${urlApiBase}LiquidaControlCarguio/getLiquidaListaPlacasInicioCarguioByIdServiceOrder?IdServiceOrder=";
+
+String urlGetLiquidaPlacasInicioCarguio =
+    "${urlApiBase}LiquidaControlCarguio/getLiquidaPlacasInicioCarguio?IdServiceOrder=";
+
+String urlGetLiquidaCountDamByIdServiceOrder =
+    "${urlApiBase}LiquidaControlCarguio/getCountDamByIdServiceOrder?IdServiceOrder=";
 
 /*--------------- Liquida Paralizaciones -------------- */
 final urlCreateLiquidaParalizaciones =

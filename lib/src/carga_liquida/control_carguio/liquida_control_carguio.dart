@@ -5,15 +5,20 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../models/carga_liquida/controlCarguio/create_liquida_control_carguio.dart';
+import '../../../models/carga_liquida/controlCarguio/update_liquida_control_carguio.dart';
+import '../../../models/carga_liquida/controlCarguio/vw_count_dam_by_idserviceorder.dart';
+import '../../../models/carga_liquida/controlCarguio/vw_get_liquida_list_tanque.dart';
+import '../../../models/carga_liquida/controlCarguio/vw_granel_liquida_cod_conductores.dart';
+import '../../../models/carga_liquida/controlCarguio/vw_liquida_do_dam_by_idserviceorder.dart';
+import '../../../models/carga_liquida/controlCarguio/vw_liquida_placas_inicio_carguio.dart';
+import '../../../models/carga_liquida/controlCarguio/vw_liquida_transporte_by_placa_idserviceorder.dart';
+import '../../../models/carga_liquida/controlCarguio/vw_list_liquida_placas_inicio_carguio_idserviceorder.dart';
 import '../../../models/file_upload_result.dart';
-import '../../../models/survey/ControlCarguio/vw_granel_consulta_transporte_by_cod.dart';
-import '../../../models/vw_get_user_data_by_cod_user.dart';
 import '../../../services/carga_liquida/control_carguio_liquida_service.dart';
 import '../../../services/file_upload_result.dart';
-import '../../../services/survey/control_carguio_service.dart';
-import '../../../services/usuario_service.dart';
+
 import '../../../utils/constants.dart';
-import '../../../utils/lists.dart';
+
 import '../../scanner_screen.dart';
 
 class LiquidaControlCarguio extends StatefulWidget {
@@ -36,6 +41,7 @@ class ListFotoLiquidaCarguio {
   int? id;
   File? fotoCarguio;
   String? urlFoto;
+  String? operacionCarguio;
 }
 
 class ListFotoTerminoCarguio {
@@ -44,6 +50,15 @@ class ListFotoTerminoCarguio {
   int? id;
   File? fotoCarguio;
   String? urlFoto;
+  String? operacionCarguio;
+}
+
+class Tanque {
+  final String? tanque;
+
+  Tanque({
+    this.tanque,
+  });
 }
 
 class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
@@ -51,6 +66,12 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
   File? imageCarguio;
 
   File? imageTerminoCarguio;
+
+  String stringList = "";
+
+  List<String> listaTanqueAdd = [];
+
+  late List<String?> cityNames;
 
   List<ListFotoLiquidaCarguio> listFotoLiquidaCarguio = [];
 
@@ -62,15 +83,18 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
 
   bool valueSoplado = false;
 
+  late int idCarguio;
   late int idConductor;
   late int idTransporte;
 
-  ControlCarguioService controlCarguioService = ControlCarguioService();
+  int saldo = 0;
 
   ControlCarguioLiquidaService controlCarguioLiquidaService =
       ControlCarguioLiquidaService();
 
   final nTicketController = TextEditingController();
+
+  final tanquesText = TextEditingController();
 
   final placaController = TextEditingController();
   final deliveryOrderController = TextEditingController();
@@ -94,32 +118,32 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
 
   final nombreConductorController = TextEditingController();
 
-  VwgetUserDataByCodUser vwgetUserDataByCodUser = VwgetUserDataByCodUser();
+  VwGranelLiquidaCodConductores vwgetUserDataByCodUser =
+      VwGranelLiquidaCodConductores();
 
-  VwGranelConsultaTransporteByCod vwGranelConsultaTransporteByCod =
-      VwGranelConsultaTransporteByCod();
+  List<VwLiquidaTransporteByPlacaIdserviceorder>
+      vwLiquidaTransporteByPlacaIdserviceorder = [];
 
   getUserConductorDataByCodUser() async {
-    UsuarioService usuarioService = UsuarioService();
-
-    vwgetUserDataByCodUser = await usuarioService
-        .getUserDataByCodUser(codigoConductorController.text);
+    vwgetUserDataByCodUser = await controlCarguioLiquidaService
+        .getGranelLiquidaCodConductores(codigoConductorController.text);
 
     nombreConductorController.text =
-        "${vwgetUserDataByCodUser.nombres!} ${vwgetUserDataByCodUser.apellidos!}";
-    idConductor = vwgetUserDataByCodUser.idUsuario!;
+        "${vwgetUserDataByCodUser.nombreApellidos!}";
+    idConductor = vwgetUserDataByCodUser.idConductores!;
   }
 
   getTransporteByCod() async {
-    vwGranelConsultaTransporteByCod = await controlCarguioService
-        .getGranelConsultaTransporteByCod(codigoTransporteController.text);
+    vwLiquidaTransporteByPlacaIdserviceorder =
+        await controlCarguioLiquidaService.getLiquidaTransporteByPlacas(
+            widget.idServiceOrder, codigoTransporteController.text);
 
     nombreTransporteController.text =
-        vwGranelConsultaTransporteByCod.empresaTransporte!;
-    idTransporte = vwGranelConsultaTransporteByCod.idTransporte!;
+        vwLiquidaTransporteByPlacaIdserviceorder[0].empresaTransporte!;
+    idTransporte = vwLiquidaTransporteByPlacaIdserviceorder[0].idTransporte!;
   }
 
-  Future<List<SpCreateLiquidaFotosCarguio>> parseFotosCarguio() async {
+  Future<List<SpCreateLiquidaFotosCarguio>> parseFotosInicioCarguio() async {
     FileUploadService fileUploadService = FileUploadService();
 
     List<SpCreateLiquidaFotosCarguio> spCreateLiquidaFotosCarguio = [];
@@ -127,6 +151,26 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
     for (int count = 0; count < listFotoLiquidaCarguio.length; count++) {
       SpCreateLiquidaFotosCarguio aux = SpCreateLiquidaFotosCarguio();
       aux.urlFoto = listFotoLiquidaCarguio[count].urlFoto;
+      aux.operacionCarguio = "inicio";
+      spCreateLiquidaFotosCarguio.add(aux);
+      File file = File(aux.urlFoto!);
+      fileUploadResult = await fileUploadService.uploadFile(file);
+      spCreateLiquidaFotosCarguio[count].urlFoto = fileUploadResult.urlPhoto;
+      spCreateLiquidaFotosCarguio[count].nombreFoto = fileUploadResult.fileName;
+    }
+    return spCreateLiquidaFotosCarguio;
+  }
+
+  Future<List<SpCreateLiquidaFotosCarguio>> parseFotosTerminoCarguio() async {
+    FileUploadService fileUploadService = FileUploadService();
+
+    List<SpCreateLiquidaFotosCarguio> spCreateLiquidaFotosCarguio = [];
+    FileUploadResult fileUploadResult = FileUploadResult();
+    for (int count = 0; count < listFotoTerminoCarguio.length; count++) {
+      SpCreateLiquidaFotosCarguio aux = SpCreateLiquidaFotosCarguio();
+      aux.urlFoto = listFotoTerminoCarguio[count].urlFoto;
+      aux.operacionCarguio = "termino";
+      aux.idCarguio = idCarguio;
       spCreateLiquidaFotosCarguio.add(aux);
       File file = File(aux.urlFoto!);
       fileUploadResult = await fileUploadService.uploadFile(file);
@@ -137,22 +181,22 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
   }
 
   createLiquidaControlCarguio() async {
-    late bool inspeccion;
+    /* late bool inspeccion;
     if (valueSoplado == false) {
       inspeccion = false;
     } else if (valueSoplado == true) {
       inspeccion = true;
-    }
+    } */
     List<SpCreateLiquidaFotosCarguio> spCreateLiquidaFotosCarguio = [];
 
-    spCreateLiquidaFotosCarguio = await parseFotosCarguio();
+    spCreateLiquidaFotosCarguio = await parseFotosInicioCarguio();
 
-    controlCarguioLiquidaService.createLiquidaControlCarguio(
+    await controlCarguioLiquidaService.createLiquidaControlCarguio(
         CreateLiquidaControlCarguio(
             spCreateLiquidaControlCarguio: SpCreateLiquidaControlCarguio(
                 jornada: widget.jornada,
-                barredura: inspeccion,
-                tanque: _valueTanqueDropdown,
+                soplado: valueSoplado,
+                tanque: stringList,
                 fecha: DateTime.now(),
                 dam: damController.text,
                 nTicket: nTicketController.text,
@@ -160,12 +204,30 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                 deliveryOrder: deliveryOrderController.text,
                 idTransporte: idTransporte,
                 inicioCarguio: dateInicio,
-                terminoCarguio: dateTermino,
+                terminoCarguio: null,
                 placa: placaController.text,
                 cisterna: cisternaController.text,
                 idUsuario: widget.idUsuario,
                 idServiceOrder: widget.idServiceOrder),
             spCreateLiquidaFotosCarguio: spCreateLiquidaFotosCarguio));
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Inicio Carguio Registrado"),
+      backgroundColor: Colors.green,
+    ));
+
+    setState(() {
+      getListPlacasCarguio();
+    });
+  }
+
+  createFotoCarguio() async {
+    List<SpCreateLiquidaFotosCarguio> spCreateLiquidaFotosCarguio = [];
+
+    spCreateLiquidaFotosCarguio = await parseFotosTerminoCarguio();
+
+    controlCarguioLiquidaService
+        .createLiquidaFotoTerminoCarguio(spCreateLiquidaFotosCarguio);
   }
 
   clearFiels() {
@@ -190,11 +252,144 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
 
   late TabController _tabController;
 
+  List<VwGetLiquidaListTanque> vwGetLiquidaListTanque =
+      <VwGetLiquidaListTanque>[];
+
+  getTanques() async {
+    List<VwGetLiquidaListTanque> value =
+        await controlCarguioLiquidaService.getListTanque();
+
+    setState(() {
+      vwGetLiquidaListTanque = value;
+    });
+  }
+
+  updateTerminoCarguio() {
+    controlCarguioLiquidaService.updateTerminoCarguioById(
+        UpdateLiquidaControlCarguio(
+            idCarguio: idCarguio, terminoCarguio: dateTermino));
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Termino Carguio Registrado"),
+      backgroundColor: Colors.green,
+    ));
+  }
+
+  List<DropdownMenuItem<String>> getDropdownPlacasCarguio(
+      List<VwListLiquidaPlacasInicioCarguioIdserviceorder> tanques) {
+    List<DropdownMenuItem<String>> dropDownItems = [];
+
+    for (var element in tanques) {
+      var newDropDown = DropdownMenuItem(
+        value: element.idCarguio.toString(),
+        child: Text(
+          element.placa.toString(),
+        ),
+      );
+      dropDownItems.add(newDropDown);
+    }
+    return dropDownItems;
+  }
+
+  List<VwListLiquidaPlacasInicioCarguioIdserviceorder> vwListLiquidaPlacas =
+      <VwListLiquidaPlacasInicioCarguioIdserviceorder>[];
+
+  getListPlacasCarguio() async {
+    List<VwListLiquidaPlacasInicioCarguioIdserviceorder> value =
+        await controlCarguioLiquidaService
+            .getListLiquidaPlacasInicioCarguioIdserviceorder(
+                widget.idServiceOrder);
+
+    setState(() {
+      vwListLiquidaPlacas = value;
+    });
+  }
+
+  getPlacaDataIncioById(int id) async {
+    List<VwLiquidaPlacasInicioCarguio> vwLiquidaPlacasInicioCarguioById = [];
+
+    vwLiquidaPlacasInicioCarguioById = await controlCarguioLiquidaService
+        .getLiquidaPlacasInicioCarguio(widget.idServiceOrder, id);
+
+    idCarguio = vwLiquidaPlacasInicioCarguioById[0].idCarguio!;
+    placaController.text = vwLiquidaPlacasInicioCarguioById[0].placa!;
+    transporteLecturaController.text =
+        vwLiquidaPlacasInicioCarguioById[0].empresaTransporte!;
+    cisternaLecturaController.text =
+        vwLiquidaPlacasInicioCarguioById[0].cisterna!;
+  }
+
+  List<VwLiquidaDoDamByIdserviceorder> vwLiquidaDoDamByIdserviceorder = [];
+
+  getVerificacionDoDam(String dodam, String dam) async {
+    List<VwLiquidaDoDamByIdserviceorder> value =
+        await controlCarguioLiquidaService.getLiquidaDoDamByIdserviceorder(
+            widget.idServiceOrder, dodam, dam);
+
+    setState(() {
+      vwLiquidaDoDamByIdserviceorder = value;
+    });
+
+    _viajesTotalesController.text =
+        vwLiquidaDoDamByIdserviceorder[0].totalViajes.toString();
+
+    if (vwLiquidaDoDamByIdserviceorder.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Do/Dam Encontrada"),
+        backgroundColor: Colors.greenAccent,
+      ));
+    }
+    setState(() {
+      calcularSaldo();
+    });
+  }
+
+  List<VwCountDamByIdserviceorder> vwCountDamByIdserviceorder = [];
+
+  getCountDam(String dam) async {
+    List<VwCountDamByIdserviceorder> value = await controlCarguioLiquidaService
+        .getLiquidaCountDamByIdServiceOrder(widget.idServiceOrder, dam);
+
+    setState(() {
+      vwCountDamByIdserviceorder = value;
+    });
+
+    _viajesRealizadosController.text =
+        vwCountDamByIdserviceorder[0].conteoDam.toString();
+
+    setState(() {
+      calcularSaldo();
+    });
+    //debugPrint(vwListaPrecintoLiquidaByIdPrecinto.length as String?);
+
+    /* if (vwCountDamByIdserviceorder.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Dam Encontrada"),
+        backgroundColor: Colors.greenAccent,
+      ));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Registro no encontrado"),
+        backgroundColor: Colors.redAccent,
+      ));
+    }  */
+  }
+
+  calcularSaldo() {
+    setState(() {
+      saldo = vwLiquidaDoDamByIdserviceorder[0].totalViajes! -
+          vwCountDamByIdserviceorder[0].conteoDam!;
+      _saldoController.text = saldo.toString();
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    getTanques();
+    getListPlacasCarguio();
   }
 
   @override
@@ -203,7 +398,6 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
     final minutes1 = dateInicio.minute.toString().padLeft(2, '0');
     final hours2 = dateTermino.hour.toString().padLeft(2, '0');
     final minutes2 = dateTermino.minute.toString().padLeft(2, '0');
-
 
     return DefaultTabController(
       length: 2,
@@ -258,38 +452,67 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                 const SizedBox(
                   height: 20,
                 ),
-                DropdownButtonFormField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    labelText: 'Tanque',
-                    labelStyle: TextStyle(
-                      color: kColorAzul,
-                      fontSize: 20.0,
-                    ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 270,
+                        child: DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            labelText: 'Tanque',
+                            labelStyle: TextStyle(
+                              color: kColorAzul,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                          icon: const Icon(
+                            Icons.arrow_drop_down_circle_outlined,
+                          ),
+                          items: getLiquidaListaTanque(vwGetLiquidaListTanque),
+                          onChanged: (value) => {
+                            setState(() {
+                              _valueTanqueDropdown = value as String;
+                            })
+                          },
+                          validator: (value) {
+                            if (value != _valueTanqueDropdown) {
+                              return 'Por favor, elige el tanque';
+                            }
+                            return null;
+                          },
+                          hint: Text(_valueTanqueDropdown),
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            listaTanqueAdd.add(_valueTanqueDropdown);
+                            setState(() {
+                              stringList = listaTanqueAdd.join(", ");
+                              tanquesText.text = stringList;
+                            });
+                            print(stringList);
+                          },
+                          icon: Icon(
+                            Icons.add_box,
+                            color: kColorAzul,
+                          ))
+                    ],
                   ),
-                  icon: const Icon(
-                    Icons.arrow_drop_down_circle_outlined,
-                  ),
-                  items: listaTanque.map((String a) {
-                    return DropdownMenuItem<String>(
-                      value: a,
-                      child: Center(child: Text(a, textAlign: TextAlign.left)),
-                    );
-                  }).toList(),
-                  onChanged: (value) => {
-                    setState(() {
-                      _valueTanqueDropdown = value as String;
-                    })
-                  },
-                  validator: (value) {
-                    if (value != _valueTanqueDropdown) {
-                      return 'Por favor, elige el tanque';
-                    }
-                    return null;
-                  },
-                  hint: Text(_valueTanqueDropdown),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "LISTA TANQUE AGREGADOS:",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 7),
+                Text(
+                  stringList,
+                  style: TextStyle(fontSize: 15),
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
@@ -331,6 +554,44 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       prefixIcon: IconButton(
+                          icon: const Icon(Icons.code),
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ScannerScreen()));
+                            codigoTransporteController.text = result;
+                          }),
+                      suffixIcon: IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: () {
+                            getTransporteByCod();
+                          }),
+                      labelText: 'Codigo Transporte',
+                      labelStyle: TextStyle(
+                        color: kColorAzul,
+                        fontSize: 20.0,
+                      ),
+                      hintText: 'Ingrese Codigo de Transporte'),
+                  onChanged: (value) {
+                    getTransporteByCod();
+                  },
+                  controller: codigoTransporteController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, Ingrese codigo de transporte';
+                    }
+                    return null;
+                  },
+                  //enabled: enableConductorController,
+                ),
+                /* TextFormField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      prefixIcon: IconButton(
                           icon: const Icon(Icons.closed_caption_off_rounded),
                           onPressed: () async {
                             final result = await Navigator.push(
@@ -355,26 +616,27 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                       idUsuario = BigInt.parse(value);
                       return null;
                     }, */
-                ),
+                ), */
                 const SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    prefixIcon: Icon(
-                      Icons.directions_boat,
-                      color: kColorAzul,
-                    ),
-                    labelText: 'Cisterna',
-                    labelStyle: TextStyle(
-                      color: kColorAzul,
-                      fontSize: 20.0,
-                    ),
-                    hintText: '',
-                  ),
-                  controller: cisternaController,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.badge,
+                        color: kColorAzul,
+                      ),
+                      labelText: 'Nombre Transporte',
+                      labelStyle: TextStyle(
+                        color: kColorAzul,
+                        fontSize: 20.0,
+                      ),
+                      hintText: ''),
+                  controller: nombreTransporteController,
+                  enabled: false,
                 ),
+
                 /*    const SizedBox(height: 20.0),
                 TextFormField(
                   decoration: InputDecoration(
@@ -420,21 +682,21 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                 const SizedBox(height: 20.0),
                 TextFormField(
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      prefixIcon: Icon(
-                        Icons.badge,
-                        color: kColorAzul,
-                      ),
-                      labelText: 'Nombre Transporte',
-                      labelStyle: TextStyle(
-                        color: kColorAzul,
-                        fontSize: 20.0,
-                      ),
-                      hintText: ''),
-                  controller: nombreTransporteController,
-                  enabled: false,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.directions_boat,
+                      color: kColorAzul,
+                    ),
+                    labelText: 'Cisterna',
+                    labelStyle: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                    hintText: '',
+                  ),
+                  controller: cisternaController,
                 ),
                 const SizedBox(height: 20.0),
                 TextFormField(
@@ -521,7 +783,12 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                         fontSize: 20.0,
                       ),
                       hintText: 'Ingrese el Delivery Order'),
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    getVerificacionDoDam(
+                        deliveryOrderController.text, damController.text);
+                    getCountDam(damController.text);
+                    // calcularSaldo();
+                  },
                   controller: deliveryOrderController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -550,15 +817,19 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                         fontSize: 20.0,
                       ),
                       hintText: 'Ingrese el DAM'),
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    getVerificacionDoDam(
+                        deliveryOrderController.text, damController.text);
+                    getCountDam(damController.text);
+                    calcularSaldo();
+                  },
                   controller: damController,
-                  /* validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor, ingrese el DAM';
-                      }
-                      idUsuario = BigInt.parse(value);
-                      return null;
-                    }, */
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, ingrese el DAM';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 20.0),
                 Container(
@@ -775,8 +1046,8 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                                       backgroundColor: kColorNaranja,
                                       padding: const EdgeInsets.all(10.0),
                                     ),
-                                    onPressed: (() =>
-                                        pickCarguioFoto(ImageSource.gallery)),
+                                    onPressed: (() => pickCarguioInicioFoto(
+                                        ImageSource.gallery)),
                                     child: const Text(
                                       "Abrir Galería",
                                       style: TextStyle(fontSize: 18),
@@ -792,8 +1063,8 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                                       backgroundColor: kColorNaranja,
                                       padding: const EdgeInsets.all(10.0),
                                     ),
-                                    onPressed: (() =>
-                                        pickCarguioFoto(ImageSource.camera)),
+                                    onPressed: (() => pickCarguioInicioFoto(
+                                        ImageSource.camera)),
                                     child: const Text(
                                       "Tomar Foto",
                                       style: TextStyle(fontSize: 18),
@@ -821,6 +1092,7 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                           fotoCarguio: imageCarguio!,
                           urlFoto: imageCarguio!.path));
                     });
+                    imageCarguio = null;
                   },
                   child: Text(
                     "AGREGAR FOTO CARGUIO",
@@ -892,8 +1164,16 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                   height: 50.0,
                   color: kColorNaranja,
                   onPressed: () async {
-                    await createLiquidaControlCarguio();
-                    clearFiels();
+                    if (vwLiquidaDoDamByIdserviceorder.isNotEmpty) {
+                      await createLiquidaControlCarguio();
+                      clearFiels();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            "Los Datos no son correctos, validar antes realizar registros"),
+                        backgroundColor: Colors.redAccent,
+                      ));
+                    }
                   },
                   child: const Text(
                     "Cargar Datos",
@@ -925,17 +1205,12 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                     icon: const Icon(
                       Icons.arrow_drop_down_circle_outlined,
                     ),
-                    items: listaPlacas.map((String a) {
-                      return DropdownMenuItem<String>(
-                        value: a,
-                        child:
-                            Center(child: Text(a, textAlign: TextAlign.left)),
-                      );
-                    }).toList(),
+                    items: getDropdownPlacasCarguio(vwListLiquidaPlacas),
                     onChanged: (value) => {
                       setState(() {
                         _valuePlacaDropdown = value as String;
-                      })
+                      }),
+                      getPlacaDataIncioById(int.parse(value.toString()))
                     },
                     validator: (value) {
                       if (value != _valuePlacaDropdown) {
@@ -1191,6 +1466,7 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                             fotoCarguio: imageTerminoCarguio!,
                             urlFoto: imageTerminoCarguio!.path));
                       });
+                      imageTerminoCarguio = null;
                     },
                     child: Text(
                       "AGREGAR FOTO TERMINO",
@@ -1263,8 +1539,8 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                     height: 50.0,
                     color: kColorNaranja,
                     onPressed: () async {
-                      /*  updateTerminoParalizaciones();
-                      await createFotoParalizaciones(); */
+                      updateTerminoCarguio();
+                      await createFotoCarguio();
                       setState(() {
                         imageTerminoCarguio = null;
                         listFotoTerminoCarguio.clear();
@@ -1286,22 +1562,38 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
     );
   }
 
+  List<DropdownMenuItem<String>> getLiquidaListaTanque(
+      List<VwGetLiquidaListTanque> bodegas) {
+    List<DropdownMenuItem<String>> dropDownItems = [];
+
+    for (var element in bodegas) {
+      var newDropDown = DropdownMenuItem(
+        value: element.tanque.toString(),
+        child: Text(
+          element.tanque.toString(),
+        ),
+      );
+      dropDownItems.add(newDropDown);
+    }
+    return dropDownItems;
+  }
+
   Future pickCarguioTerminoFoto(ImageSource source) async {
     try {
-      final imageCarguio = await ImagePicker().pickImage(source: source);
+      final imageTerminoCarguio = await ImagePicker().pickImage(source: source);
 
-      if (imageCarguio == null) return;
+      if (imageTerminoCarguio == null) return;
 
-      final imageTemporary = File(imageCarguio.path);
+      final imageTemporary = File(imageTerminoCarguio.path);
 
-      setState(() => this.imageCarguio = imageTemporary);
+      setState(() => this.imageTerminoCarguio = imageTemporary);
     } on PlatformException catch (e) {
       // print('Failed to pick image: $e');
       e.message;
     }
   }
 
-  Future pickCarguioFoto(ImageSource source) async {
+  Future pickCarguioInicioFoto(ImageSource source) async {
     try {
       final imageCarguio = await ImagePicker().pickImage(source: source);
 

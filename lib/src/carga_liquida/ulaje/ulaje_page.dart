@@ -993,6 +993,9 @@ class _UlajePageState extends State<UlajePage>
                                     color: kColorAzul),
                                 columns: const <DataColumn>[
                                   DataColumn(
+                                    label: Text("Nº"),
+                                  ),
+                                  DataColumn(
                                     label: Text("Tanque"),
                                   ),
                                   DataColumn(
@@ -1009,6 +1012,8 @@ class _UlajePageState extends State<UlajePage>
                                     .map(((e) => DataRow(
                                           onLongPress: () {},
                                           cells: <DataCell>[
+                                            DataCell(
+                                                Text(e.idUlaje.toString())),
                                             DataCell(Text(e.tanque.toString())),
                                             DataCell(Text(e.peso.toString(),
                                                 textAlign: TextAlign.center)),
