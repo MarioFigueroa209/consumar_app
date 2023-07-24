@@ -11,13 +11,13 @@ String createLiquidaControlCarguioToJson(CreateLiquidaControlCarguio data) =>
     json.encode(data.toJson());
 
 class CreateLiquidaControlCarguio {
+  SpCreateLiquidaControlCarguio? spCreateLiquidaControlCarguio;
+  List<SpCreateLiquidaFotosCarguio>? spCreateLiquidaFotosCarguio;
+
   CreateLiquidaControlCarguio({
     this.spCreateLiquidaControlCarguio,
     this.spCreateLiquidaFotosCarguio,
   });
-
-  SpCreateLiquidaControlCarguio? spCreateLiquidaControlCarguio;
-  List<SpCreateLiquidaFotosCarguio>? spCreateLiquidaFotosCarguio;
 
   factory CreateLiquidaControlCarguio.fromJson(Map<String, dynamic> json) =>
       CreateLiquidaControlCarguio(
@@ -37,10 +37,26 @@ class CreateLiquidaControlCarguio {
 }
 
 class SpCreateLiquidaControlCarguio {
+  int? jornada;
+  DateTime? fecha;
+  bool? soplado;
+  String? tanque;
+  String? nTicket;
+  String? placa;
+  String? cisterna;
+  String? deliveryOrder;
+  String? dam;
+  DateTime? inicioCarguio;
+  DateTime? terminoCarguio;
+  int? idTransporte;
+  int? idConductor;
+  int? idServiceOrder;
+  int? idUsuario;
+
   SpCreateLiquidaControlCarguio({
     this.jornada,
     this.fecha,
-    this.barredura,
+    this.soplado,
     this.tanque,
     this.nTicket,
     this.placa,
@@ -55,27 +71,11 @@ class SpCreateLiquidaControlCarguio {
     this.idUsuario,
   });
 
-  int? jornada;
-  DateTime? fecha;
-  bool? barredura;
-  String? tanque;
-  String? nTicket;
-  String? placa;
-  String? cisterna;
-  String? deliveryOrder;
-  String? dam;
-  DateTime? inicioCarguio;
-  DateTime? terminoCarguio;
-  int? idTransporte;
-  int? idConductor;
-  int? idServiceOrder;
-  int? idUsuario;
-
   factory SpCreateLiquidaControlCarguio.fromJson(Map<String, dynamic> json) =>
       SpCreateLiquidaControlCarguio(
         jornada: json["jornada"],
         fecha: DateTime.parse(json["fecha"]),
-        barredura: json["barredura"],
+        soplado: json["soplado"],
         tanque: json["tanque"],
         nTicket: json["nTicket"],
         placa: json["placa"],
@@ -93,7 +93,7 @@ class SpCreateLiquidaControlCarguio {
   Map<String, dynamic> toJson() => {
         "jornada": jornada,
         "fecha": fecha!.toIso8601String(),
-        "barredura": barredura,
+        "soplado": soplado,
         "tanque": tanque,
         "nTicket": nTicket,
         "placa": placa,
@@ -101,7 +101,7 @@ class SpCreateLiquidaControlCarguio {
         "deliveryOrder": deliveryOrder,
         "dam": dam,
         "inicioCarguio": inicioCarguio!.toIso8601String(),
-        "terminoCarguio": terminoCarguio!.toIso8601String(),
+        "terminoCarguio": terminoCarguio?.toIso8601String(),
         "idTransporte": idTransporte,
         "idConductor": idConductor,
         "idServiceOrder": idServiceOrder,
@@ -110,26 +110,30 @@ class SpCreateLiquidaControlCarguio {
 }
 
 class SpCreateLiquidaFotosCarguio {
+  String? nombreFoto;
+  String? urlFoto;
+  String? operacionCarguio;
+  int? idCarguio;
+
   SpCreateLiquidaFotosCarguio({
     this.nombreFoto,
     this.urlFoto,
+    this.operacionCarguio,
     this.idCarguio,
   });
-
-  String? nombreFoto;
-  String? urlFoto;
-  int? idCarguio;
 
   factory SpCreateLiquidaFotosCarguio.fromJson(Map<String, dynamic> json) =>
       SpCreateLiquidaFotosCarguio(
         nombreFoto: json["nombreFoto"],
         urlFoto: json["urlFoto"],
+        operacionCarguio: json["operacionCarguio"],
         idCarguio: json["idCarguio"],
       );
 
   Map<String, dynamic> toJson() => {
         "nombreFoto": nombreFoto,
         "urlFoto": urlFoto,
+        "operacionCarguio": operacionCarguio,
         "idCarguio": idCarguio,
       };
 }
