@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,12 +12,15 @@ import '../../../models/carga_liquida/SqlLiquidaModels/sqlite_ulaje_tanque_fotos
 import '../../../models/carga_liquida/ulaje/create_liquida_ulaje_list.dart';
 import '../../../models/carga_liquida/ulaje/vw_tanque_pesos_liquida_by_idServOrder.dart';
 import '../../../models/file_upload_result.dart';
+import '../../../models/vw_get_user_data_by_cod_user.dart';
 import '../../../services/carga_liquida/ulaje_service.dart';
 import '../../../services/file_upload_result.dart';
+import '../../../services/usuario_service.dart';
 import '../../../utils/carga_liquida/db_ulaje.dart';
 import '../../../utils/check_internet_connection.dart';
 import '../../../utils/connection_status_cubit.dart';
 import '../../../utils/constants.dart';
+import '../../scanner_screen.dart';
 
 class UlajePage extends StatefulWidget {
   const UlajePage(
@@ -64,6 +68,11 @@ class _UlajePageState extends State<UlajePage>
 
   late TabController _tabController;
 
+  final TextEditingController nombresSupervisorController =
+      TextEditingController();
+
+  final idSupervisorController = TextEditingController();
+
   final pesoController = TextEditingController();
 
   final temperaturaController = TextEditingController();
@@ -86,9 +95,26 @@ class _UlajePageState extends State<UlajePage>
 
   List<SqliteUlaje> liteSqliteUlaje = [];
 
+  VwgetUserDataByCodUser vwgetUserDataByCodUser = VwgetUserDataByCodUser();
+
+  int? idUser;
+
   File? imageTanque;
 
   File? imageDano;
+
+  getSupervisorByCodUser() async {
+    UsuarioService usuarioService = UsuarioService();
+    //nombresAPMTCController.text = '';
+
+    vwgetUserDataByCodUser =
+        await usuarioService.getUserDataByCodUser(idSupervisorController.text);
+
+    nombresSupervisorController.text =
+        "${vwgetUserDataByCodUser.nombres!} ${vwgetUserDataByCodUser.apellidos!}";
+    idUser = vwgetUserDataByCodUser.idUsuario;
+    //print(idApmtc);
+  }
 
   createUlajeSqlLite() async {
     double? cantidadDanos;
@@ -614,7 +640,14 @@ class _UlajePageState extends State<UlajePage>
                               onChanged: (value) => setState(
                                 () {
                                   valueMarcaderia = value;
-                                  visibleMercaderia = value;
+                                  /*  valueMarcaderia = value;
+                                  visibleMercaderia = value; */
+                                  if (valueMarcaderia == true) {
+                                    dialogoConfirmarMercaderia(context);
+                                  }
+                                  if (valueMarcaderia == false) {
+                                    visibleMercaderia = false;
+                                  }
                                 },
                               ),
                               activeTrackColor: Colors.lightGreenAccent,
@@ -1150,6 +1183,125 @@ class _UlajePageState extends State<UlajePage>
             : null,
       ),
     );
+  }
+
+  dialogoConfirmarMercaderia(BuildContext context) {
+    showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+              insetPadding: const EdgeInsets.all(70),
+              actions: [
+                const Center(
+                  child: SizedBox(
+                    width: 230,
+                    child: Text(
+                      'Validar Mercaderia Observada Supervisor',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      prefixIcon: IconButton(
+                          icon: Icon(Icons.qr_code, color: kColorAzul),
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ScannerScreen()));
+
+                            idSupervisorController.text = result;
+                          }),
+                      suffixIcon: IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: () {
+                            getSupervisorByCodUser();
+                          }),
+                      labelText: 'Id.Job',
+                      labelStyle: TextStyle(
+                        color: kColorAzul,
+                        fontSize: 20.0,
+                      ),
+                      hintText: 'Ingrese el numero de ID Job'),
+                  onChanged: (value) {
+                    getSupervisorByCodUser();
+                  },
+                  controller: idSupervisorController,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.badge,
+                      color: kColorAzul,
+                    ),
+                    labelText: 'Nombre usuario',
+                    labelStyle: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  enabled: false,
+                  controller: nombresSupervisorController,
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        if (idUser != null) {
+                          setState(() {
+                            visibleMercaderia = true;
+                          });
+                          Navigator.pop(context);
+                          idSupervisorController.clear();
+                          nombresSupervisorController.clear();
+                        } else {
+                          print("Nop");
+                          Flushbar(
+                            backgroundColor: Colors.red,
+                            message: 'NO CUENTA CON AUTORIZACION',
+                            duration: Duration(seconds: 3),
+                          ).show(context);
+                        }
+                      },
+                      child: const Text(
+                        "Aceptar",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          valueMarcaderia = false;
+                          visibleMercaderia = false;
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "Cancelar",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ));
   }
 
   dialogoEliminar(BuildContext context, SqliteUlaje itemSqlUlaje) {
