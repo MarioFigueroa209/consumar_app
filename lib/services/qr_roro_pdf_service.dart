@@ -35,7 +35,6 @@ class QrRoroPdfService {
 
     await Printing.layoutPdf(
         onLayout: (PdfPageFormat format) async => doc.save());
-
     /// print the document using the iOS or Android print service:
     return doc.save();
     /*final file = File('AutoreportPdf.pdf');
