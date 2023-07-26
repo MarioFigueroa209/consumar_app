@@ -26,7 +26,12 @@ class TicketDamageReport {
         await damageReportConsultaService.getVwTicketDrListado(idDamageReport);
 
     nave = vwTicketDrListado[0].nombreNave!;
-    puerto = vwTicketDrListado[0].puerto!.toUpperCase();
+
+    if (vwTicketDrListado[0].puerto != null) {
+      puerto = vwTicketDrListado[0].puerto!.toUpperCase();
+    } else {
+      puerto = "";
+    }
   }
 
   Future<Uint8List> createPdf(BigInt idDamageReport) async {

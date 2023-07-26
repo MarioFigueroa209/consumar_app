@@ -454,12 +454,12 @@ class _Autoreport2EdicionState extends State<Autoreport2Edicion> {
       nLlavesSimples = 0;
       nLlavesInteligentes = 0;
     });
-    if (context.mounted) return;
+    //if (context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("Registro actualizado correctamente"),
       backgroundColor: Colors.greenAccent,
     ));
-    if (context.mounted) return;
+    //if (context.mounted) return;
     Navigator.pop(context);
     // }
   }

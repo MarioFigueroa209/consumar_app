@@ -17,6 +17,7 @@ class SqliteUlaje {
     this.tanque,
     this.peso,
     this.temperatura,
+    this.descripcionDano,
     this.cantidadDano,
     this.descripcionComentarios,
     this.idServiceOrder,
@@ -30,6 +31,7 @@ class SqliteUlaje {
   double? peso;
   double? temperatura;
   double? cantidadDano;
+  String? descripcionDano;
   String? descripcionComentarios;
   int? idServiceOrder;
   int? idUsuario;
@@ -42,6 +44,7 @@ class SqliteUlaje {
         peso: json["peso"],
         temperatura: json["temperatura"],
         cantidadDano: json["cantidadDano"],
+        descripcionDano: json["descripcionDano"],
         descripcionComentarios: json["descripcionComentarios"],
         idServiceOrder: json["idServiceOrder"],
         idUsuario: json["idUsuario"],
@@ -55,6 +58,7 @@ class SqliteUlaje {
         "peso": peso,
         "temperatura": temperatura,
         "cantidadDano": cantidadDano,
+        "descripcionDano": descripcionDano,
         "descripcionComentarios": descripcionComentarios,
         "idServiceOrder": idServiceOrder,
         "idUsuario": idUsuario,

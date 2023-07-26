@@ -1279,6 +1279,11 @@ class DrListadoState extends State<DrListado> {
                           setState(() {
                             selectedDRs.clear();
                           });
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Dr Aprobados"),
+                            backgroundColor: Colors.green,
+                          ));
                         } else {
                           createAprobadoMasivoDr();
                           ScaffoldMessenger.of(context)

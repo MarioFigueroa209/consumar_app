@@ -43,9 +43,9 @@ class SpCreateRecepcionAlmacen {
       SpCreateRecepcionAlmacen(
         jornada: json["jornada"],
         fecha: DateTime.parse(json["fecha"]),
-        pesoBruto: json["pesoBruto"],
-        taraCamion: json["taraCamion"],
-        pesoNeto: json["pesoNeto"],
+        pesoBruto: json["pesoBruto"].toDouble(),
+        taraCamion: json["taraCamion"].toDouble(),
+        pesoNeto: json["pesoNeto"].toDouble(),
         estadoCompuertaTolva: json["estadoCompuertaTolva"],
         estadoCajaHidraulica: json["estadoCajaHidraulica"],
         estadoToldo: json["estadoToldo"],

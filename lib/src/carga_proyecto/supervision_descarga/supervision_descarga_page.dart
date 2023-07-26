@@ -144,7 +144,7 @@ class _SupervisionDescargaPageState extends State<SupervisionDescargaPage> {
                                       MaterialPageRoute(
                                           builder: (context) => DrInformeFinal(
                                                 idDamageReport:
-                                                    idDamageReportNxtPage,
+                                                    idDamageReportNxtPage, 
                                                 codCapitan: codCapitan.text,
                                                 nombreCapitan: nombrecapitan.text,
                                                 idServiceOrder:

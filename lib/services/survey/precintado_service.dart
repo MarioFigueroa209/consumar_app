@@ -21,6 +21,7 @@ class PrecintadoService {
       // Si el servidor devuelve una repuesta OK, parseamos el JSON
       return parsePrecintados(response.body);
     } else {
+      print(response.statusCode);
       //Si esta respuesta no fue OK, lanza un error.
       throw Exception('No se pudo obtener los registros');
     }

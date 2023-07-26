@@ -517,7 +517,12 @@ class _SupervisionCarguioPageState extends State<SupervisionCarguioPage>
                     minWidth: double.infinity,
                     height: 50.0,
                     color: kColorNaranja,
-                    onPressed: () async {},
+                    onPressed: () async {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Datos Registrados con exito"),
+                        backgroundColor: Colors.green,
+                      ));
+                    },
                     child: const Text(
                       "REGISTRAR TRANSPORTE",
                       style: TextStyle(
@@ -880,9 +885,14 @@ class _SupervisionCarguioPageState extends State<SupervisionCarguioPage>
                   minWidth: double.infinity,
                   height: 50.0,
                   color: kColorNaranja,
-                  onPressed: () async {},
+                  onPressed: () async {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Datos Registrados con exito"),
+                      backgroundColor: Colors.green,
+                    ));
+                  },
                   child: const Text(
-                    "REGISTRAR TRANSPORTE",
+                    "REGISTRAR BULTO",
                     style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -1215,9 +1225,14 @@ class _SupervisionCarguioPageState extends State<SupervisionCarguioPage>
                   minWidth: double.infinity,
                   height: 50.0,
                   color: kColorNaranja,
-                  onPressed: () async {},
+                  onPressed: () async {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Datos Registrados con exito"),
+                      backgroundColor: Colors.green,
+                    ));
+                  },
                   child: const Text(
-                    "REGISTRAR TRANSPORTE",
+                    "REGISTRAR CARGUIO",
                     style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../utils/constants.dart';
@@ -276,7 +275,12 @@ class _SupervisionDescargaUbicadoState
             minWidth: double.infinity,
             height: 50.0,
             color: kColorNaranja,
-            onPressed: () async {},
+            onPressed: () async {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Datos Registrados con exito"),
+                backgroundColor: Colors.green,
+              ));
+            },
             child: const Text(
               "REGISTRAR POSIC. MERCADERIA",
               style: TextStyle(

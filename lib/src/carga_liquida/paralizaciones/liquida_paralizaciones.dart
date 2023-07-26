@@ -313,7 +313,13 @@ class _LiquidaParalizacionesState extends State<LiquidaParalizaciones> {
                       icon: const Icon(
                         Icons.arrow_drop_down_circle_outlined,
                       ),
-                      items: null,
+                      items: listaDetalle.map((String a) {
+                        return DropdownMenuItem<String>(
+                          value: a,
+                          child:
+                              Center(child: Text(a, textAlign: TextAlign.left)),
+                        );
+                      }).toList(),
                       onChanged: (value) => {
                         setState(() {
                           _valueDetalleDropdown = value as String;
@@ -361,7 +367,13 @@ class _LiquidaParalizacionesState extends State<LiquidaParalizaciones> {
                       icon: const Icon(
                         Icons.arrow_drop_down_circle_outlined,
                       ),
-                      items: null,
+                      items: listaResponsable.map((String a) {
+                        return DropdownMenuItem<String>(
+                          value: a,
+                          child:
+                              Center(child: Text(a, textAlign: TextAlign.left)),
+                        );
+                      }).toList(),
                       onChanged: (value) => {
                         setState(() {
                           _valueResponsableDropdown = value as String;

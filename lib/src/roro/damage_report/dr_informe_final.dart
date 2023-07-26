@@ -108,13 +108,21 @@ class _DrInformeFinal extends State<DrInformeFinal> {
       vessel = vwGetDamageReportItemModel.nave!;
       urlChasisFoto = vwGetDamageReportItemModel.fotoChasis!;
       fecha = vwGetDamageReportItemModel.fecha;
-      port = vwGetDamageReportItemModel.puerto!;
+      if (vwGetDamageReportItemModel.puerto != null) {
+        port = vwGetDamageReportItemModel.puerto!;
+      } else {
+        port = "";
+      }
       shift = vwGetDamageReportItemModel.numeroViaje!;
       damageFound = vwGetDamageReportItemModel.damageFound!;
       damageOcurred = vwGetDamageReportItemModel.damageOcurred!;
       operation = vwGetDamageReportItemModel.operation!;
       stowagePosition = vwGetDamageReportItemModel.posicionEstibador!;
-      portLanding = vwGetDamageReportItemModel.puertoAterrizaje!;
+      if (vwGetDamageReportItemModel.puertoAterrizaje != null) {
+        portLanding = vwGetDamageReportItemModel.puertoAterrizaje!;
+      } else {
+        portLanding = "";
+      }
       if (vwGetDamageReportItemModel.puertoDestino != null) {
         portDischard = vwGetDamageReportItemModel.puertoDestino!;
       } else {
@@ -127,7 +135,13 @@ class _DrInformeFinal extends State<DrInformeFinal> {
       bl = vwGetDamageReportItemModel.billOfLeading!;
       lugarAccidente = vwGetDamageReportItemModel.lugarAccidente!;
       fechaAccidente = vwGetDamageReportItemModel.fechaHoraAccidente;
-      agenciaMaritima = vwGetDamageReportItemModel.agenciaMaritica!;
+
+      if (vwGetDamageReportItemModel.agenciaMaritica != null) {
+        agenciaMaritima = vwGetDamageReportItemModel.agenciaMaritica!;
+      } else {
+        agenciaMaritima = "";
+      }
+
       vesselOficer = vwGetDamageReportItemModel.nombreResponsableNave!;
       if (vwGetDamageReportItemModel.nombreConductor != null) {
         nombreConductor = vwGetDamageReportItemModel.nombreConductor!;
@@ -753,20 +767,26 @@ class _DrInformeFinal extends State<DrInformeFinal> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
+                                          /* Text(
                                             "Codigo de daño: ${damageTypeByIdDrModelList[i].codigoDano!}",
-                                          ),
+                                          ), */
                                           Text(
                                             "Daño: ${damageTypeByIdDrModelList[i].danoRegistrado!}",
                                           ),
                                           Text(
                                             "Parte: ${damageTypeByIdDrModelList[i].parteVehiculo!}",
                                           ),
-                                          Text(
-                                            "Zona: ${damageTypeByIdDrModelList[i].zonaVehiculo!}",
+                                          SizedBox(
+                                            width: 120,
+                                            child: Text(
+                                              "Zona: ${damageTypeByIdDrModelList[i].zonaVehiculo!}",
+                                            ),
                                           ),
-                                          Text(
-                                            "Faltantes: ${damageTypeByIdDrModelList[i].zonaVehiculo!}",
+                                          SizedBox(
+                                            width: 120,
+                                            child: Text(
+                                              "Faltantes: ${damageTypeByIdDrModelList[i].descipcionFaltantes!}",
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -1097,14 +1117,14 @@ class _DrInformeFinal extends State<DrInformeFinal> {
                           if (widget.urlImgFirma != null) {
                             await subiendofotoXD();
                             createDRListado(estadoAprobado);
-                            if (context.mounted) return;
+                            //if (context.mounted) return;
                             Navigator.pop(context);
                             Navigator.pop(context);
                           } else {
                             createDRListado(estadoAprobado);
+                            //if (context.mounted) return;
                             Navigator.pop(context);
                             Navigator.pop(context);
-                            if (context.mounted) return;
                           }
                         },
                         child: const Text(

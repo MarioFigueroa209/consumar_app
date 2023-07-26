@@ -360,7 +360,7 @@ final urlUpdateParalizacionById =
 String urlGetPrecintoById = "${urlApiBase}Precintados/getGranelPrecintoById/";
 
 String urlGetPrecintoCarguio =
-    "${urlApiBase}Precintados/getGranelPrecintoCarguio?idServiceOrder=";
+    "${urlApiBase}Precintados/getGranelPrecintoCarguioByIdServiceOrder?idServiceOrder=";
 
 final urlCreatePrecintados =
     Uri.parse("${urlApiBase}Precintados/createPrecintado");
@@ -396,10 +396,18 @@ final urlCreatePesoHistorico =
     Uri.parse("${urlApiBase}ValidacionPeso/createPesoHistorico");
 
 /*------------------- CARGA LIQUIDA ----------------------*/
+String urlGetShipAndTravelByIdOrderServiceLiquida =
+    "${urlApiBase}ServiceOrder/getShipAndTravelByIdServiceOrderLiquida/";
+
+final urlGetLiquidaListTanque =
+    Uri.parse("${urlApiBase}LiquidaControlCarguio/getLiquidaListTanque");
 
 /*------------ Ulaje -------------------*/
 final urlCreateUlajeList =
     Uri.parse("${urlApiBase}Ulaje/CreateLiquidaUlajeList");
+
+String urlGetTanquePesosLiquidaByIdServiceOrder =
+    "${urlApiBase}Ulaje/getTanquePesosLiquidaByIdServiceOrder?idServiceOrder=";
 
 /*------------------ Liquida Registro Equipos---------*/
 final urlCreateLiquidaRegistroEquipos = Uri.parse(
@@ -440,9 +448,35 @@ String urlDeleteLogicLiquidaInspeccionEquipo =
     "${urlApiBase}LiquidaInspeccionEquipo/deleteLogicLiquidaInspeccionEquipos/";
 
 /*---------- Liquida Control de Carguio ------------*/
+final urlGetListTanque =
+    Uri.parse("${urlApiBase}LiquidaControlCarguio/getLiquidaListTanque");
 
 final urlCreateLiquidaControlCarguio =
     Uri.parse("${urlApiBase}LiquidaControlCarguio/createLiquidaControlCarguio");
+
+final urlCreateLiquidaFotosControlCarguioList = Uri.parse(
+    "${urlApiBase}LiquidaControlCarguio/createLiquidaFotosControlCarguioList");
+
+final urlUpdateLiquidaControlCarguioTermino = Uri.parse(
+    "${urlApiBase}LiquidaControlCarguio/UpdateLiquidaControlCarguioTermino");
+
+String urlGetLiquidaTransporteByPlacaAndIdService =
+    "${urlApiBase}LiquidaControlCarguio/getLiquidaTransporteByPlacaAndIdService?IdServiceOrder=";
+
+String urlGetGranelLiquidaCodConductores =
+    "${urlApiBase}LiquidaControlCarguio/getGranelLiquidaCodConductores/";
+
+String urlGetLiquidaDoDamByIdServiceOrder =
+    "${urlApiBase}LiquidaControlCarguio/getLiquidaDoDamByIdServiceOrder?IdServiceOrder=";
+
+String urlGetLiquidaListaPlacasInicioCarguioByIdServiceOrder =
+    "${urlApiBase}LiquidaControlCarguio/getLiquidaListaPlacasInicioCarguioByIdServiceOrder?IdServiceOrder=";
+
+String urlGetLiquidaPlacasInicioCarguio =
+    "${urlApiBase}LiquidaControlCarguio/getLiquidaPlacasInicioCarguio?IdServiceOrder=";
+
+String urlGetLiquidaCountDamByIdServiceOrder =
+    "${urlApiBase}LiquidaControlCarguio/getCountDamByIdServiceOrder?IdServiceOrder=";
 
 /*--------------- Liquida Paralizaciones -------------- */
 final urlCreateLiquidaParalizaciones =
@@ -499,3 +533,22 @@ final urlCreateLiquidaDescargaTuberia = Uri.parse(
 
 String urlDeleteLogicLiquidaDescargaTuberia =
     "${urlApiBase}LiquidaDescargaTuberia/DeleteLogicDescargaTuberia/";
+
+/*------------------Operacion Silos --------------------------- */
+final urlCreateSilosControlTicket =
+    Uri.parse("${urlApiBase}Silos/CreateSilosControlTicket");
+
+final urlCreateSilosControlVisual =
+    Uri.parse("${urlApiBase}Silos/CreateSilosControlVisual");
+
+final urlCreateSilosDistribucion =
+    Uri.parse("${urlApiBase}Silos/CreateSilosDistribucion");
+
+String urlGetSilosControlTicketVisualByIdServiceOrder =
+    "${urlApiBase}Silos/getSilosControlTicketVisualByIdServiceOrder?idServiceOrder=";
+
+String urlGetSilosControlTicketById =
+    "${urlApiBase}Silos/getSilosControlTicketById/";
+
+final urlGetDistribucionSilos =
+    Uri.parse("${urlApiBase}Silos/getDistribucionSilos");

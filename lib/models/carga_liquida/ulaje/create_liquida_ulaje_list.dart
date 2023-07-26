@@ -11,15 +11,15 @@ String createLiquidaUlajeListToJson(CreateLiquidaUlajeList data) =>
     json.encode(data.toJson());
 
 class CreateLiquidaUlajeList {
+  List<SpCreateLiquidaUlaje>? spCreateLiquidaUlaje;
+  List<SpCreateLiquidaUlajeObservadosFoto>? spCreateLiquidaUlajeObservadosFotos;
+  List<SpCreateLiquidaUlajeTanquesFoto>? spCreateLiquidaUlajeTanquesFotos;
+
   CreateLiquidaUlajeList({
     this.spCreateLiquidaUlaje,
     this.spCreateLiquidaUlajeObservadosFotos,
     this.spCreateLiquidaUlajeTanquesFotos,
   });
-
-  List<SpCreateLiquidaUlaje>? spCreateLiquidaUlaje;
-  List<SpCreateLiquidaUlajeObservadosFoto>? spCreateLiquidaUlajeObservadosFotos;
-  List<SpCreateLiquidaUlajeTanquesFoto>? spCreateLiquidaUlajeTanquesFotos;
 
   factory CreateLiquidaUlajeList.fromJson(Map<String, dynamic> json) =>
       CreateLiquidaUlajeList(
@@ -47,6 +47,18 @@ class CreateLiquidaUlajeList {
 }
 
 class SpCreateLiquidaUlaje {
+  int? idUlaje;
+  int? jornada;
+  DateTime? fecha;
+  String? tanque;
+  double? peso;
+  double? temperatura;
+  double? cantidadDano;
+  String? descripcionDano;
+  String? descripcionComentarios;
+  int? idServiceOrder;
+  int? idUsuario;
+
   SpCreateLiquidaUlaje({
     this.idUlaje,
     this.jornada,
@@ -55,21 +67,11 @@ class SpCreateLiquidaUlaje {
     this.peso,
     this.temperatura,
     this.cantidadDano,
+    this.descripcionDano,
     this.descripcionComentarios,
     this.idServiceOrder,
     this.idUsuario,
   });
-
-  int? idUlaje;
-  int? jornada;
-  DateTime? fecha;
-  String? tanque;
-  double? peso;
-  double? temperatura;
-  double? cantidadDano;
-  String? descripcionComentarios;
-  int? idServiceOrder;
-  int? idUsuario;
 
   factory SpCreateLiquidaUlaje.fromJson(Map<String, dynamic> json) =>
       SpCreateLiquidaUlaje(
@@ -80,6 +82,7 @@ class SpCreateLiquidaUlaje {
         peso: json["peso"],
         temperatura: json["temperatura"],
         cantidadDano: json["cantidadDano"],
+        descripcionDano: json["descripcionDano"],
         descripcionComentarios: json["descripcionComentarios"],
         idServiceOrder: json["idServiceOrder"],
         idUsuario: json["idUsuario"],
@@ -93,6 +96,7 @@ class SpCreateLiquidaUlaje {
         "peso": peso,
         "temperatura": temperatura,
         "cantidadDano": cantidadDano,
+        "descripcionDano": descripcionDano,
         "descripcionComentarios": descripcionComentarios,
         "idServiceOrder": idServiceOrder,
         "idUsuario": idUsuario,
@@ -100,15 +104,15 @@ class SpCreateLiquidaUlaje {
 }
 
 class SpCreateLiquidaUlajeObservadosFoto {
+  String? ulajeNombreFoto;
+  String? ulajeUrlFoto;
+  int? idUlaje;
+
   SpCreateLiquidaUlajeObservadosFoto({
     this.ulajeNombreFoto,
     this.ulajeUrlFoto,
     this.idUlaje,
   });
-
-  String? ulajeNombreFoto;
-  String? ulajeUrlFoto;
-  int? idUlaje;
 
   factory SpCreateLiquidaUlajeObservadosFoto.fromJson(
           Map<String, dynamic> json) =>
@@ -126,15 +130,15 @@ class SpCreateLiquidaUlajeObservadosFoto {
 }
 
 class SpCreateLiquidaUlajeTanquesFoto {
+  String? tanqueNombreFoto;
+  String? tanqueUrlFoto;
+  int? idUlaje;
+
   SpCreateLiquidaUlajeTanquesFoto({
     this.tanqueNombreFoto,
     this.tanqueUrlFoto,
     this.idUlaje,
   });
-
-  String? tanqueNombreFoto;
-  String? tanqueUrlFoto;
-  int? idUlaje;
 
   factory SpCreateLiquidaUlajeTanquesFoto.fromJson(Map<String, dynamic> json) =>
       SpCreateLiquidaUlajeTanquesFoto(

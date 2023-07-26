@@ -39,6 +39,7 @@ class _ReinspeccionEquipoLiquidaState extends State<ReinspeccionEquipoLiquida> {
   final TextEditingController tanqueController = TextEditingController();
   final TextEditingController codEquipoController = TextEditingController();
   final TextEditingController equipoController = TextEditingController();
+  final TextEditingController detalleController = TextEditingController();
 
   InspeccionEquipoLiquidaService inspeccionEquipoLiquidaService =
       InspeccionEquipoLiquidaService();
@@ -76,7 +77,7 @@ class _ReinspeccionEquipoLiquidaState extends State<ReinspeccionEquipoLiquida> {
     vwLiquidaInspeccionEquiposById = await inspeccionEquipoLiquidaService
         .getInspeccionEquiposById(widget.idInspeccionEquipo);
 
-    tanqueController.text = vwLiquidaInspeccionEquiposById.tanque!;
+    //tanqueController.text = vwLiquidaInspeccionEquiposById.tanque!;
     codEquipoController.text = vwLiquidaInspeccionEquiposById.codEquipo!;
     equipoController.text = vwLiquidaInspeccionEquiposById.nombreEquipo!;
   }
@@ -182,7 +183,7 @@ class _ReinspeccionEquipoLiquidaState extends State<ReinspeccionEquipoLiquida> {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(children: [
-            TextFormField(
+            /* TextFormField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0),
@@ -191,7 +192,7 @@ class _ReinspeccionEquipoLiquidaState extends State<ReinspeccionEquipoLiquida> {
                   Icons.calendar_month,
                   color: kColorAzul,
                 ),
-                labelText: 'BODEGA',
+                labelText: 'TANQUE',
                 labelStyle: TextStyle(
                   color: kColorAzul,
                   //fontSize: 20.0,
@@ -204,7 +205,7 @@ class _ReinspeccionEquipoLiquidaState extends State<ReinspeccionEquipoLiquida> {
               ),
               enabled: false,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 20), */
             TextFormField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(

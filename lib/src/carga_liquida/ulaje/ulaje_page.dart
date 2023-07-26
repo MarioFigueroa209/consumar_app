@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,14 +10,17 @@ import '../../../models/carga_liquida/SqlLiquidaModels/sqlite_ulaje.dart';
 import '../../../models/carga_liquida/SqlLiquidaModels/sqlite_ulaje_observados_fotos.dart';
 import '../../../models/carga_liquida/SqlLiquidaModels/sqlite_ulaje_tanque_fotos.dart';
 import '../../../models/carga_liquida/ulaje/create_liquida_ulaje_list.dart';
+import '../../../models/carga_liquida/ulaje/vw_tanque_pesos_liquida_by_idServOrder.dart';
 import '../../../models/file_upload_result.dart';
+import '../../../models/vw_get_user_data_by_cod_user.dart';
 import '../../../services/carga_liquida/ulaje_service.dart';
 import '../../../services/file_upload_result.dart';
+import '../../../services/usuario_service.dart';
 import '../../../utils/carga_liquida/db_ulaje.dart';
 import '../../../utils/check_internet_connection.dart';
 import '../../../utils/connection_status_cubit.dart';
 import '../../../utils/constants.dart';
-import '../../../utils/lists.dart';
+import '../../scanner_screen.dart';
 
 class UlajePage extends StatefulWidget {
   const UlajePage(
@@ -53,6 +57,8 @@ class _UlajePageState extends State<UlajePage>
     with SingleTickerProviderStateMixin {
   DbUlaje dbLiteUlaje = DbUlaje();
 
+  List<VwTanquePesosLiquidaByIdServOrder> tanquePesosLiquidaByIdServOrder = [];
+
   FileUploadService fileUploadService = FileUploadService();
 
   bool valueMarcaderia = false;
@@ -62,11 +68,18 @@ class _UlajePageState extends State<UlajePage>
 
   late TabController _tabController;
 
+  final TextEditingController nombresSupervisorController =
+      TextEditingController();
+
+  final idSupervisorController = TextEditingController();
+
   final pesoController = TextEditingController();
 
   final temperaturaController = TextEditingController();
 
   final cantAproxDanoController = TextEditingController();
+
+  final descripcionDanoController = TextEditingController();
 
   final comentariosController = TextEditingController();
 
@@ -82,9 +95,26 @@ class _UlajePageState extends State<UlajePage>
 
   List<SqliteUlaje> liteSqliteUlaje = [];
 
+  VwgetUserDataByCodUser vwgetUserDataByCodUser = VwgetUserDataByCodUser();
+
+  int? idUser;
+
   File? imageTanque;
 
   File? imageDano;
+
+  getSupervisorByCodUser() async {
+    UsuarioService usuarioService = UsuarioService();
+    //nombresAPMTCController.text = '';
+
+    vwgetUserDataByCodUser =
+        await usuarioService.getUserDataByCodUser(idSupervisorController.text);
+
+    nombresSupervisorController.text =
+        "${vwgetUserDataByCodUser.nombres!} ${vwgetUserDataByCodUser.apellidos!}";
+    idUser = vwgetUserDataByCodUser.idUsuario;
+    //print(idApmtc);
+  }
 
   createUlajeSqlLite() async {
     double? cantidadDanos;
@@ -103,6 +133,7 @@ class _UlajePageState extends State<UlajePage>
             peso: double.parse(pesoController.text),
             temperatura: double.parse(temperaturaController.text),
             cantidadDano: cantidadDanos,
+            descripcionDano: descripcionDanoController.text,
             descripcionComentarios: comentariosController.text,
             idServiceOrder: widget.idServiceOrder,
             idUsuario: widget.idUsuario),
@@ -110,8 +141,9 @@ class _UlajePageState extends State<UlajePage>
         liteSqliteUlajeTanqueFotos);
     setState(() {
       listFutureTableUlajeSqLite();
-      _valueTanqueDropdown = 'Seleccione Tanque';
+      //_valueTanqueDropdown = 'Seleccione Tanque';
       pesoController.clear();
+      descripcionDanoController.clear();
       imageDano = null;
       imageTanque = null;
       temperaturaController.clear();
@@ -125,20 +157,35 @@ class _UlajePageState extends State<UlajePage>
     _tabController.animateTo((_tabController.index = 1));
   }
 
-  obtenerUlajeList() async {
+  cargarLista() async {
+    DbTanquePesosLiquidaSqlLite dbTanquePesosLiquidaSqlLite =
+        DbTanquePesosLiquidaSqlLite();
+
+    List<VwTanquePesosLiquidaByIdServOrder> value =
+        await dbTanquePesosLiquidaSqlLite.listTanquePesos();
+
+    setState(() {
+      tanquePesosLiquidaByIdServOrder = value;
+    });
+
+    print("llegaron los registros ${tanquePesosLiquidaByIdServOrder.length}");
+  }
+
+  obtenerListados() async {
     liteSqliteUlaje = await dbLiteUlaje.getUlajeListSqlLite();
 
-  }
-
-  obtenerListTanquesFoto() async {
     liteSqliteUlajeTanqueFotos = await dbLiteUlaje.getListTanquesFotos();
 
-  }
-
-  obtenerObservadosFoto() async {
     listSqliteUlajeObservadosFotos = await dbLiteUlaje.getListObservadosFotos();
 
+    print("cantidad ulajes ${liteSqliteUlaje.length}");
+    print("cantidad tanques ${liteSqliteUlajeTanqueFotos.length}");
+    print("cantidad observado ${listSqliteUlajeObservadosFotos.length}");
   }
+
+  /* obtenerObservadosFoto() async {
+    //print(listSqliteUlajeObservadosFotos[0].ulajeUrlFoto);
+  } */
 
   listFutureTableUlajeSqLite() {
     futureListSqliteUlaje = dbLiteUlaje.getUlajeListSqlLite();
@@ -157,6 +204,8 @@ class _UlajePageState extends State<UlajePage>
           liteSqliteUlaje[count].temperatura;
       spCreateLiquidaUlajeModel.cantidadDano =
           liteSqliteUlaje[count].cantidadDano;
+      spCreateLiquidaUlajeModel.descripcionDano =
+          liteSqliteUlaje[count].descripcionDano;
       spCreateLiquidaUlajeModel.descripcionComentarios =
           liteSqliteUlaje[count].descripcionComentarios;
       spCreateLiquidaUlajeModel.idServiceOrder =
@@ -181,6 +230,7 @@ class _UlajePageState extends State<UlajePage>
           fileUploadResult.urlPhoto;
       spCreateLiquidaUlajeTanquesFoto[count].tanqueNombreFoto =
           fileUploadResult.fileName;
+      print("resultado tanques ${fileUploadResult.urlPhoto}");
     }
     return spCreateLiquidaUlajeTanquesFoto;
   }
@@ -203,6 +253,7 @@ class _UlajePageState extends State<UlajePage>
           fileUploadResult.urlPhoto;
       spCreateLiquidaUlajeObservadosFoto[count].ulajeNombreFoto =
           fileUploadResult.fileName;
+      print("resultado observado ${fileUploadResult.urlPhoto}");
     }
     return spCreateLiquidaUlajeObservadosFoto;
   }
@@ -211,35 +262,51 @@ class _UlajePageState extends State<UlajePage>
     UlajeService ulajeService = UlajeService();
 
     List<SpCreateLiquidaUlaje> createLiquidaUlaje = <SpCreateLiquidaUlaje>[];
-    createLiquidaUlaje = parseLiquidaUlaje();
 
     List<SpCreateLiquidaUlajeTanquesFoto> spLiquidaUlajeTanquesFoto =
         <SpCreateLiquidaUlajeTanquesFoto>[];
-    spLiquidaUlajeTanquesFoto = await parserTanqueFoto();
-
     List<SpCreateLiquidaUlajeObservadosFoto> spLiquidaUlajeObservadosFoto =
         <SpCreateLiquidaUlajeObservadosFoto>[];
-    spLiquidaUlajeObservadosFoto = await parserObservadoFoto();
 
     CreateLiquidaUlajeList createLiquidaUlajeList = CreateLiquidaUlajeList();
 
+    createLiquidaUlaje = parseLiquidaUlaje();
+    spLiquidaUlajeObservadosFoto = await parserObservadoFoto();
+    spLiquidaUlajeTanquesFoto = await parserTanqueFoto();
+
     createLiquidaUlajeList.spCreateLiquidaUlaje = createLiquidaUlaje;
-    createLiquidaUlajeList.spCreateLiquidaUlajeObservadosFotos =
-        spLiquidaUlajeObservadosFoto;
     createLiquidaUlajeList.spCreateLiquidaUlajeTanquesFotos =
         spLiquidaUlajeTanquesFoto;
+    createLiquidaUlajeList.spCreateLiquidaUlajeObservadosFotos =
+        spLiquidaUlajeObservadosFoto;
 
-    ulajeService.createLiquidaUlajeList(createLiquidaUlajeList);
+    await ulajeService.createLiquidaUlajeList(createLiquidaUlajeList);
+  }
+
+  List<DropdownMenuItem<String>> getTanquePesoItems(
+      List<VwTanquePesosLiquidaByIdServOrder> orders) {
+    List<DropdownMenuItem<String>> dropDownItems = [];
+
+    for (var element in orders) {
+      var newDropDown = DropdownMenuItem(
+        value: element.tanque.toString(),
+        child: Text(
+          element.tanque.toString(),
+        ),
+      );
+      dropDownItems.add(newDropDown);
+    }
+    return dropDownItems;
   }
 
   @override
   void initState() {
     // TODO: implement initState
     _tabController = TabController(length: 2, vsync: this);
+    cargarLista();
     listFutureTableUlajeSqLite();
-    obtenerObservadosFoto();
-    obtenerListTanquesFoto();
-    obtenerUlajeList();
+    //obtenerObservadosFoto();
+    obtenerListados();
     super.initState();
   }
 
@@ -302,13 +369,14 @@ class _UlajePageState extends State<UlajePage>
                     icon: const Icon(
                       Icons.arrow_drop_down_circle_outlined,
                     ),
-                    items: listaTanque.map((String a) {
+                    items: getTanquePesoItems(tanquePesosLiquidaByIdServOrder),
+                    /*   items: listaTanque.map((String a) {
                       return DropdownMenuItem<String>(
                         value: a,
                         child:
                             Center(child: Text(a, textAlign: TextAlign.left)),
                       );
-                    }).toList(),
+                    }).toList(), */
                     onChanged: (value) => {
                       setState(() {
                         _valueTanqueDropdown = value as String;
@@ -572,7 +640,14 @@ class _UlajePageState extends State<UlajePage>
                               onChanged: (value) => setState(
                                 () {
                                   valueMarcaderia = value;
-                                  visibleMercaderia = value;
+                                  /*  valueMarcaderia = value;
+                                  visibleMercaderia = value; */
+                                  if (valueMarcaderia == true) {
+                                    dialogoConfirmarMercaderia(context);
+                                  }
+                                  if (valueMarcaderia == false) {
+                                    visibleMercaderia = false;
+                                  }
                                 },
                               ),
                               activeTrackColor: Colors.lightGreenAccent,
@@ -597,7 +672,7 @@ class _UlajePageState extends State<UlajePage>
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20.0),
                                 ),
-                                labelText: 'Observacion',
+                                labelText: 'Cantidad ',
                                 labelStyle: TextStyle(
                                   color: kColorAzul,
                                   fontSize: 18.0,
@@ -607,6 +682,28 @@ class _UlajePageState extends State<UlajePage>
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Por favor, ingrese cantidad';
+                              }
+                              return null;
+                            },
+                            enabled: true),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                labelText: 'Descripcion Daño',
+                                labelStyle: TextStyle(
+                                  color: kColorAzul,
+                                  fontSize: 18.0,
+                                ),
+                                hintText: 'Descripción del daño'),
+                            controller: descripcionDanoController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Por favor, ingrese descripcion';
                               }
                               return null;
                             },
@@ -929,6 +1026,9 @@ class _UlajePageState extends State<UlajePage>
                                     color: kColorAzul),
                                 columns: const <DataColumn>[
                                   DataColumn(
+                                    label: Text("Nº"),
+                                  ),
+                                  DataColumn(
                                     label: Text("Tanque"),
                                   ),
                                   DataColumn(
@@ -945,6 +1045,8 @@ class _UlajePageState extends State<UlajePage>
                                     .map(((e) => DataRow(
                                           onLongPress: () {},
                                           cells: <DataCell>[
+                                            DataCell(
+                                                Text(e.idUlaje.toString())),
                                             DataCell(Text(e.tanque.toString())),
                                             DataCell(Text(e.peso.toString(),
                                                 textAlign: TextAlign.center)),
@@ -1033,16 +1135,18 @@ class _UlajePageState extends State<UlajePage>
                                 height: 50.0,
                                 color: kColorNaranja,
                                 onPressed: () async {
-                                  await obtenerUlajeList();
-                                  await obtenerListTanquesFoto();
-                                  await obtenerObservadosFoto();
-                                  cargarListaCompletaUlaje();
+                                  await obtenerListados();
+                                  await cargarListaCompletaUlaje();
+
+                                  // await obtenerObservadosFoto();
+                                  //await obtenerListTanquesFoto();
+
                                   await dbLiteUlaje.clearTables();
                                   setState(() {
-                                    listFutureTableUlajeSqLite();
                                     listSqliteUlajeObservadosFotos.clear();
                                     liteSqliteUlajeTanqueFotos.clear();
                                     liteSqliteUlaje.clear();
+                                    listFutureTableUlajeSqLite();
                                   });
                                 },
                                 child: const Text(
@@ -1079,6 +1183,125 @@ class _UlajePageState extends State<UlajePage>
             : null,
       ),
     );
+  }
+
+  dialogoConfirmarMercaderia(BuildContext context) {
+    showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+              insetPadding: const EdgeInsets.all(70),
+              actions: [
+                const Center(
+                  child: SizedBox(
+                    width: 230,
+                    child: Text(
+                      'Validar Mercaderia Observada Supervisor',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      prefixIcon: IconButton(
+                          icon: Icon(Icons.qr_code, color: kColorAzul),
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ScannerScreen()));
+
+                            idSupervisorController.text = result;
+                          }),
+                      suffixIcon: IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: () {
+                            getSupervisorByCodUser();
+                          }),
+                      labelText: 'Id.Job',
+                      labelStyle: TextStyle(
+                        color: kColorAzul,
+                        fontSize: 20.0,
+                      ),
+                      hintText: 'Ingrese el numero de ID Job'),
+                  onChanged: (value) {
+                    getSupervisorByCodUser();
+                  },
+                  controller: idSupervisorController,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.badge,
+                      color: kColorAzul,
+                    ),
+                    labelText: 'Nombre usuario',
+                    labelStyle: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  enabled: false,
+                  controller: nombresSupervisorController,
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        if (idUser != null) {
+                          setState(() {
+                            visibleMercaderia = true;
+                          });
+                          Navigator.pop(context);
+                          idSupervisorController.clear();
+                          nombresSupervisorController.clear();
+                        } else {
+                          print("Nop");
+                          Flushbar(
+                            backgroundColor: Colors.red,
+                            message: 'NO CUENTA CON AUTORIZACION',
+                            duration: Duration(seconds: 3),
+                          ).show(context);
+                        }
+                      },
+                      child: const Text(
+                        "Aceptar",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          valueMarcaderia = false;
+                          visibleMercaderia = false;
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "Cancelar",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ));
   }
 
   dialogoEliminar(BuildContext context, SqliteUlaje itemSqlUlaje) {

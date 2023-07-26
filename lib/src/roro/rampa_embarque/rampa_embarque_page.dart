@@ -796,10 +796,10 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
     if (vehicleModel.chasis != null && vehicleModel.chasis != 'no encontrado') {
       _chasisController.text = vehicleModel.chasis!;
       _marcaController.text = vehicleModel.marca!;
-      if (context.mounted) return;
+      //if (context.mounted) return;
       CustomSnackBar.successSnackBar(context, "Vehiculo encontrado");
     } else {
-      if (context.mounted) return;
+      //if (context.mounted) return;
       CustomSnackBar.errorSnackBar(context, "Vehiculo no encontrado");
     }
   }

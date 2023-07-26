@@ -18,7 +18,6 @@ import '../../models/vw_list_vehicle_data_by_id_service_order_embarque.dart';
 import '../../models/vw_list_vehicle_data_by_idserviceorder_descarga.dart';
 import '../../models/vw_ship_and_travel_by_id_service_order_model.dart';
 import '../../services/roro/damage_report/damage_report_consulta_service.dart';
-import '../../services/roro/distribucion_embarque/distribucion_embarque_services.dart';
 import '../../services/roro/printer_app/printer_app_service.dart';
 import '../../services/service_order_services.dart';
 import '../../services/usuario_service.dart';
@@ -210,10 +209,9 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
   }
 
   getNaveAndTravelServiceOrder() async {
-    DistribucionEmbarqueService distribucionEmbarqueSerice =
-        DistribucionEmbarqueService();
+    ServiceOrderService serviceOrderService = ServiceOrderService();
 
-    vwShipAndTravelByIdServiceOrderModel = await distribucionEmbarqueSerice
+    vwShipAndTravelByIdServiceOrderModel = await serviceOrderService
         .getShipAndTravelByIdOrderService(idServiceOrderRampa);
 
     _nombreNaveController.text =
@@ -534,6 +532,22 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
         ignorePrinterAppList = true;
         ignoreCerrarOperacion = true;
       });
+    } else {
+      setState(() {
+        ignoreDamageReport = false;
+        ignoreDamageReportList = false;
+        ignoreReetibas = false;
+        ignoreReetibasList = false;
+        ignoreDetalleAccesorio = false;
+        ignoreRampaEmbarque = false;
+        ignoreRampaDescarga = false;
+        ignoreDistribucionEmbarque = false;
+        ignoreAutoreport = false;
+        ignoreAutoreportList = false;
+        ignorePrinterApp = false;
+        ignorePrinterAppList = false;
+        ignoreCerrarOperacion = false;
+      });
     }
   }
 
@@ -579,9 +593,10 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                 ScannerScreen()));
-print('Resultado: '+result.toString());
-                                    idUsuarioController.text = result.toString();
+                                                ScannerScreen()));
+                                    print('Resultado: ' + result.toString());
+                                    idUsuarioController.text =
+                                        result.toString();
                                   }),
                               suffixIcon: IconButton(
                                   icon: const Icon(Icons.search),
@@ -1282,8 +1297,6 @@ print('Resultado: '+result.toString());
                                                 _valueJornadaDropdown),
                                             idUsuario: idUsuario,
                                             idServiceOrder: idServiceOrderRampa,
-                                            damageReportConsultaListApi:
-                                                damageReportConsultaApi,
                                           )));
                             },
                             child: const Text(
@@ -1391,26 +1404,32 @@ print('Resultado: '+result.toString());
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(
-                            'NAVE: ${_nombreNaveController.text}',
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
-                          Text(
-                            'VIAJE: ${_viajeController.text}',
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'NAVE: ${_nombreNaveController.text}',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              'VIAJE: ${_viajeController.text}',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(
                         height: 20,

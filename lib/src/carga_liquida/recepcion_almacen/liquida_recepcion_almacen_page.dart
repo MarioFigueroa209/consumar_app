@@ -71,7 +71,6 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
       content: Text("Datos registrados correctamente"),
       backgroundColor: Colors.greenAccent,
     ));
-    clearFields();
   }
 
   createPesoHistorico() {
@@ -450,9 +449,10 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                 minWidth: double.infinity,
                 height: 50.0,
                 color: kColorNaranja,
-                onPressed: () {
-                  createRegistroAlmacen();
-                  createPesoHistorico();
+                onPressed: () async {
+                  await createRegistroAlmacen();
+                  await createPesoHistorico();
+                  clearFields();
                 },
                 child: const Text(
                   "Cargar Datos",
