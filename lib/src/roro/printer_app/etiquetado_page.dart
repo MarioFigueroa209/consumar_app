@@ -8,7 +8,7 @@ import '../../../models/roro/printer_app/insert_printer_app_pendientes.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/roro/sqliteBD/db_printer_app.dart';
 import 'printer_app_page.dart';
-import 'qr_pdf_page.dart';
+//import 'qr_pdf_page.dart';
 
 class EtiquetadoPrinterApp extends StatefulWidget {
   const EtiquetadoPrinterApp(
