@@ -6,6 +6,7 @@ import 'package:consumar_app/src/carga_proyecto/reporte_danos/reporte_danosDr_pa
 import 'package:consumar_app/src/carga_proyecto/supervision_carguio/supervision_carguio_page.dart';
 import 'package:consumar_app/src/carga_proyecto/supervision_descarga/supervision_descarga_page.dart';
 import 'package:consumar_app/src/carga_proyecto/supervision_embarque/supervision_embarque_page.dart';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
@@ -17,7 +18,6 @@ import '../../services/usuario_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/jornada_model.dart';
 
-import '../scanner_screen.dart';
 import '../widgets/boton_menu.dart';
 
 class CargaProyectoPage extends StatefulWidget {
@@ -171,8 +171,7 @@ class _CargaProyectoPageState extends State<CargaProyectoPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const ScannerScreen()));
-
+                                            const BarcodeScannerWithScanWindow()));
                                 idUsuarioController.text = result;
                               }),
                           suffixIcon: IconButton(

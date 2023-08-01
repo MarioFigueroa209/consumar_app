@@ -1,3 +1,4 @@
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/roro/rampa_embarque/vw_rampa_embarque_vehicle_data_model.dart';
@@ -8,7 +9,6 @@ import '../../../services/service_order_services.dart';
 import '../../../services/vehicle_service.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/lists.dart';
-import '../../scanner_screen.dart';
 import '../../widgets/custom_snack_bar.dart';
 import 'autoreport2_page.dart';
 
@@ -193,8 +193,7 @@ class _Autoreport1State extends State<Autoreport1> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
-
+                                        const BarcodeScannerWithScanWindow()));
                             codigoQrController.text = result;
                           }),
                       suffixIcon: IconButton(

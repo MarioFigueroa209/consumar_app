@@ -1,3 +1,4 @@
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/carga_liquida/recepcionAlmacen/create_recepcion_liquida_almacen.dart';
@@ -7,7 +8,6 @@ import '../../../models/carga_liquida/validacionPeso/sp_create_liquida_peso_hist
 import '../../../services/carga_liquida/liquida_recepcion_almacen_service.dart';
 import '../../../services/carga_liquida/liquida_validacion_pesos_service.dart';
 import '../../../utils/constants.dart';
-import '../../scanner_screen.dart';
 
 class LiquidaRecepcionAlmacen extends StatefulWidget {
   const LiquidaRecepcionAlmacen(
@@ -161,7 +161,7 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
+                                        const BarcodeScannerWithScanWindow()));
                             codPrecintadoController.text = result;
                           }),
                       suffixIcon: IconButton(
@@ -355,7 +355,7 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
+                                        const BarcodeScannerWithScanWindow()));
                             valvulaIngresoController.text = result;
                           }),
                       suffixIcon: IconButton(
@@ -414,7 +414,7 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
+                                        const BarcodeScannerWithScanWindow()));
                             valvulaSalidaController.text = result;
                           }),
                       suffixIcon: IconButton(

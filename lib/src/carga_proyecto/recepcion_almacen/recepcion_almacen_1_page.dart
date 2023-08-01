@@ -1,10 +1,9 @@
 import 'package:consumar_app/src/carga_proyecto/recepcion_almacen/recepcion_almacen_ingreso.dart';
 import 'package:consumar_app/src/carga_proyecto/recepcion_almacen/recepcion_almacen_manipulado.dart';
 import 'package:consumar_app/src/carga_proyecto/recepcion_almacen/recepcion_almacen_posicionado.dart';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
-
 import '../../../utils/constants.dart';
-import '../../scanner_screen.dart';
 
 class RecepcionAlmacen1 extends StatefulWidget {
   RecepcionAlmacen1(
@@ -62,8 +61,8 @@ class _RecepcionAlmacen1State extends State<RecepcionAlmacen1> {
                         final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const ScannerScreen()));
-
+                                builder: (context) =>
+                                    const BarcodeScannerWithScanWindow()));
                         qrCodigoController.text = result;
                       }),
                   suffixIcon: IconButton(
@@ -100,8 +99,8 @@ class _RecepcionAlmacen1State extends State<RecepcionAlmacen1> {
                         final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const ScannerScreen()));
-
+                                builder: (context) =>
+                                    const BarcodeScannerWithScanWindow()));
                         qrCodigoController.text = result;
                       }),
                   suffixIcon: IconButton(

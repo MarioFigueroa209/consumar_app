@@ -1,3 +1,4 @@
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/roro/rampa_embarque/vw_count_data_rampa_embarque_by_service_order.dart';
@@ -13,7 +14,6 @@ import '../../../services/usuario_service.dart';
 import '../../../services/vehicle_service.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/roro/rampa_embarque_list_model.dart';
-import '../../scanner_screen.dart';
 import '../../widgets/custom_snack_bar.dart';
 
 class RampaEmbarquePage extends StatefulWidget {
@@ -162,9 +162,10 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
                                     final result = await Navigator.push(
                                         context,
                                         MaterialPageRoute(
+                                            /*builder: (context) =>
+                                                const ScannerScreen()));*/
                                             builder: (context) =>
-                                                const ScannerScreen()));
-
+                                                const BarcodeScannerWithScanWindow()));
                                     codigoQrController.text = result;
                                   }),
                               suffixIcon: IconButton(

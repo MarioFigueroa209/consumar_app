@@ -1,9 +1,8 @@
 import 'dart:io';
-
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../../../models/file_upload_result.dart';
 import '../../../models/survey/ControlCarguio/create_control_carguio.dart';
 import '../../../models/survey/ControlCarguio/vw_granel_consulta_transporte_by_cod.dart';
@@ -14,7 +13,6 @@ import '../../../services/survey/control_carguio_service.dart';
 import '../../../services/usuario_service.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/lists.dart';
-import '../../scanner_screen.dart';
 
 class ControlCarguio extends StatefulWidget {
   const ControlCarguio(
@@ -392,7 +390,7 @@ class _ControlCarguioState extends State<ControlCarguio>
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const ScannerScreen()));
+                                          const BarcodeScannerWithScanWindow()));
                               placaController.text = result;
                             }),
                         labelText: 'Placa',
@@ -503,7 +501,7 @@ class _ControlCarguioState extends State<ControlCarguio>
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
+                                        const BarcodeScannerWithScanWindow()));
                             codigoConductorController.text = result;
                           }),
                       suffixIcon: IconButton(

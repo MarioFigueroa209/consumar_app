@@ -1,9 +1,9 @@
 import 'package:consumar_app/src/carga_proyecto/supervision_descarga/supervision_descarga_mercaderia_page.dart';
 import 'package:consumar_app/src/carga_proyecto/supervision_descarga/supervision_descarga_ubicado.dart';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/constants.dart';
-import '../../scanner_screen.dart';
 
 class SupervisionDescargaPage extends StatefulWidget {
   const SupervisionDescargaPage(
@@ -62,7 +62,7 @@ class _SupervisionDescargaPageState extends State<SupervisionDescargaPage> {
                         final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const ScannerScreen()));
+                                builder: (context) => const BarcodeScannerWithScanWindow()));
 
                         qrCodigoController.text = result;
                       }),

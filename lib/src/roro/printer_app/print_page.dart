@@ -1,10 +1,6 @@
-import 'dart:convert';
-
 import 'package:bluetooth_print/bluetooth_print.dart';
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 
 class PrintPage extends StatefulWidget {
   // final List<Map<String, dynamic>> data;
@@ -20,7 +16,7 @@ class _PrintPageState extends State<PrintPage> {
 
   bool _connected = false;
   BluetoothDevice? _device;
-  String tips = 'no device connect';
+  String tips = 'Ningun dispositivo conectado';
 
   @override
   void initState() {
@@ -36,19 +32,19 @@ class _PrintPageState extends State<PrintPage> {
     bool isConnected = await bluetoothPrint.isConnected ?? false;
 
     bluetoothPrint.state.listen((state) {
-      print('******************* cur device status: $state');
+      print('******************* estado actual del dispositivo: $state');
 
       switch (state) {
         case BluetoothPrint.CONNECTED:
           setState(() {
             _connected = true;
-            tips = 'connect success';
+            tips = 'conectado con éxito';
           });
           break;
         case BluetoothPrint.DISCONNECTED:
           setState(() {
             _connected = false;
-            tips = 'disconnect success';
+            tips = 'desconectado con éxito';
           });
           break;
         default:
@@ -67,9 +63,8 @@ class _PrintPageState extends State<PrintPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return
+      Scaffold(
         appBar: AppBar(
           title: const Text('Printer App Print QR'),
         ),
@@ -123,31 +118,31 @@ class _PrintPageState extends State<PrintPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           OutlinedButton(
-                            child: Text('connect'),
+                            child: Text('Conectar'),
                             onPressed: _connected
                                 ? null
                                 : () async {
                                     if (_device != null &&
                                         _device!.address != null) {
                                       setState(() {
-                                        tips = 'connecting...';
+                                        tips = 'Conectando...';
                                       });
                                       await bluetoothPrint.connect(_device!);
                                     } else {
                                       setState(() {
-                                        tips = 'please select device';
+                                        tips = 'Por favor seleccione un dispositivo';
                                       });
-                                      print('please select device');
+                                      print('Por favor seleccione un dispositivo');
                                     }
                                   },
                           ),
                           SizedBox(width: 10.0),
                           OutlinedButton(
-                            child: Text('disconnect'),
+                            child: Text('Desconectar'),
                             onPressed: _connected
                                 ? () async {
                                     setState(() {
-                                      tips = 'disconnecting...';
+                                      tips = 'Desconectando...';
                                     });
                                     await bluetoothPrint.disconnect();
                                   }
@@ -157,12 +152,12 @@ class _PrintPageState extends State<PrintPage> {
                       ),
                       Divider(),
                       OutlinedButton(
-                        child: Text('print qr vehicle'),
+                        child: Text('Imprimir QR de Vehiculo'),
                         onPressed: _connected
                             ? () async {
                                 Map<String, dynamic> config = Map();
-                                config['width'] = 40; // 标签宽度，单位mm
-                                config['height'] = 70; // 标签高度，单位mm
+                                config['width'] = 50; // 标签宽度，单位mm
+                                config['height'] = 26; // 标签高度，单位mm
                                 config['gap'] = 2; // 标签间隔，单位mm
 
                                 List<LineText> list = [];
@@ -219,7 +214,6 @@ class _PrintPageState extends State<PrintPage> {
             }
           },
         ),
-      ),
-    );
+      );
   }
 }

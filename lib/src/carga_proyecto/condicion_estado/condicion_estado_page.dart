@@ -1,12 +1,10 @@
 import 'dart:io';
-
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-
 import '../../../utils/constants.dart';
-import '../../scanner_screen.dart';
 
 class CondicionEstadoPage extends StatefulWidget {
   const CondicionEstadoPage(
@@ -100,7 +98,7 @@ class _CondicionEstadoPageState extends State<CondicionEstadoPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const ScannerScreen()));
+                                            const BarcodeScannerWithScanWindow()));
 
                                 qrCodigoController.text = result;
                               }),

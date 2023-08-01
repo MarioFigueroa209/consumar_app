@@ -1,3 +1,4 @@
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/carga_liquida/recepcionAlmacen/vw_lectura_by_qr_carguio_liquida.dart';
@@ -7,7 +8,6 @@ import '../../../services/carga_liquida/liquida_recepcion_almacen_service.dart';
 import '../../../services/carga_liquida/liquida_validacion_pesos_service.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/lists.dart';
-import '../../scanner_screen.dart';
 
 class LiquidaValidacionPeso extends StatefulWidget {
   const LiquidaValidacionPeso(
@@ -134,7 +134,7 @@ class _LiquidaValidacionPesoState extends State<LiquidaValidacionPeso> {
                         final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const ScannerScreen()));
+                                builder: (context) => const BarcodeScannerWithScanWindow()));
                         codPrecintadoController.text = result;
                       }),
                   suffixIcon: IconButton(

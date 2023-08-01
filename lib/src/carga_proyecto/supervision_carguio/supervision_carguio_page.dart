@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import '../../../models/vw_get_user_data_by_cod_user.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/lists.dart';
-import '../../scanner_screen.dart';
 
 class SupervisionCarguioPage extends StatefulWidget {
   const SupervisionCarguioPage(
@@ -599,7 +599,7 @@ class _SupervisionCarguioPageState extends State<SupervisionCarguioPage>
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
+                                        const BarcodeScannerWithScanWindow()));
 
                             qrCodigoController.text = result;
                           }),
@@ -918,8 +918,7 @@ class _SupervisionCarguioPageState extends State<SupervisionCarguioPage>
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
-
+                                        const BarcodeScannerWithScanWindow()));
                             qrCodigoController.text = result;
                           }),
                       suffixIcon: IconButton(

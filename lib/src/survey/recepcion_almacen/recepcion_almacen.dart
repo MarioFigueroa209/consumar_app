@@ -1,3 +1,4 @@
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import '../../../models/survey/RecepcionAlmacen/sp_create_recepcion_almacen.dart';
 import '../../../models/survey/RecepcionAlmacen/vw_lectura_by_qr_carguio.dart';
@@ -6,7 +7,6 @@ import '../../../models/survey/ValidacionPesos/sp_create_peso_historico.dart';
 import '../../../services/survey/registro_almacen_service.dart';
 import '../../../services/survey/validacion_pesos_service.dart';
 import '../../../utils/constants.dart';
-import '../../scanner_screen.dart';
 
 class RecepcionAlmacen extends StatefulWidget {
   const RecepcionAlmacen(
@@ -158,7 +158,7 @@ class _RecepcionAlmacenState extends State<RecepcionAlmacen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
+                                        const BarcodeScannerWithScanWindow()));
                             codPrecintadoController.text = result;
                           }),
                       suffixIcon: IconButton(
@@ -352,7 +352,7 @@ class _RecepcionAlmacenState extends State<RecepcionAlmacen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
+                                        const BarcodeScannerWithScanWindow()));
                             compuertaTolvaController.text = result;
                           }),
                       suffixIcon: IconButton(
@@ -411,7 +411,7 @@ class _RecepcionAlmacenState extends State<RecepcionAlmacen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
+                                        const BarcodeScannerWithScanWindow()));
                             cajaComandoController.text = result;
                           }),
                       suffixIcon: IconButton(
@@ -470,7 +470,7 @@ class _RecepcionAlmacenState extends State<RecepcionAlmacen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
+                                        const BarcodeScannerWithScanWindow()));
                             toldoController.text = result;
                           }),
                       suffixIcon: IconButton(

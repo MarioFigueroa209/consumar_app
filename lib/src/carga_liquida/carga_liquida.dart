@@ -5,6 +5,7 @@ import 'package:consumar_app/src/carga_liquida/precintado/liquida_precintado.dar
 import 'package:consumar_app/src/carga_liquida/recepcion_almacen/liquida_recepcion_almacen_page.dart';
 import 'package:consumar_app/src/carga_liquida/ulaje/ulaje_page.dart';
 import 'package:consumar_app/src/carga_liquida/validacion_peso/liquida_validacion_peso_page.dart';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -18,7 +19,6 @@ import '../../services/service_order_services.dart';
 import '../../services/usuario_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/jornada_model.dart';
-import '../scanner_screen.dart';
 import '../widgets/boton_menu.dart';
 import 'descarga_tuberias/liquida_descarga_tuberias_page.dart';
 
@@ -214,7 +214,7 @@ class _CargaLiquidaState extends State<CargaLiquida> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const ScannerScreen()));
+                                            const BarcodeScannerWithScanWindow()));
 
                                 idUsuarioController.text = result;
                               }),

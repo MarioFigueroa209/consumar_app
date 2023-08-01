@@ -1,5 +1,6 @@
 import 'package:consumar_app/src/survey/precintado/precintado.dart';
 import 'package:consumar_app/src/survey/validacion_peso/validacion_peso_page.dart';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../models/survey/vw_ship_and_travel_by_id_service_order_granel.dart';
@@ -10,7 +11,6 @@ import '../../services/service_order_services.dart';
 import '../../services/usuario_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/jornada_model.dart';
-import '../scanner_screen.dart';
 import '../widgets/boton_menu.dart';
 
 import 'Paralizaciones/paralizaciones.dart';
@@ -390,8 +390,7 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const ScannerScreen()));
-
+                                          const BarcodeScannerWithScanWindow()));
                               idUsuarioController.text = result;
                             }),
                         suffixIcon: IconButton(

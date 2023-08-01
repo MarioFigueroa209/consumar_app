@@ -1,5 +1,6 @@
 import 'package:consumar_app/src/silos/Control_Tickets/Control_Tickets.dart';
 import 'package:consumar_app/src/silos/Seleccionar_Placa/Seleccionar%20Placa.dart';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -10,7 +11,6 @@ import '../../services/service_order_services.dart';
 import '../../services/usuario_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/lists.dart';
-import '../scanner_screen.dart';
 import '../widgets/boton_menu.dart';
 import 'Distribucion_Silos/Distribucion_Silos.dart';
 
@@ -120,7 +120,7 @@ class _SilosState extends State<Silos> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const ScannerScreen()));
+                                              const BarcodeScannerWithScanWindow()));
                                   idUsuarioController.text = result;
                                 }),
                             suffixIcon: IconButton(

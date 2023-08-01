@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,7 +19,6 @@ import '../../../services/roro/rampa_embarque/rampa_embarque_services.dart';
 import '../../../services/service_order_services.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/roro/detalle_accesorio_models.dart';
-import '../../scanner_screen.dart';
 import 'detalle_accesorio_pdf.dart';
 
 class DetalleAccesorio extends StatefulWidget {
@@ -301,7 +301,7 @@ class _DetalleAccesorioState extends State<DetalleAccesorio>
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  const ScannerScreen()));
+                                                  const BarcodeScannerWithScanWindow()));
 
                                       codigoQrController.text = result;
                                     }),

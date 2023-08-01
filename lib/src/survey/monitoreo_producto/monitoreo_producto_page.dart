@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,6 @@ import '../../../utils/connection_status_cubit.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/lists.dart';
 import '../../../utils/survey/sqlLiteDB/db_monitoreo_producto.dart';
-import '../../scanner_screen.dart';
 
 class MonitoreoProducto extends StatefulWidget {
   const MonitoreoProducto(
@@ -1609,8 +1609,7 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
-
+                                        const BarcodeScannerWithScanWindow()));
                             idSupervisorController.text = result;
                           }),
                       suffixIcon: IconButton(
