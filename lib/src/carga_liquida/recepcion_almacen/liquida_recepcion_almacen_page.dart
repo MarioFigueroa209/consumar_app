@@ -1,13 +1,15 @@
+import 'package:consumar_app/src/carga_liquida/recepcion_almacen/liquida_create_recepcion_almacen_page.dart';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/carga_liquida/recepcionAlmacen/create_recepcion_liquida_almacen.dart';
+import '../../../models/carga_liquida/recepcionAlmacen/vw_count_liquida_precitos_valvulas.dart';
 import '../../../models/carga_liquida/recepcionAlmacen/vw_lectura_by_qr_carguio_liquida.dart';
 import '../../../models/carga_liquida/recepcionAlmacen/vw_lista_precinto_liquida_by_id_precinto.dart';
 import '../../../models/carga_liquida/validacionPeso/sp_create_liquida_peso_historico.dart';
 import '../../../services/carga_liquida/liquida_recepcion_almacen_service.dart';
 import '../../../services/carga_liquida/liquida_validacion_pesos_service.dart';
 import '../../../utils/constants.dart';
-import '../../scanner_screen.dart';
+import '../../../utils/lists.dart';
 
 class LiquidaRecepcionAlmacen extends StatefulWidget {
   const LiquidaRecepcionAlmacen(
@@ -24,6 +26,14 @@ class LiquidaRecepcionAlmacen extends StatefulWidget {
       _LiquidaRecepcionAlmacenState();
 }
 
+class ListPrecintosAdd {
+  ListPrecintosAdd({this.id, this.codPrecinto, this.tipo});
+
+  int? id;
+  String? codPrecinto;
+  String? tipo;
+}
+
 class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
   LiquidaRegistroAlmacenService liquidaRegistroAlmacenService =
       LiquidaRegistroAlmacenService();
@@ -34,11 +44,26 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
   VwLecturaByQrCarguioLiquida vwLecturaByQrCarguio =
       VwLecturaByQrCarguioLiquida();
 
+  VwCountLiquidaPrecitosValvulas vwCountLiquidaPrecitosValvulas =
+      VwCountLiquidaPrecitosValvulas();
+
+  String _valueTipoPrecintoDropdown = 'Elegir Tipo';
+
   List<VwListaPrecintoLiquidaByIdPrecinto> vwListaPrecintoLiquidaByIdPrecinto =
       [];
 
-  late int idCarguio;
-  late int idPrecinto;
+  List<VwListaPrecintoLiquidaByIdPrecinto> vwListaPrecintoLiquidaByCodCarguio =
+      [];
+
+  List<ListPrecintosAdd> listPrecintosAdd = [];
+
+  String? producto;
+
+  int? idCarguio;
+  int? idPrecinto;
+
+  int? cantValvulaIngreso = 0;
+  int? cantValvulaSalida = 0;
 
   final codPrecintadoController = TextEditingController();
 
@@ -54,23 +79,12 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
   final valvulaSalidaController = TextEditingController();
   final toldoController = TextEditingController();
 
-  createRegistroAlmacen() {
-    liquidaRegistroAlmacenService
-        .createRecepcionAlmacen(CreateRecepcionLiquidaAlmacen(
-      jornada: widget.jornada,
-      fecha: DateTime.now(),
-      pesoBruto: double.parse(pesoBrutoController.text),
-      taraCamion: double.parse(taraCamionController.text),
-      pesoNeto: double.parse(pesoNetoController.text),
-      idServiceOrder: widget.idServiceOrder,
-      idUsuario: widget.idUsuario,
-      idCarguio: idCarguio,
-      idPrecintado: idPrecinto,
-    ));
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text("Datos registrados correctamente"),
-      backgroundColor: Colors.greenAccent,
-    ));
+  deletePrecintoIngresado(int id) {
+    for (int i = 0; i < listPrecintosAdd.length; i++) {
+      if (listPrecintosAdd[i].id == id) {
+        listPrecintosAdd.removeAt(i);
+      }
+    }
   }
 
   createPesoHistorico() {
@@ -79,33 +93,55 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
             pesoBruto: double.parse(pesoBrutoController.text),
             taraCamion: double.parse(taraCamionController.text),
             pesoNeto: double.parse(pesoNetoController.text),
-            producto: "ACEITE"));
+            producto: producto));
   }
 
   getLecturaByQrCarguio() async {
     vwLecturaByQrCarguio = await liquidaRegistroAlmacenService
         .getLecturaByQrCarguio(codPrecintadoController.text);
 
-    idCarguio = vwLecturaByQrCarguio.idCarguio!;
-    idPrecinto = vwLecturaByQrCarguio.idPrecintado!;
-    placaController.text = vwLecturaByQrCarguio.placa!;
-    cisternaController.text = vwLecturaByQrCarguio.cisterna!;
-    transporteController.text = vwLecturaByQrCarguio.empresaTransporte!;
+    setState(() {
+      idCarguio = vwLecturaByQrCarguio.idCarguio!;
+      idPrecinto = vwLecturaByQrCarguio.idPrecintado!;
+      placaController.text = vwLecturaByQrCarguio.placa!;
+      cisternaController.text = vwLecturaByQrCarguio.cisterna!;
+      transporteController.text = vwLecturaByQrCarguio.empresaTransporte!;
+      producto = vwLecturaByQrCarguio.mercaderia!;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Registros Encontrados "),
+      backgroundColor: Colors.green,
+    ));
   }
 
-  clearFields() {
-    codPrecintadoController.clear();
+  getCountLiquidaPrecitosByValvulas() async {
+    vwCountLiquidaPrecitosValvulas = await liquidaRegistroAlmacenService
+        .getCountLiquidaPrecitosByValvulas(codPrecintadoController.text);
+
+    setState(() {
+      cantValvulaIngreso =
+          vwCountLiquidaPrecitosValvulas.cantidadVavulaIngreso!;
+      cantValvulaSalida = vwCountLiquidaPrecitosValvulas.cantidadVavulaSalida!;
+    });
+  }
+
+  clearFieldsCarguiPrecinto() {
+    //codPrecintadoController.clear();
     placaController.clear();
     cisternaController.clear();
     transporteController.clear();
 
-    pesoBrutoController.clear();
-    taraCamionController.clear();
-    pesoNetoController.clear();
+    setState(() {
+      idCarguio = null;
+      idPrecinto = null;
+      cantValvulaIngreso = 0;
+      cantValvulaSalida = 0;
+    });
 
-    valvulaIngresoController.clear();
+    /*  valvulaIngresoController.clear(); 
     valvulaSalidaController.clear();
-    toldoController.clear();
+    toldoController.clear(); */
   }
 
   getListaPrecintoByIdPrecinto(String codPrecinto, String tipoPrecinto) async {
@@ -117,21 +153,55 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
       vwListaPrecintoLiquidaByIdPrecinto = value;
     });
 
-    //debugPrint(vwListaPrecintoLiquidaByIdPrecinto.length as String?);
+    int contador = listPrecintosAdd.length;
+    setState(() {
+      contador++;
+    });
 
     if (vwListaPrecintoLiquidaByIdPrecinto.isNotEmpty) {
-      if (context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-            "Registros Encontrados ${vwListaPrecintoLiquidaByIdPrecinto[0].codigoPrecinto}"),
-        backgroundColor: Colors.greenAccent,
-      ));
-    } /* else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Registro no encontrado"),
-        backgroundColor: Colors.redAccent,
-      ));
-    } */
+      var result = listPrecintosAdd.where((element) => element.codPrecinto!
+          .toLowerCase()
+          .contains(vwListaPrecintoLiquidaByIdPrecinto[0]
+              .codigoPrecinto!
+              .toLowerCase()
+              .toString()));
+      if (result.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              "Precinto Encontrados ${vwListaPrecintoLiquidaByIdPrecinto[0].codigoPrecinto}"),
+          backgroundColor: Colors.green,
+        ));
+        listPrecintosAdd.add(ListPrecintosAdd(
+            id: contador,
+            tipo: _valueTipoPrecintoDropdown,
+            codPrecinto: vwListaPrecintoLiquidaByIdPrecinto[0].codigoPrecinto));
+        setState(() {
+          listPrecintosAdd;
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Precinto ya Registrado"),
+          backgroundColor: Colors.red,
+        ));
+      }
+    }
+  }
+
+  getListaPrecintoByCodCarguio(String codPrecinto) async {
+    List<VwListaPrecintoLiquidaByIdPrecinto> value =
+        await liquidaRegistroAlmacenService
+            .getListaPrecintoByCodCarguio(codPrecinto);
+
+    setState(() {
+      vwListaPrecintoLiquidaByCodCarguio = value;
+    });
+
+    if (vwListaPrecintoLiquidaByCodCarguio.isNotEmpty) {
+      print("Cantidad Precintos encontrados" +
+          vwListaPrecintoLiquidaByCodCarguio.length.toString());
+    } else {
+      print("XD");
+    }
   }
 
   bool enableQrUsuario = true;
@@ -161,13 +231,17 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
+                                        const BarcodeScannerWithScanWindow()));
                             codPrecintadoController.text = result;
                           }),
                       suffixIcon: IconButton(
                           icon: const Icon(Icons.search),
-                          onPressed: () {
+                          onPressed: () async {
+                            await clearFieldsCarguiPrecinto();
                             getLecturaByQrCarguio();
+                            getCountLiquidaPrecitosByValvulas();
+                            getListaPrecintoByCodCarguio(
+                                codPrecintadoController.text);
                           }),
                       labelText: 'Codigo',
                       labelStyle: TextStyle(
@@ -175,8 +249,11 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                         fontSize: 20.0,
                       ),
                       hintText: 'Ingrese el Codigo'),
-                  onChanged: (value) {
+                  onChanged: (value) async {
+                    await clearFieldsCarguiPrecinto();
                     getLecturaByQrCarguio();
+                    getCountLiquidaPrecitosByValvulas();
+                    getListaPrecintoByCodCarguio(codPrecintadoController.text);
                   },
                   controller: codPrecintadoController,
                   validator: (value) {
@@ -251,79 +328,12 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                 height: 40,
                 color: kColorAzul,
                 child: const Center(
-                  child: Text("PESO ALMACEN",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  prefixIcon: Icon(
-                    Icons.directions_boat,
-                    color: kColorAzul,
-                  ),
-                  labelText: 'Peso bruto',
-                  labelStyle: TextStyle(
-                    color: kColorAzul,
-                    fontSize: 20.0,
-                  ),
-                  hintText: '',
-                ),
-                controller: pesoBrutoController,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  prefixIcon: Icon(
-                    Icons.directions_boat,
-                    color: kColorAzul,
-                  ),
-                  labelText: 'Tara camion',
-                  labelStyle: TextStyle(
-                    color: kColorAzul,
-                    fontSize: 20.0,
-                  ),
-                  hintText: '',
-                ),
-                controller: taraCamionController,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  prefixIcon: Icon(
-                    Icons.directions_boat,
-                    color: kColorAzul,
-                  ),
-                  labelText: 'Peso neto',
-                  labelStyle: TextStyle(
-                    color: kColorAzul,
-                    fontSize: 20.0,
-                  ),
-                  hintText: '',
-                ),
-                controller: pesoNetoController,
-              ),
-              const SizedBox(height: 20),
-              Container(
-                height: 40,
-                color: kColorAzul,
-                child: const Center(
                   child: Text("LECTURA DE PRECINTOS",
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.white)),
                 ),
               ),
-              const SizedBox(height: 20),
+              /*  const SizedBox(height: 20),
               TextFormField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -341,7 +351,40 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                   hintText: '',
                 ),
                 enabled: false,
-              ),
+              ), */
+              const SizedBox(height: 20),
+              DropdownButtonFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    labelText: 'Tipo Precinto',
+                    labelStyle: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  icon: const Icon(
+                    Icons.arrow_drop_down_circle_outlined,
+                  ),
+                  items: tipoPrecinto.map((String a) {
+                    return DropdownMenuItem<String>(
+                      value: a,
+                      child: Center(child: Text(a, textAlign: TextAlign.left)),
+                    );
+                  }).toList(),
+                  onChanged: (value) => {
+                        setState(() {
+                          _valueTipoPrecintoDropdown = value as String;
+                        })
+                      },
+                  hint: Text(_valueTipoPrecintoDropdown),
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Por favor, Ingrese fila';
+                    }
+                    return null;
+                  }),
               const SizedBox(height: 20),
               TextFormField(
                   decoration: InputDecoration(
@@ -355,7 +398,7 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
+                                        const BarcodeScannerWithScanWindow()));
                             valvulaIngresoController.text = result;
                           }),
                       suffixIcon: IconButton(
@@ -363,26 +406,64 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                           onPressed: () {
                             getListaPrecintoByIdPrecinto(
                                 valvulaIngresoController.text,
-                                "Valvula de ingreso");
+                                _valueTipoPrecintoDropdown);
                           }),
                       labelStyle: TextStyle(
                         color: kColorAzul,
                         fontSize: 20.0,
                       ),
-                      hintText: 'Ingrese Valvula de ingreso'),
+                      hintText: 'Ingrese Valvula'),
                   onChanged: (value) {
-                    getListaPrecintoByIdPrecinto(
-                        valvulaIngresoController.text, "Valvula de Ingreso");
+                    getListaPrecintoByIdPrecinto(valvulaIngresoController.text,
+                        _valueTipoPrecintoDropdown);
                   },
                   controller: valvulaIngresoController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, ingrese valvula de Ingreso';
+                      return 'Por favor, ingrese valvula';
                     }
                     return null;
                   },
                   enabled: enableQrUsuario),
               const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(children: [
+                    Text(
+                      "Valvula Ingreso",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    Text(
+                      cantValvulaIngreso.toString(),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                  ]),
+                  Column(
+                    children: [
+                      Text(
+                        "Valvula Salida",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Text(
+                        cantValvulaSalida.toString(),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              /*   const SizedBox(height: 20),
               TextFormField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -400,47 +481,57 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                   hintText: '',
                 ),
                 enabled: false,
-              ),
+              ), */
               const SizedBox(height: 20),
-              TextFormField(
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      prefixIcon: IconButton(
-                          icon: const Icon(Icons.closed_caption_off_rounded),
-                          onPressed: () async {
-                            final result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ScannerScreen()));
-                            valvulaSalidaController.text = result;
-                          }),
-                      suffixIcon: IconButton(
-                          icon: const Icon(Icons.search),
-                          onPressed: () {
-                            getListaPrecintoByIdPrecinto(
-                                valvulaSalidaController.text,
-                                "Valvula de Salida");
-                          }),
-                      labelStyle: TextStyle(
-                        color: kColorAzul,
-                        fontSize: 20.0,
-                      ),
-                      hintText: 'Ingrese Caja Valvula de salida'),
-                  onChanged: (value) {
-                    getListaPrecintoByIdPrecinto(
-                        valvulaSalidaController.text, "Valvula de Salida");
-                  },
-                  controller: valvulaSalidaController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, ingrese Valvula de salida';
-                    }
-                    return null;
-                  },
-                  enabled: enableQrUsuario),
+              DataTable(
+                dividerThickness: 3,
+                border: TableBorder.symmetric(
+                    inside: BorderSide(width: 1, color: Colors.grey.shade200)),
+                decoration: BoxDecoration(
+                  border: Border.all(color: kColorAzul),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                headingTextStyle:
+                    TextStyle(fontWeight: FontWeight.bold, color: kColorAzul),
+                /* headingRowColor: MaterialStateColor.resolveWith(
+                (states) {
+                  return kColorAzul;
+                },
+              ), */
+                dataRowColor: MaterialStateProperty.all(Colors.white),
+                columns: const <DataColumn>[
+                  DataColumn(
+                    label: Text("Nº"),
+                  ),
+                  DataColumn(
+                    label: Text("COD PRECINTO"),
+                  ),
+                  DataColumn(
+                    label: Text("TIPO"),
+                  ),
+                  DataColumn(
+                    label: Text("DELETE"),
+                  ),
+                ],
+                rows: listPrecintosAdd
+                    .map(((e) => DataRow(
+                          cells: <DataCell>[
+                            DataCell(Text(e.id.toString())),
+                            DataCell(Text(e.codPrecinto.toString(),
+                                textAlign: TextAlign.center)),
+                            DataCell(Text(e.tipo.toString(),
+                                textAlign: TextAlign.center)),
+                            DataCell(IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: (() {
+                                deletePrecintoIngresado(e.id!);
+                                setState(() {});
+                              }),
+                            )),
+                          ],
+                        )))
+                    .toList(),
+              ),
               const SizedBox(height: 20),
               MaterialButton(
                 shape: RoundedRectangleBorder(
@@ -450,12 +541,36 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                 height: 50.0,
                 color: kColorNaranja,
                 onPressed: () async {
-                  await createRegistroAlmacen();
-                  await createPesoHistorico();
-                  clearFields();
+                  if (idCarguio != null) {
+                    if ((cantValvulaIngreso! + cantValvulaSalida!) ==
+                        listPrecintosAdd.length) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  LiquidaCreateRecepcionAlmacen(
+                                    idCarguio: idCarguio!,
+                                    idPrecinto: idPrecinto!,
+                                    idServiceOrder: widget.idServiceOrder,
+                                    idUsuario: widget.idUsuario,
+                                    jornada: widget.jornada,
+                                  )));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content:
+                            Text("Registrar los precintos antes de continuar"),
+                        backgroundColor: Colors.red,
+                      ));
+                    }
+                  } else if (idCarguio == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Datos invalidos"),
+                      backgroundColor: Colors.red,
+                    ));
+                  }
                 },
                 child: const Text(
-                  "Cargar Datos",
+                  "SIGUIENTE",
                   style: TextStyle(
                       fontSize: 20,
                       color: Colors.white,

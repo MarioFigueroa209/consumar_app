@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,10 +17,7 @@ import '../../../models/carga_liquida/controlCarguio/vw_list_liquida_placas_inic
 import '../../../models/file_upload_result.dart';
 import '../../../services/carga_liquida/control_carguio_liquida_service.dart';
 import '../../../services/file_upload_result.dart';
-
 import '../../../utils/constants.dart';
-
-import '../../scanner_screen.dart';
 
 class LiquidaControlCarguio extends StatefulWidget {
   const LiquidaControlCarguio(
@@ -493,7 +491,7 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                             listaTanqueAdd.add(_valueTanqueDropdown);
                             setState(() {
                               stringList = listaTanqueAdd.join(", ");
-                              tanquesText.text = stringList;
+                              //tanquesText.text = stringList;
                             });
                             print(stringList);
                           },
@@ -559,8 +557,10 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                             final result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
+                                    /*builder: (context) =>
+                                        const ScannerScreen()));*/
                                     builder: (context) =>
-                                        const ScannerScreen()));
+                                        const BarcodeScannerWithScanWindow()));
                             codigoTransporteController.text = result;
                           }),
                       suffixIcon: IconButton(
@@ -710,8 +710,10 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                             final result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
+                                    /*    builder: (context) =>
+                                        const ScannerScreen()));*/
                                     builder: (context) =>
-                                        const ScannerScreen()));
+                                        const BarcodeScannerWithScanWindow()));
                             codigoConductorController.text = result;
                           }),
                       suffixIcon: IconButton(

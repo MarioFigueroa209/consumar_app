@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
+//import 'package:printing/printing.dart';
 
 class QrRoroPdfReetiquetadoService {
   final doc = pw.Document();
@@ -16,7 +16,6 @@ class QrRoroPdfReetiquetadoService {
     //final codigoQr = await imageFromAssetBundle('assets/images/qrlogo.png');
 
     doc.addPage(pw.Page(
-        // pageFormat: PdfPageFormat.a4,
         pageFormat: const PdfPageFormat(
             1.2 * PdfPageFormat.inch, double.infinity,
             marginAll: 0.4 * PdfPageFormat.cm),
@@ -36,8 +35,8 @@ class QrRoroPdfReetiquetadoService {
           ]));
         }));
 
-    await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => doc.save());
+    /*   await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => doc.save()); */
 
     /// print the document using the iOS or Android print service:
     return doc.save();

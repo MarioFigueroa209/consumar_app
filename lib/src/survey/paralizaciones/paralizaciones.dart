@@ -735,6 +735,11 @@ class _Paralizacionesstate extends State<Paralizaciones> {
                           responsableController.clear();
                           detalleController.clear();
                         });
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text("Paralizacion Registrada"),
+                          backgroundColor: Colors.redAccent,
+                        ));
                       },
                       child: const Text(
                         "REGISTRAR INICIO",

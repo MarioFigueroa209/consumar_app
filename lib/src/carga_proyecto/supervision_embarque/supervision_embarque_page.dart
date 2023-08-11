@@ -1,9 +1,8 @@
 import 'package:consumar_app/src/carga_proyecto/supervision_embarque/supervision_embarque_mercaderia_page.dart';
 import 'package:consumar_app/src/carga_proyecto/supervision_embarque/supervision_embarque_trincado.dart';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
-
 import '../../../utils/constants.dart';
-import '../../scanner_screen.dart';
 
 class SupervisionEmbarquePage extends StatefulWidget {
   const SupervisionEmbarquePage(
@@ -62,7 +61,7 @@ class _SupervisionEmbarquePageState extends State<SupervisionEmbarquePage> {
                         final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const ScannerScreen()));
+                                builder: (context) => const BarcodeScannerWithScanWindow()));
 
                         qrCodigoController.text = result;
                       }),

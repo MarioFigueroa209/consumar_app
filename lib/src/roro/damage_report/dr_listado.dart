@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -19,7 +20,6 @@ import '../../../services/usuario_service.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/jornada_model.dart';
 import '../../../utils/lists.dart';
-import '../../scanner_screen.dart';
 import '../../widgets/custom_snack_bar.dart';
 import 'damage_report_pdf_page.dart';
 import 'dr_informe_final.dart';
@@ -365,8 +365,7 @@ class DrListadoState extends State<DrListado> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const ScannerScreen()));
-
+                                            const BarcodeScannerWithScanWindow()));
                                 idApmtcController.text = result;
                               }),
                           suffixIcon: IconButton(

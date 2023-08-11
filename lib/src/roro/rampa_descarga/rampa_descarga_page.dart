@@ -1,3 +1,4 @@
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +9,6 @@ import '../../../models/vehicle_model.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/lists.dart';
 import '../../../utils/roro/rampa_descarga_table_model.dart';
-import '../../scanner_screen.dart';
 import '../../widgets/custom_snack_bar.dart';
 
 class RampaDescargaPage extends StatefulWidget {
@@ -171,9 +171,10 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
                                   final result = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
+                                          /*builder: (context) =>
+                                              const ScannerScreen()));*/
                                           builder: (context) =>
-                                              const ScannerScreen()));
-
+                                          const BarcodeScannerWithScanWindow()));
                                   codigoQrController.text = result;
                                 }),
                             suffixIcon: IconButton(

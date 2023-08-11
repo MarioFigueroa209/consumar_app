@@ -18,10 +18,9 @@ class _QrPdfReetiquetadoPageState extends State<QrPdfReetiquetadoPage> {
   @override
   Widget build(BuildContext context) {
     return PdfPreview(
-      build: (format) {
-        return qrRoroPdfService.createPdf(widget.idVehicle);
-      },
-      useActions: false,
+      build: (format) => qrRoroPdfService.createPdf(widget.idVehicle),
+      //useActions: false,
+      allowPrinting: true,
     );
   }
 }

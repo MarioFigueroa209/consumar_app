@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +27,6 @@ import '../../../utils/constants.dart';
 import '../../../utils/lists.dart';
 import '../../../utils/roro/damage_report_models.dart';
 import '../../../utils/roro/sqliteBD/db_damage_report.dart';
-import '../../scanner_screen.dart';
 import '../../widgets/warning_widget_cubit.dart';
 
 class DamageReport extends StatefulWidget {
@@ -901,8 +901,7 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                                             MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
-                                                                        const ScannerScreen()));
-
+                                                                        const BarcodeScannerWithScanWindow()));
                                                     idjobAPMTCController.text =
                                                         result;
                                                   }),
@@ -1708,8 +1707,7 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                                               MaterialPageRoute(
                                                                   builder:
                                                                       (context) =>
-                                                                          const ScannerScreen()));
-
+                                                                          const BarcodeScannerWithScanWindow()));
                                                       idUsuarioController.text =
                                                           result;
                                                     }),

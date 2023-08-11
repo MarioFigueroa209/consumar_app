@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,6 @@ import '../../../utils/carga_liquida/db_ulaje.dart';
 import '../../../utils/check_internet_connection.dart';
 import '../../../utils/connection_status_cubit.dart';
 import '../../../utils/constants.dart';
-import '../../scanner_screen.dart';
 
 class UlajePage extends StatefulWidget {
   const UlajePage(
@@ -1217,8 +1217,7 @@ class _UlajePageState extends State<UlajePage>
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ScannerScreen()));
-
+                                        const BarcodeScannerWithScanWindow()));
                             idSupervisorController.text = result;
                           }),
                       suffixIcon: IconButton(

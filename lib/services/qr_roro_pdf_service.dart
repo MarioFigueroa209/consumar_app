@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
+//import 'package:printing/printing.dart';
 
 class QrRoroPdfService {
   getQrRoroById(BigInt idVehicle) {}
@@ -33,8 +33,8 @@ class QrRoroPdfService {
           ]));
         }));
 
-    await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => doc.save());
+    /*  await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => doc.save()); */
     /// print the document using the iOS or Android print service:
     return doc.save();
     /*final file = File('AutoreportPdf.pdf');

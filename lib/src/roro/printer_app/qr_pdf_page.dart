@@ -22,6 +22,7 @@ class _QrRoroPDFState extends State<QrRoroPDF> {
         return qrRoroPdfService.createPdf(widget.idVehicle);
       },
       useActions: false,
+      allowPrinting: true,
     );
   }
 }

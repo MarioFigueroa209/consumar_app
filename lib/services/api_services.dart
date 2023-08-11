@@ -504,12 +504,21 @@ String urlGetLiquidaPrecintoCarguioByIdServiceOrder =
 final urlCreateLiquidaPrecintados =
     Uri.parse("${urlApiBase}LiquidaPrecintados/createLiquidaPrecintado");
 
+String urlDeleteLogicPrecintoCarguio =
+    "${urlApiBase}LiquidaPrecintados/DeleteLogicPrecintoCarguio/";
+
 /*--------------- Recepcion Almacen Liquida ----------- */
 String urlGetLecturaLiquidaByQrCarguio =
     "${urlApiBase}LiquidaRecepcionAlmacen/getLecturaByQrLiquidaCarguio/";
 
 String urlGetListaLiquidaPrecintosByIdPrecintos =
     "${urlApiBase}LiquidaRecepcionAlmacen/getListaLiquidaPrecintosByIdPrecintado?CodCarguioPrecintado=";
+
+String urlGetListaLiquidaPrecintosByCodCarguio =
+    "${urlApiBase}LiquidaRecepcionAlmacen/getListaPrecintosByCodCarguio?CodCarguioPrecintado=";
+
+String urlGetCountLiquidaPrecitosByValvulas =
+    "${urlApiBase}LiquidaRecepcionAlmacen/getCountLiquidaPrecitosByValvulas/";
 
 final urlCreateLiquidaRecepcionAlmacen = Uri.parse(
     "${urlApiBase}LiquidaRecepcionAlmacen/createLiquidaRecepcionAlmacen");

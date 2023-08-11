@@ -2,11 +2,10 @@ import 'dart:async';
 
 import 'package:consumar_app/src/roro/cerrar_proceso/cerrar_proceso_service_order.dart';
 import 'package:consumar_app/src/roro/printer_app/printer_app_listado_page.dart';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
-
 import '../../models/roro/damage_report/damage_report_consulta.dart';
 import '../../models/roro/validation_service_order_close_printer_rampa_dr.dart';
 import '../../models/roro/validation_sum_saldo_final_reestibas.dart';
@@ -24,7 +23,6 @@ import '../../services/usuario_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/jornada_model.dart';
 import '../../utils/lists.dart';
-import '../scanner_screen.dart';
 import '../widgets/boton_menu.dart';
 import '../widgets/custom_snack_bar.dart';
 import 'autoreport/autoreport1_page.dart';
@@ -39,7 +37,6 @@ import 'printer_app/printer_app_page.dart';
 import 'rampa_descarga/rampa_descarga_page.dart';
 import 'rampa_embarque/rampa_embarque_page.dart';
 
-// ignore: camel_case_types
 class RoroCargaRodantePage extends StatefulWidget {
   const RoroCargaRodantePage({Key? key}) : super(key: key);
 
@@ -113,7 +110,7 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
   bool ignorePrinterAppList = false;
   bool ignoreCerrarOperacion = false;
 
-  MobileScannerController cameraController = MobileScannerController();
+  //MobileScannerController cameraController = MobileScannerController();
 
   DamageReportConsultaService damageReportConsultaService =
       DamageReportConsultaService();
@@ -592,8 +589,10 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                     final result = await Navigator.push(
                                         context,
                                         MaterialPageRoute(
+                                            /*builder: (context) =>
+                                                ScannerScreen()));*/
                                             builder: (context) =>
-                                                ScannerScreen()));
+                                                BarcodeScannerWithScanWindow()));
                                     print('Resultado: ' + result.toString());
                                     idUsuarioController.text =
                                         result.toString();

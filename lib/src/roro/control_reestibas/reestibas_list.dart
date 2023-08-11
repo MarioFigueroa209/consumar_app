@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:consumar_app/models/roro/control_reestibas/sp_create_update_reestibas_firmante_segun_mov.dart';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:signature/signature.dart';
@@ -17,7 +18,6 @@ import '../../../services/roro/control_reestibas/control_reestibas_service.dart'
 import '../../../services/usuario_service.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/lists.dart';
-import '../../scanner_screen.dart';
 
 class ReestibasList extends StatefulWidget {
   const ReestibasList(
@@ -764,8 +764,7 @@ class _ReestibasListState extends State<ReestibasList>
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const ScannerScreen()));
-
+                                            const BarcodeScannerWithScanWindow()));
                                 idApmtcController.text = result;
                               }),
                           suffixIcon: IconButton(

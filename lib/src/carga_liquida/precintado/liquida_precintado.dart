@@ -5,6 +5,7 @@ import '../../../models/carga_liquida/precintados/vw_liquida_precinto.dart';
 import '../../../services/carga_liquida/precintado_liquida_service.dart';
 import '../../../utils/carga_liquida/clases_liquida_precintados.dart';
 import '../../../utils/constants.dart';
+import '../../../utils/lists.dart';
 import 'liquida_precintado_pdf_page.dart';
 
 class LiquidaPrecintado extends StatefulWidget {
@@ -87,6 +88,10 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
         spCreateLiquidaListaPrecintos: createListaPrecinto));
   }
 
+  deleteCarguioPrecintos(int id) {
+    precintadoLiquidaService.delecteLogicPrecintoCarguio(id);
+  }
+
   addValvulasIngresoItems(ValvulasIngreso item) {
     int contador = valvulasIngreso.length;
     contador++;
@@ -100,6 +105,32 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
     item.id = contador;
     valvulasSalida.add(item);
   }
+
+  deleteValvulaIngreso(int id) {
+    for (int i = 0; i < valvulasIngreso.length; i++) {
+      if (valvulasIngreso[i].id == id) {
+        valvulasIngreso.removeAt(i);
+      }
+    }
+  }
+
+  deleteValvulaSalida(int id) {
+    for (int i = 0; i < valvulasSalida.length; i++) {
+      if (valvulasSalida[i].id == id) {
+        valvulasSalida.removeAt(i);
+      }
+    }
+  }
+
+  deleteListaPrecinto(int id) {
+    for (int i = 0; i < listaPrecintos.length; i++) {
+      if (listaPrecintos[i].id == id) {
+        listaPrecintos.removeAt(i);
+      }
+    }
+  }
+
+  String _valueTipoPrecintoDropdown = 'Elegir Tipo';
 
   final TextEditingController placaController = TextEditingController();
   final TextEditingController cisternaController = TextEditingController();
@@ -183,19 +214,23 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                                         Row(
                                           children: [
                                             const Icon(Icons.receipt),
+                                            Text(
+                                              "Nº Ticket: ",
+                                              style: etiquetasCardDamage,
+                                            ),
                                             const SizedBox(
-                                              width: 10.0,
+                                              width: 7.0,
                                             ),
                                             Text(
                                               listLiquidaPrecinto[index]
-                                                  .idServiceOrder
+                                                  .nticket
                                                   .toString(),
                                               style: tituloCardDamage,
                                             ),
                                           ],
                                         ),
                                         const Divider(),
-                                        Row(
+                                        /*  Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
@@ -205,11 +240,11 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                                             ),
                                             Text(
                                               listLiquidaPrecinto[index]
-                                                  .idVista
+                                                  .placa
                                                   .toString(),
                                             ),
                                           ],
-                                        ),
+                                        ), */
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
@@ -266,6 +301,9 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                                                   color: Colors.grey,
                                                 ),
                                                 onPressed: () {
+                                                  deleteCarguioPrecintos(
+                                                      listLiquidaPrecinto[index]
+                                                          .idCarguio!);
                                                   /*    dialogoEliminar(
                                                       context, allDR[index]); */
                                                 },
@@ -369,7 +407,7 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                         height: 40,
                         color: kColorAzul,
                         child: const Center(
-                          child: Text("VALVULAS DE INGRESO",
+                          child: Text("REGISTROS PRECINTOS",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white)),
@@ -385,7 +423,7 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                             Icons.directions_boat,
                             color: kColorAzul,
                           ),
-                          labelText: 'Nº de Precinto Valvulas de Ingreso',
+                          labelText: 'CANTIDAD DE PRECINTOS',
                           labelStyle: TextStyle(
                             color: kColorAzul,
                             fontSize: 20.0,
@@ -404,7 +442,7 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                             Icons.directions_boat,
                             color: kColorAzul,
                           ),
-                          labelText: 'Nombre de Valvula de Ingreso',
+                          labelText: 'CODIGO PRECINTO',
                           labelStyle: TextStyle(
                             color: kColorAzul,
                             fontSize: 20.0,
@@ -414,6 +452,40 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                         controller: nombreValvulaIngresoController,
                       ),
                       const SizedBox(height: 20),
+                      DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            labelText: 'Tipo Precinto',
+                            labelStyle: TextStyle(
+                              color: kColorAzul,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                          icon: const Icon(
+                            Icons.arrow_drop_down_circle_outlined,
+                          ),
+                          items: tipoPrecinto.map((String a) {
+                            return DropdownMenuItem<String>(
+                              value: a,
+                              child: Center(
+                                  child: Text(a, textAlign: TextAlign.left)),
+                            );
+                          }).toList(),
+                          onChanged: (value) => {
+                                setState(() {
+                                  _valueTipoPrecintoDropdown = value as String;
+                                })
+                              },
+                          hint: Text(_valueTipoPrecintoDropdown),
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Por favor, Ingrese fila';
+                            }
+                            return null;
+                          }),
+                      const SizedBox(height: 20),
                       MaterialButton(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -422,25 +494,38 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                         height: 50.0,
                         color: kColorNaranja,
                         onPressed: () {
-                          if (valvulasIngreso.length <
-                              int.parse(
-                                  cantidadValvulaIngresoController.text)) {
-                            listaPrecintos.add(ListaLiquidaPrecintos(
-                                tipoPrecinto: "Valvula de Ingreso",
-                                codigoPrecinto:
-                                    nombreValvulaIngresoController.text));
-                            setState(() {
-                              ValvulasIngreso item = ValvulasIngreso();
-                              item.valvulasIngreso =
-                                  nombreValvulaIngresoController.text;
-                              addValvulasIngresoItems(item);
-                              nombreValvulaIngresoController.clear();
-                            });
+                          if (cantidadValvulaIngresoController
+                                  .text.isNotEmpty &&
+                              nombreValvulaIngresoController.text.isNotEmpty &&
+                              _valueTipoPrecintoDropdown != 'Elegir Tipo') {
+                            if (listaPrecintos.length <
+                                int.parse(
+                                    cantidadValvulaIngresoController.text)) {
+                              int contador = listaPrecintos.length;
+                              setState(() {
+                                contador++;
+                              });
+                              listaPrecintos.add(ListaLiquidaPrecintos(
+                                  id: contador,
+                                  tipoPrecinto: _valueTipoPrecintoDropdown,
+                                  codigoPrecinto:
+                                      nombreValvulaIngresoController.text));
+                              setState(() {
+                                listaPrecintos;
+                                nombreValvulaIngresoController.clear();
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text(
+                                    "Solo se puede agregar un máximo de ${cantidadValvulaIngresoController.text} Precintos"),
+                                backgroundColor: Colors.yellow,
+                              ));
+                            }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                  "Solo se puede agregar ${cantidadValvulaIngresoController.text} datos"),
-                              backgroundColor: Colors.redAccent,
+                              content: Text("Ingresar los datos solicitados"),
+                              backgroundColor: Colors.red,
                             ));
                           }
                         },
@@ -454,41 +539,67 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                         ),
                       ),
                       const SizedBox(height: 20),
-                      DataTable(
-                        dividerThickness: 3,
-                        border: TableBorder.symmetric(
-                            inside: BorderSide(
-                                width: 1, color: Colors.grey.shade200)),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: kColorAzul),
-                          borderRadius: BorderRadius.circular(10),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          dividerThickness: 3,
+                          border: TableBorder.symmetric(
+                              inside: BorderSide(
+                                  width: 1, color: Colors.grey.shade200)),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: kColorAzul),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          headingTextStyle: TextStyle(
+                              fontWeight: FontWeight.bold, color: kColorAzul),
+                          dataRowColor: MaterialStateProperty.all(Colors.white),
+                          columns: const <DataColumn>[
+                            DataColumn(
+                              label: Text("Nº"),
+                            ),
+                            DataColumn(
+                              label: Text("Codigo Precinto"),
+                            ),
+                            DataColumn(
+                              label: Text("Tipo Precinto"),
+                            ),
+                            DataColumn(
+                              label: Text("Eliminar"),
+                            ),
+                          ],
+                          rows: listaPrecintos
+                              .map(((e) => DataRow(
+                                    cells: <DataCell>[
+                                      DataCell(
+                                        Text(e.id.toString()),
+                                      ),
+                                      DataCell(
+                                        Text(e.codigoPrecinto.toString()),
+                                      ),
+                                      DataCell(
+                                        Text(e.tipoPrecinto.toString()),
+                                      ),
+                                      DataCell(
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.delete,
+                                            color: Colors.grey,
+                                          ),
+                                          onPressed: () {
+                                            deleteListaPrecinto(e.id!);
+                                            setState(() {
+                                              listaPrecintos;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  )))
+                              .toList(),
                         ),
-                        headingTextStyle: TextStyle(
-                            fontWeight: FontWeight.bold, color: kColorAzul),
-                        dataRowColor: MaterialStateProperty.all(Colors.white),
-                        columns: const <DataColumn>[
-                          DataColumn(
-                            label: Text("Nº"),
-                          ),
-                          DataColumn(
-                            label: Text("Valvulas Ingreso"),
-                          ),
-                        ],
-                        rows: valvulasIngreso
-                            .map(((e) => DataRow(
-                                  cells: <DataCell>[
-                                    DataCell(
-                                      Text(e.id.toString()),
-                                    ),
-                                    DataCell(
-                                      Text(e.valvulasIngreso.toString()),
-                                    ),
-                                  ],
-                                )))
-                            .toList(),
                       ),
                       const SizedBox(height: 20),
-                      Container(
+                      /* Container(
                         height: 40,
                         color: kColorAzul,
                         child: const Center(
@@ -508,7 +619,7 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                             Icons.directions_boat,
                             color: kColorAzul,
                           ),
-                          labelText: 'Cantidad',
+                          labelText: 'CANTIDAD DE PRECINTOS',
                           labelStyle: TextStyle(
                             color: kColorAzul,
                             fontSize: 20.0,
@@ -527,7 +638,7 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                             Icons.directions_boat,
                             color: kColorAzul,
                           ),
-                          labelText: 'Nombre de Valvula de Salida',
+                          labelText: 'CODIGO PRECINTO',
                           labelStyle: TextStyle(
                             color: kColorAzul,
                             fontSize: 20.0,
@@ -556,13 +667,14 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                               item.valvulasSalida =
                                   nombreValvulaSalidaController.text;
                               addValvulasSalidaItems(item);
+                              cantidadValvulaSalidaController.clear();
                               nombreValvulaSalidaController.clear();
                             });
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
-                                  "Solo se puede agregar ${nombreValvulaSalidaController.text} datos"),
-                              backgroundColor: Colors.redAccent,
+                                  "Solo se puede agregar ${nombreValvulaSalidaController.text} Valvulas de Ingreso"),
+                              backgroundColor: Colors.yellow,
                             ));
                           }
                         },
@@ -600,6 +712,9 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                           DataColumn(
                             label: Text("Valvulas Salida"),
                           ),
+                          DataColumn(
+                            label: Text("Eliminar"),
+                          ),
                         ],
                         rows: valvulasSalida
                             .map(((e) => DataRow(
@@ -610,11 +725,25 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                                     DataCell(
                                       Text(e.valvulasSalida.toString()),
                                     ),
+                                    DataCell(
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.grey,
+                                        ),
+                                        onPressed: () {
+                                          deleteValvulaSalida(e.id!);
+                                          setState(() {
+                                            valvulasSalida;
+                                          });
+                                        },
+                                      ),
+                                    ),
                                   ],
                                 )))
                             .toList(),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 20), */
                       MaterialButton(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -629,10 +758,6 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                           transporteController.clear();
                           setState(() {
                             cantidadValvulaIngresoController.clear();
-                            cantidadValvulaSalidaController.clear();
-                            cantidadToldoController.clear();
-                            valvulasIngreso.clear();
-                            valvulasSalida.clear();
                             listaPrecintos.clear();
                           });
                         },
