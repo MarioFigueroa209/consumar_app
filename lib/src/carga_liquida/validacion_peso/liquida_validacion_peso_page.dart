@@ -49,8 +49,8 @@ class _LiquidaValidacionPesoState extends State<LiquidaValidacionPeso> {
   final taraCamionController = TextEditingController();
   final pesoNetoController = TextEditingController();
 
-  late int idCarguio;
-  late int idPrecinto;
+  int? idCarguio;
+  int? idPrecinto;
 
   getLecturaByQrCarguio() async {
     VwLecturaByQrCarguioLiquida vwLecturaByQrCarguio =
@@ -63,7 +63,21 @@ class _LiquidaValidacionPesoState extends State<LiquidaValidacionPeso> {
     idPrecinto = vwLecturaByQrCarguio.idPrecintado!;
     placaController.text = vwLecturaByQrCarguio.placa!;
     cisternaController.text = vwLecturaByQrCarguio.cisterna!;
+    productoController.text = vwLecturaByQrCarguio.mercaderia!;
+    nTicketController.text = vwLecturaByQrCarguio.nTicket!;
     transporteController.text = vwLecturaByQrCarguio.empresaTransporte!;
+  }
+
+  clearTxtFields() {
+    setState(() {
+      idCarguio = null;
+      idPrecinto = null;
+      placaController.clear();
+      cisternaController.clear();
+      productoController.clear();
+      nTicketController.clear();
+      transporteController.clear();
+    });
   }
 
   obtenerPesosHistorico() {
@@ -98,11 +112,10 @@ class _LiquidaValidacionPesoState extends State<LiquidaValidacionPeso> {
     placaController.clear();
     cisternaController.clear();
     transporteController.clear();
-
     pesoBrutoController.clear();
     taraCamionController.clear();
     pesoNetoController.clear();
-
+    productoController.clear();
     nTicketController.clear();
   }
 
@@ -134,12 +147,14 @@ class _LiquidaValidacionPesoState extends State<LiquidaValidacionPeso> {
                         final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const BarcodeScannerWithScanWindow()));
+                                builder: (context) =>
+                                    const BarcodeScannerWithScanWindow()));
                         codPrecintadoController.text = result;
                       }),
                   suffixIcon: IconButton(
                       icon: const Icon(Icons.search),
-                      onPressed: () {
+                      onPressed: () async {
+                        clearTxtFields();
                         getLecturaByQrCarguio();
                       }),
                   labelText: 'Codigo',
@@ -149,6 +164,7 @@ class _LiquidaValidacionPesoState extends State<LiquidaValidacionPeso> {
                   ),
                   hintText: 'Ingrese el Codigo'),
               onChanged: (value) {
+                clearTxtFields();
                 getLecturaByQrCarguio();
               },
               controller: codPrecintadoController,
@@ -177,6 +193,7 @@ class _LiquidaValidacionPesoState extends State<LiquidaValidacionPeso> {
                 hintText: '',
               ),
               controller: placaController,
+              enabled: false,
             ),
             const SizedBox(height: 20),
             TextFormField(
@@ -196,6 +213,7 @@ class _LiquidaValidacionPesoState extends State<LiquidaValidacionPeso> {
                 hintText: '',
               ),
               controller: cisternaController,
+              enabled: false,
             ),
             const SizedBox(height: 20.0),
             TextFormField(
@@ -313,6 +331,7 @@ class _LiquidaValidacionPesoState extends State<LiquidaValidacionPeso> {
                 hintText: '',
               ),
               controller: nTicketController,
+              enabled: false,
             ),
             const SizedBox(height: 20),
             TextFormField(

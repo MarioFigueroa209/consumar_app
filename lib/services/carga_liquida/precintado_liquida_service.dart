@@ -57,4 +57,15 @@ class PrecintadoLiquidaService {
       throw Exception('Failed to post data');
     }
   }
+
+  Future<void> delecteLogicPrecintoCarguio(int id) async {
+    http.Response res = await http
+        .put(Uri.parse(urlDeleteLogicPrecintoCarguio + id.toString()));
+
+    if (res.statusCode == 204) {
+      //print(" Actualizado");
+    } else {
+      throw "Fallo al actualizar";
+    }
+  }
 }

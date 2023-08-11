@@ -491,7 +491,7 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                             listaTanqueAdd.add(_valueTanqueDropdown);
                             setState(() {
                               stringList = listaTanqueAdd.join(", ");
-                              tanquesText.text = stringList;
+                              //tanquesText.text = stringList;
                             });
                             print(stringList);
                           },

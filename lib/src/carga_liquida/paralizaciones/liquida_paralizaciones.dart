@@ -3,12 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
+import '../../../models/carga_liquida/controlCarguio/vw_get_liquida_list_tanque.dart';
 import '../../../models/carga_liquida/paralizaciones/create_liquida_paralizaciones.dart';
 import '../../../models/carga_liquida/paralizaciones/sp_liquida_update_paralizaciones_by_id.dart';
 import '../../../models/carga_liquida/paralizaciones/vw_liquida_get_paralizaciones.dart';
 import '../../../models/carga_liquida/paralizaciones/vw_liquida_get_paralizaciones_by_id.dart';
 import '../../../models/file_upload_result.dart';
+import '../../../services/carga_liquida/control_carguio_liquida_service.dart';
 import '../../../services/carga_liquida/paralizaciones_liquida_service.dart';
 import '../../../services/file_upload_result.dart';
 import '../../../utils/constants.dart';
@@ -39,6 +42,9 @@ class ListFotosLiquidaParalizaciones {
 }
 
 class _LiquidaParalizacionesState extends State<LiquidaParalizaciones> {
+  ControlCarguioLiquidaService controlCarguioLiquidaService =
+      ControlCarguioLiquidaService();
+
   ParalizacionesLiquidaService paralizacionesLiquidaService =
       ParalizacionesLiquidaService();
 
@@ -131,7 +137,7 @@ class _LiquidaParalizacionesState extends State<LiquidaParalizaciones> {
       spCreateLiquidaFotosParalizacione.responsable =
           responsableController.text;
     }
-    spCreateLiquidaFotosParalizacione.tanque = _valueTanqueDropdown;
+    spCreateLiquidaFotosParalizacione.tanque = stringList;
     spCreateLiquidaFotosParalizacione.inicioParalizacion = dateInicio;
     spCreateLiquidaFotosParalizacione.idServiceOrder = widget.idServiceOrder;
     spCreateLiquidaFotosParalizacione.idUsuario = widget.idUsuario;
@@ -219,7 +225,9 @@ class _LiquidaParalizacionesState extends State<LiquidaParalizaciones> {
       var newDropDown = DropdownMenuItem(
         value: element.idParalizaciones.toString(),
         child: Text(
-          element.inicioParalizaciones.toString(),
+          DateFormat("yyyy-MM-dd hh:mm")
+              .format(element.inicioParalizaciones!)
+              .toString(),
         ),
       );
       dropDownItems.add(newDropDown);
@@ -250,10 +258,29 @@ class _LiquidaParalizacionesState extends State<LiquidaParalizaciones> {
         vwLiquidaGetParalizacionesById.responsable!;
   }
 
+  List<VwGetLiquidaListTanque> vwGetLiquidaListTanque =
+      <VwGetLiquidaListTanque>[];
+
+  getTanques() async {
+    List<VwGetLiquidaListTanque> value =
+        await controlCarguioLiquidaService.getListTanque();
+
+    setState(() {
+      vwGetLiquidaListTanque = value;
+    });
+  }
+
+  String stringList = "";
+
+  List<String> listaTanqueAdd = [];
+
+  //final tanquesText = TextEditingController();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getTanques();
     getParalizaciones();
   }
 
@@ -407,39 +434,69 @@ class _LiquidaParalizacionesState extends State<LiquidaParalizaciones> {
                       controller: responsableController,
                     ),
                     const SizedBox(height: 20.0),
-                    DropdownButtonFormField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        labelText: 'Tanque',
-                        labelStyle: TextStyle(
-                          color: kColorAzul,
-                          fontSize: 20.0,
-                        ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: 270,
+                            child: DropdownButtonFormField(
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                labelText: 'Tanque',
+                                labelStyle: TextStyle(
+                                  color: kColorAzul,
+                                  fontSize: 20.0,
+                                ),
+                              ),
+                              icon: const Icon(
+                                Icons.arrow_drop_down_circle_outlined,
+                              ),
+                              items:
+                                  getLiquidaListaTanque(vwGetLiquidaListTanque),
+                              onChanged: (value) => {
+                                setState(() {
+                                  _valueTanqueDropdown = value as String;
+                                })
+                              },
+                              validator: (value) {
+                                if (value != _valueTanqueDropdown) {
+                                  return 'Por favor, elige el tanque';
+                                }
+                                return null;
+                              },
+                              hint: Text(_valueTanqueDropdown),
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                listaTanqueAdd.add(_valueTanqueDropdown);
+                                setState(() {
+                                  stringList = listaTanqueAdd.join(", ");
+                                  //tanquesText.text = stringList;
+                                });
+                                print(stringList);
+                              },
+                              icon: Icon(
+                                Icons.add_box,
+                                color: kColorAzul,
+                              ))
+                        ],
                       ),
-                      icon: const Icon(
-                        Icons.arrow_drop_down_circle_outlined,
-                      ),
-                      items: listaTanque.map((String a) {
-                        return DropdownMenuItem<String>(
-                          value: a,
-                          child:
-                              Center(child: Text(a, textAlign: TextAlign.left)),
-                        );
-                      }).toList(),
-                      onChanged: (value) => {
-                        setState(() {
-                          _valueTanqueDropdown = value as String;
-                        })
-                      },
-                      validator: (value) {
-                        if (value != _valueTanqueDropdown) {
-                          return 'Por favor, elige el Tanque';
-                        }
-                        return null;
-                      },
-                      hint: Text(_valueTanqueDropdown),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      "LISTA TANQUE AGREGADOS:",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 7),
+                    Text(
+                      stringList,
+                      style: TextStyle(fontSize: 15),
                     ),
                     const SizedBox(height: 20),
                     Container(
@@ -710,13 +767,28 @@ class _LiquidaParalizacionesState extends State<LiquidaParalizaciones> {
                       height: 50.0,
                       color: kColorNaranja,
                       onPressed: () async {
-                        await createParalizacion();
-                        setState(() {
-                          imageInicioParalizacion = null;
-                          listFotosLiquidaParalizaciones.clear();
-                          responsableController.clear();
-                          detalleController.clear();
-                        });
+                        if (_valueDetalleDropdown != 'Seleccione el Detalle' ||
+                            detalleController.text.isNotEmpty) {
+                          await createParalizacion();
+                          setState(() {
+                            imageInicioParalizacion = null;
+                            listFotosLiquidaParalizaciones.clear();
+                            responsableController.clear();
+                            detalleController.clear();
+                          });
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Incio Paralizacion Registrado"),
+                            backgroundColor: Colors.green,
+                          ));
+                        } else {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text(
+                                "Rellenar la informacion antes de registrar"),
+                            backgroundColor: Colors.red,
+                          ));
+                        }
                       },
                       child: const Text(
                         "REGISTRAR INICIO",
@@ -1113,6 +1185,10 @@ class _LiquidaParalizacionesState extends State<LiquidaParalizaciones> {
                         imageTerminoParalizacion = null;
                         listFotosLiquidaParalizaciones.clear();
                       });
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Termino Paralizacion Registrado"),
+                        backgroundColor: Colors.green,
+                      ));
                     },
                     child: const Text(
                       "REGISTRAR TERMINO",
@@ -1130,6 +1206,22 @@ class _LiquidaParalizacionesState extends State<LiquidaParalizaciones> {
         ),
       ),
     );
+  }
+
+  List<DropdownMenuItem<String>> getLiquidaListaTanque(
+      List<VwGetLiquidaListTanque> bodegas) {
+    List<DropdownMenuItem<String>> dropDownItems = [];
+
+    for (var element in bodegas) {
+      var newDropDown = DropdownMenuItem(
+        value: element.tanque.toString(),
+        child: Text(
+          element.tanque.toString(),
+        ),
+      );
+      dropDownItems.add(newDropDown);
+    }
+    return dropDownItems;
   }
 
   Future pickDateTimeInicio() async {

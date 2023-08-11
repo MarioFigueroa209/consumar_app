@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../models/carga_liquida/controlCarguio/vw_get_liquida_list_tanque.dart';
 import '../../../models/carga_liquida/descargaTuberias/vw_lista_descarga_tuberia.dart';
+import '../../../services/carga_liquida/control_carguio_liquida_service.dart';
 import '../../../services/carga_liquida/liquida_descarga_tuberia_service.dart';
 import '../../../utils/constants.dart';
-import '../../../utils/lists.dart';
 
 class LiquidaDescargaTuberias extends StatefulWidget {
   const LiquidaDescargaTuberias(
@@ -39,12 +40,12 @@ class DescargaTuberiaTable {
   });
 }
 
-String _valueTanqueDropdown = 'Seleccione la Bodega';
-
 class _LiquidaDescargaTuberiasState extends State<LiquidaDescargaTuberias>
     with SingleTickerProviderStateMixin {
   LiquidaDescargaTuberiasService descargaTuberiaService =
       LiquidaDescargaTuberiasService();
+
+  String _valueTanqueDropdown = 'Seleccione la Bodega';
 
   Future<List<VwListaDescargaTuberia>>? vwFutureListaDescargaTuberia;
 
@@ -52,7 +53,20 @@ class _LiquidaDescargaTuberiasState extends State<LiquidaDescargaTuberias>
 
   final TextEditingController toneladaController = TextEditingController();
 
-  get kColorCeleste => null;
+  List<VwGetLiquidaListTanque> vwGetLiquidaListTanque =
+      <VwGetLiquidaListTanque>[];
+
+  getTanques() async {
+    ControlCarguioLiquidaService controlCarguioLiquidaService =
+        ControlCarguioLiquidaService();
+
+    List<VwGetLiquidaListTanque> value =
+        await controlCarguioLiquidaService.getListTanque();
+
+    setState(() {
+      vwGetLiquidaListTanque = value;
+    });
+  }
 
   createDescargaTuberia() async {
     await descargaTuberiaService.createDescargaTuberia(descargaTuberiaTable);
@@ -103,6 +117,7 @@ class _LiquidaDescargaTuberiasState extends State<LiquidaDescargaTuberias>
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     getListaDescargaTuberiasByServiceOrder();
+    getTanques();
   }
 
   @override
@@ -157,13 +172,7 @@ class _LiquidaDescargaTuberiasState extends State<LiquidaDescargaTuberias>
                       icon: const Icon(
                         Icons.arrow_drop_down_circle_outlined,
                       ),
-                      items: listaTanque.map((String a) {
-                        return DropdownMenuItem<String>(
-                          value: a,
-                          child:
-                              Center(child: Text(a, textAlign: TextAlign.left)),
-                        );
-                      }).toList(),
+                      items: getLiquidaListaTanque(vwGetLiquidaListTanque),
                       onChanged: (value) => {
                         setState(() {
                           _valueTanqueDropdown = value as String;
@@ -407,6 +416,22 @@ class _LiquidaDescargaTuberiasState extends State<LiquidaDescargaTuberias>
             : null,
       ),
     );
+  }
+
+  List<DropdownMenuItem<String>> getLiquidaListaTanque(
+      List<VwGetLiquidaListTanque> bodegas) {
+    List<DropdownMenuItem<String>> dropDownItems = [];
+
+    for (var element in bodegas) {
+      var newDropDown = DropdownMenuItem(
+        value: element.tanque.toString(),
+        child: Text(
+          element.tanque.toString(),
+        ),
+      );
+      dropDownItems.add(newDropDown);
+    }
+    return dropDownItems;
   }
 
   Widget _buildTable1(context) {

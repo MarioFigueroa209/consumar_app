@@ -311,7 +311,6 @@ final listaTanque = [
   'Tanque 5',
 ];
 
-
 final listaPlacas = [
   'Placa 1',
   'Placa 2',
@@ -319,7 +318,6 @@ final listaPlacas = [
   'Placa 4',
   'Placa 5',
 ];
-
 
 final listaDetalle = [
   'Detalle 1',
@@ -336,7 +334,6 @@ final listaResponsable = [
   'Responsable 4',
   'Responsable 5',
 ];
-
 
 final listaFactura = [
   'FAC001',
@@ -394,4 +391,9 @@ final listaDescarga = [
   'Descarga 1',
   'Descarga 2',
   'Descarga 3',
+];
+
+final tipoPrecinto = [
+  'Valvula Ingreso',
+  'Valvula Salida',
 ];
