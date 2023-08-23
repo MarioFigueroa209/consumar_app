@@ -11,13 +11,13 @@ String createControlCarguioToJson(CreateControlCarguio data) =>
     json.encode(data.toJson());
 
 class CreateControlCarguio {
+  SpCreateGranelControlCarguio? spCreateGranelControlCarguio;
+  List<SpCreateGranelFotosCarguio>? spCreateGranelFotosCarguio;
+
   CreateControlCarguio({
     this.spCreateGranelControlCarguio,
     this.spCreateGranelFotosCarguio,
   });
-
-  SpCreateGranelControlCarguio? spCreateGranelControlCarguio;
-  List<SpCreateGranelFotosCarguio>? spCreateGranelFotosCarguio;
 
   factory CreateControlCarguio.fromJson(Map<String, dynamic> json) =>
       CreateControlCarguio(
@@ -29,13 +29,29 @@ class CreateControlCarguio {
       );
 
   Map<String, dynamic> toJson() => {
-        "spCreateGranelControlCarguio": spCreateGranelControlCarguio!.toJson(),
+        "spCreateGranelControlCarguio": spCreateGranelControlCarguio?.toJson(),
         "spCreateGranelFotosCarguio": List<dynamic>.from(
             spCreateGranelFotosCarguio!.map((x) => x.toJson())),
       };
 }
 
 class SpCreateGranelControlCarguio {
+  int? jornada;
+  DateTime? fecha;
+  bool? barredura;
+  String? bodega;
+  String? nTicket;
+  String? placa;
+  String? tolva;
+  String? deliveryOrder;
+  String? dam;
+  DateTime? inicioCarguio;
+  DateTime? terminoCarguio;
+  int? idUsuario;
+  int? idTransporte;
+  int? idConductor;
+  int? idServiceOrder;
+
   SpCreateGranelControlCarguio({
     this.jornada,
     this.fecha,
@@ -53,22 +69,6 @@ class SpCreateGranelControlCarguio {
     this.idConductor,
     this.idServiceOrder,
   });
-
-  int? jornada;
-  DateTime? fecha;
-  bool? barredura;
-  String? bodega;
-  String? nTicket;
-  String? placa;
-  String? tolva;
-  String? deliveryOrder;
-  String? dam;
-  DateTime? inicioCarguio;
-  DateTime? terminoCarguio;
-  int? idUsuario;
-  int? idTransporte;
-  int? idConductor;
-  int? idServiceOrder;
 
   factory SpCreateGranelControlCarguio.fromJson(Map<String, dynamic> json) =>
       SpCreateGranelControlCarguio(
@@ -99,7 +99,7 @@ class SpCreateGranelControlCarguio {
         "tolva": tolva,
         "deliveryOrder": deliveryOrder,
         "dam": dam,
-        "inicioCarguio": inicioCarguio?.toIso8601String(),
+        "inicioCarguio": inicioCarguio!.toIso8601String(),
         "terminoCarguio": terminoCarguio?.toIso8601String(),
         "idUsuario": idUsuario,
         "idTransporte": idTransporte,
@@ -109,26 +109,30 @@ class SpCreateGranelControlCarguio {
 }
 
 class SpCreateGranelFotosCarguio {
+  String? nombreFoto;
+  String? urlFoto;
+  String? operacionCarguio;
+  int? idCarguio;
+
   SpCreateGranelFotosCarguio({
     this.nombreFoto,
     this.urlFoto,
+    this.operacionCarguio,
     this.idCarguio,
   });
-
-  String? nombreFoto;
-  String? urlFoto;
-  int? idCarguio;
 
   factory SpCreateGranelFotosCarguio.fromJson(Map<String, dynamic> json) =>
       SpCreateGranelFotosCarguio(
         nombreFoto: json["nombreFoto"],
         urlFoto: json["urlFoto"],
+        operacionCarguio: json["operacionCarguio"],
         idCarguio: json["idCarguio"],
       );
 
   Map<String, dynamic> toJson() => {
         "nombreFoto": nombreFoto,
         "urlFoto": urlFoto,
+        "operacionCarguio": operacionCarguio,
         "idCarguio": idCarguio,
       };
 }

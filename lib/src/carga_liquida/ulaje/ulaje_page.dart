@@ -304,9 +304,8 @@ class _UlajePageState extends State<UlajePage>
     // TODO: implement initState
     _tabController = TabController(length: 2, vsync: this);
     cargarLista();
-    listFutureTableUlajeSqLite();
-    //obtenerObservadosFoto();
     obtenerListados();
+    listFutureTableUlajeSqLite();
     super.initState();
   }
 

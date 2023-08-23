@@ -291,6 +291,9 @@ String urlGetShipAndTravelByIdServiceOrderGranel =
 final urlCreateMonitoreoProducto =
     Uri.parse("${urlApiBase}MonitoreoProducto/createMonitoreoProducto");
 
+String urlGetBodegasPesosGranelByIdServiceOrder =
+    "${urlApiBase}MonitoreoProducto/getBodegaPesosGranelByIdServiceOrder?idServiceOrder=";
+
 /*----------Registro Equipos------------*/
 
 final urlCreateRegistroEquipos =
@@ -331,14 +334,32 @@ String urlDeleteLogicInspeccionEquipo =
     "${urlApiBase}InspeccionEquipo/deleteLogicInspeccionEquipos/";
 
 /*---------- Control de Carguio ------------*/
-final urlGetGranelListaBodegas =
-    Uri.parse("${urlApiBase}ControlCarguio/getGranelListaBodegas");
+String urlGetGranelListaBodegas =
+    "${urlApiBase}ControlCarguio/getGranelListaBodegas?idServiceOrder=";
 
 final urlCreateGranelControlCarguio =
     Uri.parse("${urlApiBase}ControlCarguio/createControlCarguio");
 
 String urlGetGranelConsultaTransporteByCod =
-    "${urlApiBase}ControlCarguio/getGranelConsultaTransporteByCod/";
+    "${urlApiBase}ControlCarguio/getGranelTransporteByPlacaAndIdService?IdServiceOrder=";
+
+final urlCreateGranelFotosControlCarguio = Uri.parse(
+    "${urlApiBase}ControlCarguio/createGranelFotosControlCarguioList");
+
+final urlUpdateGranelControlCarguioTermino =
+    Uri.parse("${urlApiBase}ControlCarguio/UpdateGranelControlCarguioTermino");
+
+String urlGetGranelDoDamByIdServiceOrder =
+    "${urlApiBase}ControlCarguio/getGranelDoDamByIdServiceOrder?IdServiceOrder=";
+
+String urlGetGranelListaPlacasInicioCarguioByIdServiceOrder =
+    "${urlApiBase}ControlCarguio/getGranelListPlacasInicioCarguioByIdServiceOrder?IdServiceOrder=";
+
+String urlGetGranelPlacasInicioCarguio =
+    "${urlApiBase}ControlCarguio/getGranelPlacasInicioCarguio?IdServiceOrder=";
+
+String urlGetGranelCountDamByIdServiceOrder =
+    "${urlApiBase}ControlCarguio/getGranelCountDamByIdServiceOrder?IdServiceOrder=";
 
 /*----------------- Paralizaciones ------------------- */
 final urlCreateGranelParalizaciones =
@@ -365,12 +386,21 @@ String urlGetPrecintoCarguio =
 final urlCreatePrecintados =
     Uri.parse("${urlApiBase}Precintados/createPrecintado");
 
+String urlDeleteGranelPrecintoCarguio =
+    "${urlApiBase}Precintados/DeleteLogicGranelPrecintoCarguios?id=";
+
 /*--------------- Recepcion Almacen ----------- */
 String urlGetLecturaByQrCarguio =
     "${urlApiBase}RecepcionAlmacen/getLecturaByQrCarguio/";
 
 String urlGetListaPrecintosByIdPrecintos =
     "${urlApiBase}RecepcionAlmacen/getListaPrecintosByIdPrecintos?CodCarguioPrecintado=";
+
+String urlGetListaPrecintosByCodCarguio =
+    "${urlApiBase}RecepcionAlmacen/getListaPrecintosByCodCarguio?CodCarguioPrecintado=";
+
+String urlGetCountGranelPrecitosByCodigos =
+    "${urlApiBase}RecepcionAlmacen/getCountGranelPrecitosByCodigos/";
 
 final urlCreateRecepcionAlmacen =
     Uri.parse("${urlApiBase}RecepcionAlmacen/createRecepcionAlmacen");
@@ -448,8 +478,8 @@ String urlDeleteLogicLiquidaInspeccionEquipo =
     "${urlApiBase}LiquidaInspeccionEquipo/deleteLogicLiquidaInspeccionEquipos/";
 
 /*---------- Liquida Control de Carguio ------------*/
-final urlGetListTanque =
-    Uri.parse("${urlApiBase}LiquidaControlCarguio/getLiquidaListTanque");
+String urlGetListTanque =
+    "${urlApiBase}LiquidaControlCarguio/getLiquidaListTanque?idServiceOrder=";
 
 final urlCreateLiquidaControlCarguio =
     Uri.parse("${urlApiBase}LiquidaControlCarguio/createLiquidaControlCarguio");
@@ -505,7 +535,7 @@ final urlCreateLiquidaPrecintados =
     Uri.parse("${urlApiBase}LiquidaPrecintados/createLiquidaPrecintado");
 
 String urlDeleteLogicPrecintoCarguio =
-    "${urlApiBase}LiquidaPrecintados/DeleteLogicPrecintoCarguio/";
+    "${urlApiBase}LiquidaPrecintados/DeleteLogicPrecintoCarguios?id=";
 
 /*--------------- Recepcion Almacen Liquida ----------- */
 String urlGetLecturaLiquidaByQrCarguio =
@@ -537,8 +567,11 @@ final urlCreateLiquidaPesoHistorico =
 String urlGetDescargaTuberiaByIdServiceOrder =
     "${urlApiBase}LiquidaDescargaTuberia/getListaLiquidaDescargaTuberia?idServiceOrder=";
 
-final urlCreateLiquidaDescargaTuberia = Uri.parse(
+final urlCreateLiquidaDescargaTuberiaList = Uri.parse(
     "${urlApiBase}LiquidaDescargaTuberia/createLiquidaDescargaTuberiaList");
+
+final urlCreateLiquidaDescargaTuberia = Uri.parse(
+    "${urlApiBase}LiquidaDescargaTuberia/createLiquidaDescargaTuberia");
 
 String urlDeleteLogicLiquidaDescargaTuberia =
     "${urlApiBase}LiquidaDescargaTuberia/DeleteLogicDescargaTuberia/";

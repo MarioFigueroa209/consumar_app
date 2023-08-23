@@ -127,7 +127,6 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
   }
 
   clearFieldsCarguiPrecinto() {
-    //codPrecintadoController.clear();
     placaController.clear();
     cisternaController.clear();
     transporteController.clear();
@@ -138,10 +137,6 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
       cantValvulaIngreso = 0;
       cantValvulaSalida = 0;
     });
-
-    /*  valvulaIngresoController.clear(); 
-    valvulaSalidaController.clear();
-    toldoController.clear(); */
   }
 
   getListaPrecintoByIdPrecinto(String codPrecinto, String tipoPrecinto) async {
@@ -367,7 +362,7 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                   icon: const Icon(
                     Icons.arrow_drop_down_circle_outlined,
                   ),
-                  items: tipoPrecinto.map((String a) {
+                  items: tipoPrecintoLiquida.map((String a) {
                     return DropdownMenuItem<String>(
                       value: a,
                       child: Center(child: Text(a, textAlign: TextAlign.left)),
@@ -483,54 +478,58 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                 enabled: false,
               ), */
               const SizedBox(height: 20),
-              DataTable(
-                dividerThickness: 3,
-                border: TableBorder.symmetric(
-                    inside: BorderSide(width: 1, color: Colors.grey.shade200)),
-                decoration: BoxDecoration(
-                  border: Border.all(color: kColorAzul),
-                  borderRadius: BorderRadius.circular(10),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  dividerThickness: 3,
+                  border: TableBorder.symmetric(
+                      inside:
+                          BorderSide(width: 1, color: Colors.grey.shade200)),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: kColorAzul),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  headingTextStyle:
+                      TextStyle(fontWeight: FontWeight.bold, color: kColorAzul),
+                  /* headingRowColor: MaterialStateColor.resolveWith(
+                  (states) {
+                    return kColorAzul;
+                  },
+                ), */
+                  dataRowColor: MaterialStateProperty.all(Colors.white),
+                  columns: const <DataColumn>[
+                    DataColumn(
+                      label: Text("Nº"),
+                    ),
+                    DataColumn(
+                      label: Text("COD PRECINTO"),
+                    ),
+                    DataColumn(
+                      label: Text("TIPO"),
+                    ),
+                    DataColumn(
+                      label: Text("DELETE"),
+                    ),
+                  ],
+                  rows: listPrecintosAdd
+                      .map(((e) => DataRow(
+                            cells: <DataCell>[
+                              DataCell(Text(e.id.toString())),
+                              DataCell(Text(e.codPrecinto.toString(),
+                                  textAlign: TextAlign.center)),
+                              DataCell(Text(e.tipo.toString(),
+                                  textAlign: TextAlign.center)),
+                              DataCell(IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: (() {
+                                  deletePrecintoIngresado(e.id!);
+                                  setState(() {});
+                                }),
+                              )),
+                            ],
+                          )))
+                      .toList(),
                 ),
-                headingTextStyle:
-                    TextStyle(fontWeight: FontWeight.bold, color: kColorAzul),
-                /* headingRowColor: MaterialStateColor.resolveWith(
-                (states) {
-                  return kColorAzul;
-                },
-              ), */
-                dataRowColor: MaterialStateProperty.all(Colors.white),
-                columns: const <DataColumn>[
-                  DataColumn(
-                    label: Text("Nº"),
-                  ),
-                  DataColumn(
-                    label: Text("COD PRECINTO"),
-                  ),
-                  DataColumn(
-                    label: Text("TIPO"),
-                  ),
-                  DataColumn(
-                    label: Text("DELETE"),
-                  ),
-                ],
-                rows: listPrecintosAdd
-                    .map(((e) => DataRow(
-                          cells: <DataCell>[
-                            DataCell(Text(e.id.toString())),
-                            DataCell(Text(e.codPrecinto.toString(),
-                                textAlign: TextAlign.center)),
-                            DataCell(Text(e.tipo.toString(),
-                                textAlign: TextAlign.center)),
-                            DataCell(IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: (() {
-                                deletePrecintoIngresado(e.id!);
-                                setState(() {});
-                              }),
-                            )),
-                          ],
-                        )))
-                    .toList(),
               ),
               const SizedBox(height: 20),
               MaterialButton(
@@ -540,7 +539,7 @@ class _LiquidaRecepcionAlmacenState extends State<LiquidaRecepcionAlmacen> {
                 minWidth: double.infinity,
                 height: 50.0,
                 color: kColorNaranja,
-                onPressed: () async {
+                onPressed: () {
                   if (idCarguio != null) {
                     if ((cantValvulaIngreso! + cantValvulaSalida!) ==
                         listPrecintosAdd.length) {

@@ -210,8 +210,8 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
   }
 
   getBodegas() async {
-    List<VwGranelListaBodegas> value =
-        await controlCarguioService.getGranelListaBodegas();
+    List<VwGranelListaBodegas> value = await controlCarguioService
+        .getGranelListaBodegas(widget.idServiceOrder);
 
     setState(() {
       vwGranelListaBodegas = value;
@@ -304,20 +304,16 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
-
                               children: [
                                 Text("Muelle",
                                     style: TextStyle(
                                         fontSize: 20,
                                         color: kColorAzul,
                                         fontWeight: FontWeight.w500)),
-
                                 const SizedBox(width: 2),
-
                                 Switch(
                                   value: valueMuelle,
                                   onChanged: (value) => setState(() {
@@ -335,9 +331,7 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
                                         fontSize: 20,
                                         color: kColorAzul,
                                         fontWeight: FontWeight.w500)),
-
                                 const SizedBox(width: 2),
-
                                 Switch(
                                   value: valueToldo,
                                   onChanged: (value) => setState(() {
@@ -798,7 +792,16 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
                                   label: Text("Comentario"),
                                 ),
                                 DataColumn(
-                                  label: Text("Reinspeccion Equipo"),
+                                  label: Text("1.INSP"),
+                                ),
+                                DataColumn(
+                                  label: Text("2.INSP"),
+                                ),
+                                DataColumn(
+                                  label: Text("3.INSP"),
+                                ),
+                                DataColumn(
+                                  label: Text("Fotografias"),
                                 ),
                                 DataColumn(
                                   label: Text("Delete"),
@@ -827,6 +830,57 @@ class _InspeccionequiposState extends State<Inspeccionequipos>
                                               textAlign: TextAlign.center)),
                                           DataCell(Text(e.comentario.toString(),
                                               textAlign: TextAlign.center)),
+                                          DataCell(e.primeraInspeccion ==
+                                                  "APROBADO"
+                                              ? const Icon(
+                                                  Icons.check_outlined,
+                                                  color: Colors.green,
+                                                )
+                                              : e.primeraInspeccion ==
+                                                      "RECHAZADO"
+                                                  ? const Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                    )
+                                                  : const Icon(
+                                                      Icons.warning,
+                                                      color: Color.fromARGB(
+                                                          174, 197, 197, 10),
+                                                    )),
+                                          DataCell(e.segundoInspeccion ==
+                                                  "APROBADO"
+                                              ? const Icon(
+                                                  Icons.check_outlined,
+                                                  color: Colors.green,
+                                                )
+                                              : e.segundoInspeccion ==
+                                                      "RECHAZADO"
+                                                  ? const Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                    )
+                                                  : const Icon(
+                                                      Icons.warning,
+                                                      color: Color.fromARGB(
+                                                          174, 197, 197, 10),
+                                                    )),
+                                          DataCell(e.terceraInspeccion ==
+                                                  "APROBADO"
+                                              ? const Icon(
+                                                  Icons.check_outlined,
+                                                  color: Colors.green,
+                                                )
+                                              : e.terceraInspeccion ==
+                                                      "RECHAZADO"
+                                                  ? const Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                    )
+                                                  : const Icon(
+                                                      Icons.warning,
+                                                      color: Color.fromARGB(
+                                                          174, 197, 197, 10),
+                                                    )),
                                           DataCell(IconButton(
                                             icon: const Icon(Icons.image),
                                             onPressed: (() {

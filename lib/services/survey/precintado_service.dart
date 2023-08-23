@@ -56,4 +56,15 @@ class PrecintadoService {
       throw Exception('Failed to post data');
     }
   }
+
+  Future<void> delecteLogicGranelPrecintoCarguio(int id) async {
+    http.Response res = await http
+        .put(Uri.parse(urlDeleteGranelPrecintoCarguio + id.toString()));
+
+    if (res.statusCode == 200) {
+      throw "Eliminado con exito";
+    } else {
+      throw "Fallo al actualizar";
+    }
+  }
 }

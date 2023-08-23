@@ -3,11 +3,13 @@ import 'package:consumar_app/src/survey/validacion_peso/validacion_peso_page.dar
 import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../models/survey/MonitoreoProducto/vw_bodega_granel_byServiceOrder.dart';
 import '../../models/survey/vw_ship_and_travel_by_id_service_order_granel.dart';
 import '../../models/usuario_model.dart';
 import '../../models/vw_all_service_order_granel.dart';
 import '../../models/vw_get_user_data_by_cod_user.dart';
 import '../../services/service_order_services.dart';
+import '../../services/survey/monitoreo_producto_service.dart';
 import '../../services/usuario_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/jornada_model.dart';
@@ -40,6 +42,9 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
   final TextEditingController _nombreNaveController = TextEditingController();
   final TextEditingController _viajeController = TextEditingController();
   final TextEditingController _fechaController = TextEditingController();
+
+  MonitoreoProductoService monitoreoProductoService =
+      MonitoreoProductoService();
 
   final TextEditingController _jornadaController = TextEditingController();
 
@@ -128,9 +133,20 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
     serviceOrdersList = await serviceOrderService.getAllServiceOrdersGranel();
   }
 
-  validationMonitoreoProducto() {
+  List<VwBodegaGranelByServiceOrder> bodegaPesosGranelByIdServOrder = [];
+
+  getBodegaPesosGranel() async {
+    bodegaPesosGranelByIdServOrder =
+        await monitoreoProductoService.getBodegaPesoConsulta(idServiceOrder);
+
+    print('Cantidad de registros${bodegaPesosGranelByIdServOrder.length}');
+  }
+
+  validationMonitoreoProducto() async {
     if (_formKey.currentState!.validate()) {
       if (_formKey2.currentState!.validate()) {
+        await monitoreoProductoService
+            .insertBodegaPesosGranel(bodegaPesosGranelByIdServOrder);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -462,6 +478,7 @@ class _SurveyCargaGranelState extends State<SurveyCargaGranel> {
                           onChanged: (value) {
                             idServiceOrder = int.parse(value.toString());
                             getNaveAndTravelServiceOrder();
+                            getBodegaPesosGranel();
                             setState(() {
                               //_selectedServiceOrder = value.toString();
                             });

@@ -62,8 +62,8 @@ class PrecintadoLiquidaService {
     http.Response res = await http
         .put(Uri.parse(urlDeleteLogicPrecintoCarguio + id.toString()));
 
-    if (res.statusCode == 204) {
-      //print(" Actualizado");
+    if (res.statusCode == 200) {
+      throw "Eliminado con exito";
     } else {
       throw "Fallo al actualizar";
     }

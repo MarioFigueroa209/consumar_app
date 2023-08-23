@@ -5,6 +5,7 @@ import '../../../models/survey/Precintos/sp_create_precintados.dart';
 import '../../../models/survey/Precintos/vw_granel_precinto.dart';
 import '../../../services/survey/precintado_service.dart';
 import '../../../utils/constants.dart';
+import '../../../utils/lists.dart';
 import '../../../utils/survey/sqlLiteDB/clases_precintados.dart';
 
 class Precintado extends StatefulWidget {
@@ -85,6 +86,10 @@ class _Precintadostate extends State<Precintado>
         spCreateGranelListaPrecintos: createListaPrecinto));
   }
 
+  deleteCarguioPrecintos(int id) {
+    precintadoService.delecteLogicGranelPrecintoCarguio(id);
+  }
+
   addCompuertTolvaItems(Compuertatolva item) {
     int contador = compuertatolva.length;
     contador++;
@@ -121,6 +126,12 @@ class _Precintadostate extends State<Precintado>
   final TextEditingController cantidadToldoController = TextEditingController();
   final TextEditingController nombreToldoController = TextEditingController();
 
+  final TextEditingController cantidadPrecintoController =
+      TextEditingController();
+  final TextEditingController nombrePrecintoController =
+      TextEditingController();
+
+  String _valueTipoPrecintoDropdown = 'Elegir Tipo';
   // final _CantidadTolva = TextEditingController();
   // final _CantidadCajahidraulica = TextEditingController();
   // final _CantidadToldo = TextEditingController();
@@ -309,9 +320,14 @@ class _Precintadostate extends State<Precintado>
                                                   Icons.delete,
                                                   color: Colors.grey,
                                                 ),
-                                                onPressed: () {
-                                                  /*    dialogoEliminar(
-                                                      context, allDR[index]); */
+                                                onPressed: () async {
+                                                  await deleteCarguioPrecintos(
+                                                      listGranelPrecinto[index]
+                                                          .idCarguio!);
+                                                  getListaPrecintos();
+                                                  setState(() {
+                                                    listGranelPrecinto;
+                                                  });
                                                 },
                                               ),
                                             ]),
@@ -413,7 +429,7 @@ class _Precintadostate extends State<Precintado>
                         height: 40,
                         color: kColorAzul,
                         child: const Center(
-                          child: Text("COMPUERTA DE TOLVA",
+                          child: Text("REGISTROS PRECINTOS",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white)),
@@ -429,14 +445,14 @@ class _Precintadostate extends State<Precintado>
                             Icons.directions_boat,
                             color: kColorAzul,
                           ),
-                          labelText: 'Cantidad',
+                          labelText: 'CANTIDAD DE PRECINTOS',
                           labelStyle: TextStyle(
                             color: kColorAzul,
                             fontSize: 20.0,
                           ),
                           hintText: '',
                         ),
-                        controller: cantidadCompuertaTolvaController,
+                        controller: cantidadPrecintoController,
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
@@ -448,15 +464,49 @@ class _Precintadostate extends State<Precintado>
                             Icons.directions_boat,
                             color: kColorAzul,
                           ),
-                          labelText: 'Nombre de la Compuerta de Tolva',
+                          labelText: 'CODIGO PRECINTO',
                           labelStyle: TextStyle(
                             color: kColorAzul,
                             fontSize: 20.0,
                           ),
                           hintText: '',
                         ),
-                        controller: nombreCompuertaTolvaController,
+                        controller: nombrePrecintoController,
                       ),
+                      const SizedBox(height: 20),
+                      DropdownButtonFormField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            labelText: 'Tipo Precinto',
+                            labelStyle: TextStyle(
+                              color: kColorAzul,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                          icon: const Icon(
+                            Icons.arrow_drop_down_circle_outlined,
+                          ),
+                          items: tipoPrecintoGranel.map((String a) {
+                            return DropdownMenuItem<String>(
+                              value: a,
+                              child: Center(
+                                  child: Text(a, textAlign: TextAlign.left)),
+                            );
+                          }).toList(),
+                          onChanged: (value) => {
+                                setState(() {
+                                  _valueTipoPrecintoDropdown = value as String;
+                                })
+                              },
+                          hint: Text(_valueTipoPrecintoDropdown),
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Por favor, Ingrese Precinto';
+                            }
+                            return null;
+                          }),
                       const SizedBox(height: 20),
                       MaterialButton(
                         shape: RoundedRectangleBorder(
@@ -466,25 +516,36 @@ class _Precintadostate extends State<Precintado>
                         height: 50.0,
                         color: kColorNaranja,
                         onPressed: () {
-                          if (compuertatolva.length <
-                              int.parse(
-                                  cantidadCompuertaTolvaController.text)) {
-                            listaPrecintos.add(ListaPrecintos(
-                                tipoPrecinto: "COMPUERTA TOLVA",
-                                codigoPrecinto:
-                                    nombreCompuertaTolvaController.text));
-                            setState(() {
-                              Compuertatolva item = Compuertatolva();
-                              item.compuertaTolva =
-                                  nombreCompuertaTolvaController.text;
-                              addCompuertTolvaItems(item);
-                              nombreCompuertaTolvaController.clear();
-                            });
+                          if (cantidadPrecintoController.text.isNotEmpty &&
+                              nombrePrecintoController.text.isNotEmpty &&
+                              _valueTipoPrecintoDropdown != 'Elegir Tipo') {
+                            if (listaPrecintos.length <
+                                int.parse(cantidadPrecintoController.text)) {
+                              int contador = listaPrecintos.length;
+                              setState(() {
+                                contador++;
+                              });
+                              listaPrecintos.add(ListaPrecintos(
+                                  id: contador,
+                                  tipoPrecinto: _valueTipoPrecintoDropdown,
+                                  codigoPrecinto:
+                                      nombrePrecintoController.text));
+                              setState(() {
+                                listaPrecintos;
+                                nombrePrecintoController.clear();
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text(
+                                    "Solo se puede agregar un máximo de ${cantidadPrecintoController.text} Precintos"),
+                                backgroundColor: Colors.yellow,
+                              ));
+                            }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                  "Solo se puede agregar ${cantidadCompuertaTolvaController.text} datos"),
-                              backgroundColor: Colors.redAccent,
+                              content: Text("Ingresar los datos solicitados"),
+                              backgroundColor: Colors.red,
                             ));
                           }
                         },
@@ -498,94 +559,67 @@ class _Precintadostate extends State<Precintado>
                         ),
                       ),
                       const SizedBox(height: 20),
-                      DataTable(
-                        dividerThickness: 3,
-                        border: TableBorder.symmetric(
-                            inside: BorderSide(
-                                width: 1, color: Colors.grey.shade200)),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: kColorAzul),
-                          borderRadius: BorderRadius.circular(10),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          dividerThickness: 3,
+                          border: TableBorder.symmetric(
+                              inside: BorderSide(
+                                  width: 1, color: Colors.grey.shade200)),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: kColorAzul),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          headingTextStyle: TextStyle(
+                              fontWeight: FontWeight.bold, color: kColorAzul),
+                          dataRowColor: MaterialStateProperty.all(Colors.white),
+                          columns: const <DataColumn>[
+                            DataColumn(
+                              label: Text("Nº"),
+                            ),
+                            DataColumn(
+                              label: Text("Codigo Precinto"),
+                            ),
+                            DataColumn(
+                              label: Text("Tipo Precinto"),
+                            ),
+                            DataColumn(
+                              label: Text("Eliminar"),
+                            ),
+                          ],
+                          rows: listaPrecintos
+                              .map(((e) => DataRow(
+                                    cells: <DataCell>[
+                                      DataCell(
+                                        Text(e.id.toString()),
+                                      ),
+                                      DataCell(
+                                        Text(e.codigoPrecinto.toString()),
+                                      ),
+                                      DataCell(
+                                        Text(e.tipoPrecinto.toString()),
+                                      ),
+                                      DataCell(
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.delete,
+                                            color: Colors.grey,
+                                          ),
+                                          onPressed: () {
+                                            //deleteListaPrecinto(e.id!);
+                                            setState(() {
+                                              listaPrecintos;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  )))
+                              .toList(),
                         ),
-                        headingTextStyle: TextStyle(
-                            fontWeight: FontWeight.bold, color: kColorAzul),
-                        /* headingRowColor: MaterialStateColor.resolveWith(
-                          (states) {
-                            return kColorAzul;
-                          },
-                        ), */
-                        dataRowColor: MaterialStateProperty.all(Colors.white),
-                        columns: const <DataColumn>[
-                          DataColumn(
-                            label: Text("Nº"),
-                          ),
-                          DataColumn(
-                            label: Text("Compuerta Tolva"),
-                          ),
-                        ],
-                        rows: compuertatolva
-                            .map(((e) => DataRow(
-                                  cells: <DataCell>[
-                                    DataCell(
-                                      Text(e.id.toString()),
-                                    ),
-                                    DataCell(
-                                      Text(e.compuertaTolva.toString()),
-                                    ),
-                                  ],
-                                )))
-                            .toList(),
                       ),
-                      const SizedBox(height: 20),
-                      Container(
-                        height: 40,
-                        color: kColorAzul,
-                        child: const Center(
-                          child: Text("CAJA DE COMANDO HIDRAULICA",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white)),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          prefixIcon: Icon(
-                            Icons.directions_boat,
-                            color: kColorAzul,
-                          ),
-                          labelText: 'Cantidad',
-                          labelStyle: TextStyle(
-                            color: kColorAzul,
-                            fontSize: 20.0,
-                          ),
-                          hintText: '',
-                        ),
-                        controller: cantidadCajaComandoHidraulicaController,
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          prefixIcon: Icon(
-                            Icons.directions_boat,
-                            color: kColorAzul,
-                          ),
-                          labelText: 'Nombre de Caja de Comando Hidraulica',
-                          labelStyle: TextStyle(
-                            color: kColorAzul,
-                            fontSize: 20.0,
-                          ),
-                          hintText: '',
-                        ),
-                        controller: nombreCajaComandoHidraulicaController,
-                      ),
-                      const SizedBox(height: 20),
+                      //   const SizedBox(height: 20),
+                      /*   const SizedBox(height: 20),
                       MaterialButton(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -790,7 +824,7 @@ class _Precintadostate extends State<Precintado>
                                   ],
                                 )))
                             .toList(),
-                      ),
+                      ), */
                       const SizedBox(height: 20),
                       MaterialButton(
                         shape: RoundedRectangleBorder(

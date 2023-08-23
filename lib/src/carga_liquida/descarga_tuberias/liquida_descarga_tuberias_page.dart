@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../models/carga_liquida/controlCarguio/vw_get_liquida_list_tanque.dart';
+import '../../../models/carga_liquida/descargaTuberias/sp_create_liquida_descarga_tuberia.dart';
 import '../../../models/carga_liquida/descargaTuberias/vw_lista_descarga_tuberia.dart';
 import '../../../services/carga_liquida/control_carguio_liquida_service.dart';
 import '../../../services/carga_liquida/liquida_descarga_tuberia_service.dart';
@@ -61,18 +62,34 @@ class _LiquidaDescargaTuberiasState extends State<LiquidaDescargaTuberias>
         ControlCarguioLiquidaService();
 
     List<VwGetLiquidaListTanque> value =
-        await controlCarguioLiquidaService.getListTanque();
+        await controlCarguioLiquidaService.getListTanque(widget.idServiceOrder);
 
     setState(() {
       vwGetLiquidaListTanque = value;
     });
   }
 
-  createDescargaTuberia() async {
-    await descargaTuberiaService.createDescargaTuberia(descargaTuberiaTable);
+  /*  createDescargaTuberia() async {
+    await descargaTuberiaService
+        .createDescargaTuberiaList(descargaTuberiaTable);
     setState(() {
       getListaDescargaTuberiasByServiceOrder();
       descargaTuberiaTable.clear();
+    });
+    _tabController.animateTo((_tabController.index = 1));
+  } */
+
+  createDescargaTuberia() async {
+    await descargaTuberiaService.createDescargaTuberia(
+        SpCreateLiquidaDescargaTuberia(
+            jornada: widget.jornada,
+            fecha: DateTime.now(),
+            tanque: _valueTanqueDropdown,
+            toneladasMetricas: double.parse(toneladaController.text),
+            idUsuario: widget.idUsuario,
+            idServiceOrder: widget.idServiceOrder));
+    setState(() {
+      getListaDescargaTuberiasByServiceOrder();
     });
     _tabController.animateTo((_tabController.index = 1));
   }
@@ -228,7 +245,7 @@ class _LiquidaDescargaTuberiasState extends State<LiquidaDescargaTuberias>
                     const SizedBox(
                       height: 20,
                     ),
-                    MaterialButton(
+                    /*   MaterialButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
@@ -287,13 +304,13 @@ class _LiquidaDescargaTuberiasState extends State<LiquidaDescargaTuberias>
                       height: 20,
                     ),
                     //DataTable de lecturas
-                    SingleChildScrollView(
+                   SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: _buildTable1(context)),
 
                     const SizedBox(
                       height: 20,
-                    ),
+                    ), */
 
                     MaterialButton(
                       shape: RoundedRectangleBorder(
@@ -445,11 +462,6 @@ class _LiquidaDescargaTuberiasState extends State<LiquidaDescargaTuberias>
       ),
       headingTextStyle:
           TextStyle(fontWeight: FontWeight.bold, color: kColorAzul),
-      /* headingRowColor: MaterialStateColor.resolveWith(
-                (states) {
-                  return kColorAzul;
-                },
-              ), */
       dataRowColor: MaterialStateProperty.all(Colors.white),
       columns: const <DataColumn>[
         DataColumn(

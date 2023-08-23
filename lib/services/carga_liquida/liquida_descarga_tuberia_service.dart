@@ -8,7 +8,8 @@ import '../../src/carga_liquida/descarga_tuberias/liquida_descarga_tuberias_page
 import '../api_services.dart';
 
 class LiquidaDescargaTuberiasService {
-  Future<int> createDescargaTuberia(List<DescargaTuberiaTable> value) async {
+  Future<int> createDescargaTuberiaList(
+      List<DescargaTuberiaTable> value) async {
     List<SpCreateLiquidaDescargaTuberia> spCreateLiquidaDescargaTuberia = [];
     for (int count = 0; count < value.length; count++) {
       SpCreateLiquidaDescargaTuberia aux = SpCreateLiquidaDescargaTuberia();
@@ -22,7 +23,7 @@ class LiquidaDescargaTuberiasService {
     }
 
     final http.Response response = await http.post(
-      urlCreateLiquidaDescargaTuberia,
+      urlCreateLiquidaDescargaTuberiaList,
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -30,6 +31,25 @@ class LiquidaDescargaTuberiasService {
     );
     if (response.statusCode == 200) {
       return int.parse(response.body);
+    } else {
+      throw Exception('Failed to post data');
+    }
+  }
+
+  Future<SpCreateLiquidaDescargaTuberia> createDescargaTuberia(
+      SpCreateLiquidaDescargaTuberia value) async {
+    Map data = value.toJson();
+
+    final http.Response response = await http.post(
+      urlCreateLiquidaDescargaTuberia,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(data),
+    );
+    if (response.statusCode == 200) {
+      return SpCreateLiquidaDescargaTuberia.fromJson(
+          json.decode(response.body));
     } else {
       throw Exception('Failed to post data');
     }

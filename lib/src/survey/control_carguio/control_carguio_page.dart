@@ -1,18 +1,22 @@
 import 'dart:io';
+import 'package:consumar_app/models/survey/ControlCarguio/vw_granel_placas_inicio_carguio.dart';
 import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../models/carga_liquida/controlCarguio/vw_granel_liquida_cod_conductores.dart';
 import '../../../models/file_upload_result.dart';
 import '../../../models/survey/ControlCarguio/create_control_carguio.dart';
+import '../../../models/survey/ControlCarguio/update_granel_control_carguio.dart';
+import '../../../models/survey/ControlCarguio/vw_count_granel_dam_by_idServiceOrder.dart';
 import '../../../models/survey/ControlCarguio/vw_granel_consulta_transporte_by_cod.dart';
+import '../../../models/survey/ControlCarguio/vw_granel_do_dam_by_idserviceorder.dart';
 import '../../../models/survey/ControlCarguio/vw_granel_lista_bodegas.dart';
-import '../../../models/vw_get_user_data_by_cod_user.dart';
+import '../../../models/survey/ControlCarguio/vw_list_granel_placas_inicio_carguio_idserviceorder.dart';
+import '../../../services/carga_liquida/control_carguio_liquida_service.dart';
 import '../../../services/file_upload_result.dart';
 import '../../../services/survey/control_carguio_service.dart';
-import '../../../services/usuario_service.dart';
 import '../../../utils/constants.dart';
-import '../../../utils/lists.dart';
 
 class ControlCarguio extends StatefulWidget {
   const ControlCarguio(
@@ -59,7 +63,6 @@ class _ControlCarguioState extends State<ControlCarguio>
   final _viajesTotalesController = TextEditingController();
   final _saldoController = TextEditingController();
 
-  final placaController = TextEditingController();
   final deliveryOrderController = TextEditingController();
   final tovaController = TextEditingController();
 
@@ -84,6 +87,16 @@ class _ControlCarguioState extends State<ControlCarguio>
   final TextEditingController nombreTransporteLecturaController =
       TextEditingController();
 
+  List<ListFotoCarguio> listFotoCarguio = [];
+
+  List<ListFotoTerminoCarguio> listFotoTerminoCarguio = [];
+
+  File? imageCarguio;
+
+  File? imageTerminoCarguio;
+
+  late int idCarguio;
+
   late TabController _tabController;
 
   late int idConductor;
@@ -94,71 +107,34 @@ class _ControlCarguioState extends State<ControlCarguio>
   DateTime dateInicio = DateTime.now();
   DateTime dateTermino = DateTime.now();
 
-  VwgetUserDataByCodUser vwgetUserDataByCodUser = VwgetUserDataByCodUser();
+  VwGranelLiquidaCodConductores vwgetUserDataByCodUser =
+      VwGranelLiquidaCodConductores();
 
-  VwGranelConsultaTransporteByCod vwGranelConsultaTransporteByCod =
-      VwGranelConsultaTransporteByCod();
+  List<VwGranelConsultaTransporteByCod> vwGranelConsultaTransporteByCod = [];
 
   getUserConductorDataByCodUser() async {
-    UsuarioService usuarioService = UsuarioService();
+    ControlCarguioLiquidaService controlCarguioLiquidaService =
+        ControlCarguioLiquidaService();
 
-    vwgetUserDataByCodUser = await usuarioService
-        .getUserDataByCodUser(codigoConductorController.text);
+    vwgetUserDataByCodUser = await controlCarguioLiquidaService
+        .getGranelLiquidaCodConductores(codigoConductorController.text);
 
     nombreConductorController.text =
-        "${vwgetUserDataByCodUser.nombres!} ${vwgetUserDataByCodUser.apellidos!}";
-    idConductor = vwgetUserDataByCodUser.idUsuario!;
-    // print(idConductor);
-  }
-
-  List<ListFotoCarguio> listFotoCarguio = [];
-
-  List<ListFotoTerminoCarguio> listFotoTerminoCarguio = [];
-
-  File? imageCarguio;
-
-  File? imageTerminoCarguio;
-
-  Future pickCarguioFoto(ImageSource source) async {
-    try {
-      final imageCarguio = await ImagePicker().pickImage(source: source);
-
-      if (imageCarguio == null) return;
-
-      final imageTemporary = File(imageCarguio.path);
-
-      setState(() => this.imageCarguio = imageTemporary);
-    } on PlatformException catch (e) {
-      // print('Failed to pick image: $e');
-      e.message;
-    }
-  }
-
-  Future pickCarguioTerminoFoto(ImageSource source) async {
-    try {
-      final imageCarguio = await ImagePicker().pickImage(source: source);
-
-      if (imageCarguio == null) return;
-
-      final imageTemporary = File(imageCarguio.path);
-
-      setState(() => this.imageCarguio = imageTemporary);
-    } on PlatformException catch (e) {
-      // print('Failed to pick image: $e');
-      e.message;
-    }
+        "${vwgetUserDataByCodUser.nombreApellidos!}";
+    idConductor = vwgetUserDataByCodUser.idConductores!;
   }
 
   getTransporteByCod() async {
-    vwGranelConsultaTransporteByCod = await controlCarguioService
-        .getGranelConsultaTransporteByCod(codigoTransporteController.text);
+    vwGranelConsultaTransporteByCod =
+        await controlCarguioService.getGranelConsultaTransporteByCod(
+            widget.idServiceOrder, codigoTransporteController.text);
 
     nombreTransporteController.text =
-        vwGranelConsultaTransporteByCod.empresaTransporte!;
-    idTransporte = vwGranelConsultaTransporteByCod.idTransporte!;
+        vwGranelConsultaTransporteByCod[0].empresaTransporte!;
+    idTransporte = vwGranelConsultaTransporteByCod[0].idTransporte!;
   }
 
-  Future<List<SpCreateGranelFotosCarguio>> parseFotosCarguio() async {
+  Future<List<SpCreateGranelFotosCarguio>> parseFotosInicioCarguio() async {
     FileUploadService fileUploadService = FileUploadService();
 
     List<SpCreateGranelFotosCarguio> spCreateGranelFotosCarguio = [];
@@ -166,6 +142,26 @@ class _ControlCarguioState extends State<ControlCarguio>
     for (int count = 0; count < listFotoCarguio.length; count++) {
       SpCreateGranelFotosCarguio aux = SpCreateGranelFotosCarguio();
       aux.urlFoto = listFotoCarguio[count].urlFoto;
+      aux.operacionCarguio = "inicio";
+      spCreateGranelFotosCarguio.add(aux);
+      File file = File(aux.urlFoto!);
+      fileUploadResult = await fileUploadService.uploadFile(file);
+      spCreateGranelFotosCarguio[count].urlFoto = fileUploadResult.urlPhoto;
+      spCreateGranelFotosCarguio[count].nombreFoto = fileUploadResult.fileName;
+    }
+    return spCreateGranelFotosCarguio;
+  }
+
+  Future<List<SpCreateGranelFotosCarguio>> parseFotosTerminoCarguio() async {
+    FileUploadService fileUploadService = FileUploadService();
+
+    List<SpCreateGranelFotosCarguio> spCreateGranelFotosCarguio = [];
+    FileUploadResult fileUploadResult = FileUploadResult();
+    for (int count = 0; count < listFotoTerminoCarguio.length; count++) {
+      SpCreateGranelFotosCarguio aux = SpCreateGranelFotosCarguio();
+      aux.urlFoto = listFotoTerminoCarguio[count].urlFoto;
+      aux.operacionCarguio = "termino";
+      aux.idCarguio = idCarguio;
       spCreateGranelFotosCarguio.add(aux);
       File file = File(aux.urlFoto!);
       fileUploadResult = await fileUploadService.uploadFile(file);
@@ -184,7 +180,7 @@ class _ControlCarguioState extends State<ControlCarguio>
     }
     List<SpCreateGranelFotosCarguio> spCreateGranelFotosCarguio = [];
 
-    spCreateGranelFotosCarguio = await parseFotosCarguio();
+    spCreateGranelFotosCarguio = await parseFotosInicioCarguio();
 
     controlCarguioService.createControlCarguio(CreateControlCarguio(
         spCreateGranelControlCarguio: SpCreateGranelControlCarguio(
@@ -198,12 +194,29 @@ class _ControlCarguioState extends State<ControlCarguio>
             deliveryOrder: deliveryOrderController.text,
             idTransporte: idTransporte,
             inicioCarguio: dateInicio,
-            terminoCarguio: dateTermino,
-            placa: placaController.text,
+            terminoCarguio: null,
+            placa: codigoTransporteController.text,
             tolva: tovaController.text,
             idUsuario: widget.idUsuario,
             idServiceOrder: widget.idServiceOrder),
         spCreateGranelFotosCarguio: spCreateGranelFotosCarguio));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Inicio Carguio Registrado"),
+      backgroundColor: Colors.green,
+    ));
+
+    setState(() {
+      getListPlacasCarguio();
+    });
+  }
+
+  createFotoCarguio() async {
+    List<SpCreateGranelFotosCarguio> spCreateLiquidaFotosCarguio = [];
+
+    spCreateLiquidaFotosCarguio = await parseFotosTerminoCarguio();
+
+    controlCarguioService
+        .createGranelFotoTerminoCarguio(spCreateLiquidaFotosCarguio);
   }
 
   clearFiels() {
@@ -218,8 +231,20 @@ class _ControlCarguioState extends State<ControlCarguio>
       nombreTransporteController.clear();
       codigoConductorController.clear();
       deliveryOrderController.clear();
-      placaController.clear();
+      codigoTransporteController.clear();
       tovaController.clear();
+      _viajesRealizadosController.clear();
+      _viajesTotalesController.clear();
+      _saldoController.clear();
+    });
+  }
+
+  getBodegas() async {
+    List<VwGranelListaBodegas> value = await controlCarguioService
+        .getGranelListaBodegas(widget.idServiceOrder);
+
+    setState(() {
+      vwGranelListaBodegas = value;
     });
   }
 
@@ -239,12 +264,111 @@ class _ControlCarguioState extends State<ControlCarguio>
     return dropDownItems;
   }
 
-  getBodegas() async {
-    List<VwGranelListaBodegas> value =
-        await controlCarguioService.getGranelListaBodegas();
+  updateTerminoCarguio() {
+    controlCarguioService.updateTerminoGranelCarguioById(
+        UpdateGranelControlCarguio(
+            idCarguio: idCarguio, terminoCarguio: dateTermino));
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Termino Carguio Registrado"),
+      backgroundColor: Colors.green,
+    ));
+  }
+
+  List<DropdownMenuItem<String>> getDropdownPlacasCarguio(
+      List<VwListGranelPlacasInicioCarguioIdserviceorder> tanques) {
+    List<DropdownMenuItem<String>> dropDownItems = [];
+
+    for (var element in tanques) {
+      var newDropDown = DropdownMenuItem(
+        value: element.idCarguio.toString(),
+        child: Text(
+          element.placa.toString(),
+        ),
+      );
+      dropDownItems.add(newDropDown);
+    }
+    return dropDownItems;
+  }
+
+  List<VwListGranelPlacasInicioCarguioIdserviceorder> vwListGranelPlacas =
+      <VwListGranelPlacasInicioCarguioIdserviceorder>[];
+
+  getListPlacasCarguio() async {
+    List<VwListGranelPlacasInicioCarguioIdserviceorder> value =
+        await controlCarguioService
+            .getListGranelPlacasInicioCarguioIdserviceorder(
+                widget.idServiceOrder);
 
     setState(() {
-      vwGranelListaBodegas = value;
+      vwListGranelPlacas = value;
+    });
+  }
+
+  getPlacaDataIncioById(int id) async {
+    List<VwGranelPlacasInicioCarguio> vwGranelPlacasInicioCarguioById = [];
+
+    vwGranelPlacasInicioCarguioById = await controlCarguioService
+        .getGranelPlacasInicioCarguio(widget.idServiceOrder, id);
+
+    idCarguio = vwGranelPlacasInicioCarguioById[0].idCarguio!;
+    /*  placaTolvaLecturaController.text =
+        vwGranelPlacasInicioCarguioById[0].placa!; */
+    nombreTransporteLecturaController.text =
+        vwGranelPlacasInicioCarguioById[0].empresaTransporte!;
+    placaTolvaLecturaController.text =
+        vwGranelPlacasInicioCarguioById[0].tolva!;
+  }
+
+  List<VwGranelDoDamByIdserviceorder> vwGranelDoDamByIdserviceorder = [];
+
+  getVerificacionDoDam(String dodam, String dam) async {
+    List<VwGranelDoDamByIdserviceorder> value = await controlCarguioService
+        .getGranelDoDamByIdserviceorder(widget.idServiceOrder, dodam, dam);
+
+    setState(() {
+      vwGranelDoDamByIdserviceorder = value;
+    });
+
+    _viajesTotalesController.text =
+        vwGranelDoDamByIdserviceorder[0].totalViajes.toString();
+
+    if (vwGranelDoDamByIdserviceorder.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Do/Dam Encontrada"),
+        backgroundColor: Colors.greenAccent,
+      ));
+    }
+    setState(() {
+      calcularSaldo();
+    });
+  }
+
+  List<VwCountGranelDamByIdServiceOrder> vwCountDamByIdserviceorder = [];
+
+  getCountDam(String dam) async {
+    List<VwCountGranelDamByIdServiceOrder> value = await controlCarguioService
+        .getGranelCountDamByIdServiceOrder(widget.idServiceOrder, dam);
+
+    setState(() {
+      vwCountDamByIdserviceorder = value;
+    });
+
+    _viajesRealizadosController.text =
+        vwCountDamByIdserviceorder[0].conteoDam.toString();
+
+    setState(() {
+      calcularSaldo();
+    });
+  }
+
+  int saldo = 0;
+
+  calcularSaldo() {
+    setState(() {
+      saldo = vwGranelDoDamByIdserviceorder[0].totalViajes! -
+          vwCountDamByIdserviceorder[0].conteoDam!;
+      _saldoController.text = saldo.toString();
     });
   }
 
@@ -252,6 +376,7 @@ class _ControlCarguioState extends State<ControlCarguio>
   void initState() {
     // TODO: implement initState
     super.initState();
+    getListPlacasCarguio();
     getBodegas();
     _tabController = TabController(length: 2, vsync: this);
   }
@@ -391,7 +516,12 @@ class _ControlCarguioState extends State<ControlCarguio>
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           const BarcodeScannerWithScanWindow()));
-                              placaController.text = result;
+                              codigoTransporteController.text = result;
+                            }),
+                        suffixIcon: IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: () {
+                              getTransporteByCod();
                             }),
                         labelText: 'Placa',
                         labelStyle: TextStyle(
@@ -399,34 +529,36 @@ class _ControlCarguioState extends State<ControlCarguio>
                           fontSize: 20.0,
                         ),
                         hintText: 'Ingrese la Placa'),
-                    onChanged: (value) {},
-                    controller: placaController,
-                    /* validator: (value) {
+                    onChanged: (value) {
+                      getTransporteByCod();
+                    },
+                    controller: codigoTransporteController,
+                    validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor, ingrese la Placa';
                       }
-                      idUsuario = BigInt.parse(value);
+
                       return null;
-                    }, */
+                    },
                     enabled: enableQrUsuario),
                 const SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    prefixIcon: Icon(
-                      Icons.directions_boat,
-                      color: kColorAzul,
-                    ),
-                    labelText: 'Tolva',
-                    labelStyle: TextStyle(
-                      color: kColorAzul,
-                      fontSize: 20.0,
-                    ),
-                    hintText: '',
-                  ),
-                  controller: tovaController,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.badge,
+                        color: kColorAzul,
+                      ),
+                      labelText: 'Nombre Transporte',
+                      labelStyle: TextStyle(
+                        color: kColorAzul,
+                        fontSize: 20.0,
+                      ),
+                      hintText: ''),
+                  controller: nombreTransporteController,
+                  enabled: false,
                 ),
                 /*      const SizedBox(height: 20.0),
                 TextFormField(
@@ -472,21 +604,21 @@ class _ControlCarguioState extends State<ControlCarguio>
                 ),
                 TextFormField(
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      prefixIcon: Icon(
-                        Icons.badge,
-                        color: kColorAzul,
-                      ),
-                      labelText: 'Nombre Transporte',
-                      labelStyle: TextStyle(
-                        color: kColorAzul,
-                        fontSize: 20.0,
-                      ),
-                      hintText: ''),
-                  controller: nombreTransporteController,
-                  enabled: false,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.directions_boat,
+                      color: kColorAzul,
+                    ),
+                    labelText: 'Tolva',
+                    labelStyle: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                    hintText: '',
+                  ),
+                  controller: tovaController,
                 ),
                 const SizedBox(height: 20.0),
                 TextFormField(
@@ -564,7 +696,11 @@ class _ControlCarguioState extends State<ControlCarguio>
                               Icons.delivery_dining,
                               color: kColorAzul,
                             ),
-                            onPressed: () async {}),
+                            onPressed: () async {
+                              getVerificacionDoDam(deliveryOrderController.text,
+                                  damController.text);
+                              getCountDam(damController.text);
+                            }),
                         /*   suffixIcon: IconButton(
                             icon: const Icon(Icons.search), onPressed: () {}), */
                         labelText: 'Delivery Order',
@@ -573,7 +709,11 @@ class _ControlCarguioState extends State<ControlCarguio>
                           fontSize: 20.0,
                         ),
                         hintText: 'Ingrese el Delivery Order'),
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      getVerificacionDoDam(
+                          deliveryOrderController.text, damController.text);
+                      getCountDam(damController.text);
+                    },
                     controller: deliveryOrderController,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -593,7 +733,11 @@ class _ControlCarguioState extends State<ControlCarguio>
                               Icons.delivery_dining,
                               color: kColorAzul,
                             ),
-                            onPressed: () async {}),
+                            onPressed: () async {
+                              getVerificacionDoDam(deliveryOrderController.text,
+                                  damController.text);
+                              getCountDam(damController.text);
+                            }),
                         /* suffixIcon: IconButton(
                             icon: const Icon(Icons.search), onPressed: () {}), */
                         labelText: 'DAM',
@@ -602,7 +746,12 @@ class _ControlCarguioState extends State<ControlCarguio>
                           fontSize: 20.0,
                         ),
                         hintText: 'Ingrese el DAM'),
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      getVerificacionDoDam(
+                          deliveryOrderController.text, damController.text);
+                      getCountDam(damController.text);
+                      calcularSaldo();
+                    },
                     controller: damController,
                     /* validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -975,17 +1124,12 @@ class _ControlCarguioState extends State<ControlCarguio>
                     icon: const Icon(
                       Icons.arrow_drop_down_circle_outlined,
                     ),
-                    items: listaPlacas.map((String a) {
-                      return DropdownMenuItem<String>(
-                        value: a,
-                        child:
-                            Center(child: Text(a, textAlign: TextAlign.left)),
-                      );
-                    }).toList(),
+                    items: getDropdownPlacasCarguio(vwListGranelPlacas),
                     onChanged: (value) => {
                       setState(() {
                         _valuePlacaDropdown = value as String;
-                      })
+                      }),
+                      getPlacaDataIncioById(int.parse(value.toString()))
                     },
                     validator: (value) {
                       if (value != _valuePlacaDropdown) {
@@ -1011,6 +1155,25 @@ class _ControlCarguioState extends State<ControlCarguio>
                             TextFormField(
                               decoration: InputDecoration(
                                   /*border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),*/
+                                  border: InputBorder.none,
+                                  prefixIcon: Icon(
+                                    Icons.directions_car,
+                                    color: kColorAzul,
+                                  ),
+                                  labelText: 'Empresa Transporte',
+                                  labelStyle: TextStyle(
+                                    color: kColorAzul,
+                                    fontSize: 20.0,
+                                  ),
+                                  hintText: 'Ingrese tipo de importación'),
+                              controller: nombreTransporteLecturaController,
+                              enabled: false,
+                            ),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                  /*border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             ),*/
                                   border: InputBorder.none,
@@ -1018,7 +1181,7 @@ class _ControlCarguioState extends State<ControlCarguio>
                                     Icons.width_wide_sharp,
                                     color: kColorAzul,
                                   ),
-                                  labelText: 'Placa Tolva',
+                                  labelText: 'Tolva',
                                   labelStyle: TextStyle(
                                     color: kColorAzul,
                                     fontSize: 20.0,
@@ -1028,44 +1191,7 @@ class _ControlCarguioState extends State<ControlCarguio>
                               enabled: false,
                             ),
 
-                            //Caja de texto Responsable
-                            TextFormField(
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  prefixIcon: Icon(
-                                    Icons.numbers,
-                                    color: kColorAzul,
-                                  ),
-                                  labelText: 'N° Ticket',
-                                  labelStyle: TextStyle(
-                                    color: kColorAzul,
-                                    fontSize: 20.0,
-                                  ),
-                                  hintText: ''),
-                              controller: nTicketLecturaController,
-                              enabled: false,
-                            ),
-
                             //Caja de texto Tipo de importación
-                            TextFormField(
-                              decoration: InputDecoration(
-                                  /*border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),*/
-                                  border: InputBorder.none,
-                                  prefixIcon: Icon(
-                                    Icons.directions_car,
-                                    color: kColorAzul,
-                                  ),
-                                  labelText: 'Nombre Transporte',
-                                  labelStyle: TextStyle(
-                                    color: kColorAzul,
-                                    fontSize: 20.0,
-                                  ),
-                                  hintText: 'Ingrese tipo de importación'),
-                              controller: nombreTransporteLecturaController,
-                              enabled: false,
-                            ),
                           ],
                         ),
                       )),
@@ -1333,8 +1459,8 @@ class _ControlCarguioState extends State<ControlCarguio>
                     height: 50.0,
                     color: kColorNaranja,
                     onPressed: () async {
-                      /*  updateTerminoParalizaciones();
-                      await createFotoParalizaciones(); */
+                      updateTerminoCarguio();
+                      await createFotoCarguio();
                       setState(() {
                         imageTerminoCarguio = null;
                         listFotoTerminoCarguio.clear();
@@ -1354,6 +1480,36 @@ class _ControlCarguioState extends State<ControlCarguio>
         ]),
       ),
     );
+  }
+
+  Future pickCarguioFoto(ImageSource source) async {
+    try {
+      final imageCarguio = await ImagePicker().pickImage(source: source);
+
+      if (imageCarguio == null) return;
+
+      final imageTemporary = File(imageCarguio.path);
+
+      setState(() => this.imageCarguio = imageTemporary);
+    } on PlatformException catch (e) {
+      // print('Failed to pick image: $e');
+      e.message;
+    }
+  }
+
+  Future pickCarguioTerminoFoto(ImageSource source) async {
+    try {
+      final imageTerminoCarguio = await ImagePicker().pickImage(source: source);
+
+      if (imageTerminoCarguio == null) return;
+
+      final imageTemporary = File(imageTerminoCarguio.path);
+
+      setState(() => this.imageTerminoCarguio = imageTemporary);
+    } on PlatformException catch (e) {
+      // print('Failed to pick image: $e');
+      e.message;
+    }
   }
 
   Future pickDateTime1() async {
