@@ -1,6 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../../models/survey/MonitoreoProducto/vw_bodega_granel_byServiceOrder.dart';
 import '../../../models/survey/sqlLiteModels/monitoreo_producto_sql_lite_model.dart';
 import '../../../models/survey/sqlLiteModels/mp_bodega_foto.dart';
 import '../../../models/survey/sqlLiteModels/mp_observado_foto.dart';
@@ -185,5 +186,46 @@ class DbLiteMonitoreoProducto {
 
     return database.delete("mpObservandoFotos",
         where: '"id_monitoreo_producto"=?', whereArgs: [idMonitoreo]);
+  }
+}
+
+class DbBodegasPesosGranelSqlLite {
+  Future<Database> openDB() async {
+    return openDatabase(join(await getDatabasesPath(), 'bodegaGranel.db'),
+        onCreate: (db, version) {
+      db.execute("DROP TABLE IF EXISTS bodegaGranel");
+      return db.execute(
+          "CREATE TABLE bodegaGranel (idServiceOrder INTEGER, bodega TEXT, peso INTEGER)");
+    }, version: 1);
+  }
+
+  Future<List> insertBodegaPesoGranel(
+      List<VwBodegaGranelByServiceOrder> value) async {
+    Database database = await openDB();
+    database.delete("bodegaGranel");
+    Batch batch = database.batch();
+    for (int count = 0; count < value.length; count++) {
+      batch.insert("bodegaGranel", {
+        "idServiceOrder": value[count].idServiceOrder,
+        "bodega": value[count].bodega,
+        "peso": value[count].peso,
+      });
+    }
+    final results = await batch.commit();
+    return results;
+  }
+
+  Future<List<VwBodegaGranelByServiceOrder>> listBodegasPesos() async {
+    Database database = await openDB();
+    final List<Map<String, dynamic>> value = await database.query(
+      "bodegaGranel",
+    );
+    return List.generate(
+        value.length,
+        (i) => VwBodegaGranelByServiceOrder(
+              idServiceOrder: value[i]['idServiceOrder'],
+              bodega: value[i]['bodega'],
+              peso: value[i]['peso'],
+            ));
   }
 }

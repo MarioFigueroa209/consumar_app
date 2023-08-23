@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../models/survey/ControlCarguio/vw_granel_lista_bodegas.dart';
 import '../../../models/survey/DescargaDirecta/sp_create_descarga_directa.dart';
 import '../../../models/survey/DescargaDirecta/vw_lista_descarga_directa.dart';
+import '../../../services/survey/control_carguio_service.dart';
 import '../../../services/survey/descarga_directa_service.dart';
 import '../../../utils/constants.dart';
-import '../../../utils/lists.dart';
 
 class DescargaDirecta extends StatefulWidget {
   const DescargaDirecta(
@@ -23,7 +24,6 @@ class DescargaDirecta extends StatefulWidget {
 }
 
 String _valueBodegaDropdown = 'Seleccione la Bodega';
-String _valueSiloDropdown = 'Seleccione el Silo';
 
 class _DescargaDirectastate extends State<DescargaDirecta>
     with SingleTickerProviderStateMixin {
@@ -42,7 +42,7 @@ class _DescargaDirectastate extends State<DescargaDirecta>
         jornada: widget.jornada,
         fecha: DateTime.now(),
         bodega: _valueBodegaDropdown,
-        silo: _valueSiloDropdown,
+        silo: "",
         toneladasMetricas: double.parse(toneladaController.text),
         idUsuario: widget.idUsuario,
         idServiceOrder: widget.idServiceOrder));
@@ -59,6 +59,35 @@ class _DescargaDirectastate extends State<DescargaDirecta>
 
   delectLogicDescarga(int id) {
     descargaDirectaService.delecteLogicDescargaDirecta(id);
+  }
+
+  List<VwGranelListaBodegas> vwGranelListaBodegas = <VwGranelListaBodegas>[];
+
+  List<DropdownMenuItem<String>> getGranelListaBodegas(
+      List<VwGranelListaBodegas> bodegas) {
+    List<DropdownMenuItem<String>> dropDownItems = [];
+
+    for (var element in bodegas) {
+      var newDropDown = DropdownMenuItem(
+        value: element.bodega.toString(),
+        child: Text(
+          element.bodega.toString(),
+        ),
+      );
+      dropDownItems.add(newDropDown);
+    }
+    return dropDownItems;
+  }
+
+  getBodegas() async {
+    ControlCarguioService controlCarguioService = ControlCarguioService();
+
+    List<VwGranelListaBodegas> value = await controlCarguioService
+        .getGranelListaBodegas(widget.idServiceOrder);
+
+    setState(() {
+      vwGranelListaBodegas = value;
+    });
   }
 
   @override
@@ -79,6 +108,7 @@ class _DescargaDirectastate extends State<DescargaDirecta>
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_handleTabIndex);
     getListaDescargaByServiceOrder();
+    getBodegas();
   }
 
   @override
@@ -133,13 +163,7 @@ class _DescargaDirectastate extends State<DescargaDirecta>
                       icon: const Icon(
                         Icons.arrow_drop_down_circle_outlined,
                       ),
-                      items: listaBodegas.map((String a) {
-                        return DropdownMenuItem<String>(
-                          value: a,
-                          child:
-                              Center(child: Text(a, textAlign: TextAlign.left)),
-                        );
-                      }).toList(),
+                      items: getGranelListaBodegas(vwGranelListaBodegas),
                       onChanged: (value) => {
                         setState(() {
                           _valueBodegaDropdown = value as String;
@@ -191,43 +215,6 @@ class _DescargaDirectastate extends State<DescargaDirecta>
                         color: kColorAzul,
                         fontSize: 20.0,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    DropdownButtonFormField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        labelText: 'Silos',
-                        labelStyle: TextStyle(
-                          color: kColorAzul,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                      icon: const Icon(
-                        Icons.arrow_drop_down_circle_outlined,
-                      ),
-                      items: listaSilos.map((String a) {
-                        return DropdownMenuItem<String>(
-                          value: a,
-                          child:
-                              Center(child: Text(a, textAlign: TextAlign.left)),
-                        );
-                      }).toList(),
-                      onChanged: (value) => {
-                        setState(() {
-                          _valueSiloDropdown = value as String;
-                        })
-                      },
-                      validator: (value) {
-                        if (value != _valueSiloDropdown) {
-                          return 'Por favor, elige el silo';
-                        }
-                        return null;
-                      },
-                      hint: Text(_valueSiloDropdown),
                     ),
                     const SizedBox(
                       height: 20,

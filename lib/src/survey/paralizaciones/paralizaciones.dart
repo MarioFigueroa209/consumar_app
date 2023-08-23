@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../../models/file_upload_result.dart';
 import '../../../models/survey/ControlCarguio/vw_granel_lista_bodegas.dart';
@@ -216,7 +217,9 @@ class _Paralizacionesstate extends State<Paralizaciones> {
       var newDropDown = DropdownMenuItem(
         value: element.idParalizaciones.toString(),
         child: Text(
-          element.inicioParalizaciones.toString(),
+          DateFormat("yyyy-MM-dd hh:mm")
+              .format(element.inicioParalizaciones!)
+              .toString(),
         ),
       );
       dropDownItems.add(newDropDown);
@@ -266,8 +269,8 @@ class _Paralizacionesstate extends State<Paralizaciones> {
   getBodegas() async {
     ControlCarguioService controlCarguioService = ControlCarguioService();
 
-    List<VwGranelListaBodegas> value =
-        await controlCarguioService.getGranelListaBodegas();
+    List<VwGranelListaBodegas> value = await controlCarguioService
+        .getGranelListaBodegas(widget.idServiceOrder);
 
     setState(() {
       vwGranelListaBodegas = value;
@@ -738,7 +741,7 @@ class _Paralizacionesstate extends State<Paralizaciones> {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
                           content: Text("Paralizacion Registrada"),
-                          backgroundColor: Colors.redAccent,
+                          backgroundColor: Colors.green,
                         ));
                       },
                       child: const Text(

@@ -76,12 +76,14 @@ class ControlCarguioLiquidaService {
         .toList();
   }
 
-  Future<List<VwGetLiquidaListTanque>> getListTanque() async {
-    final response = await http.get(urlGetListTanque);
-
+  Future<List<VwGetLiquidaListTanque>> getListTanque(int serviceOrder) async {
+    final response =
+        await http.get(Uri.parse(urlGetListTanque + serviceOrder.toString()));
     if (response.statusCode == 200) {
+      // Si el servidor devuelve una repuesta OK, parseamos el JSON
       return parseListTanque(response.body);
     } else {
+      //Si esta respuesta no fue OK, lanza un error.
       throw Exception('No se pudo obtener los registros');
     }
   }

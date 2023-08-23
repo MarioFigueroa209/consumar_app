@@ -36,12 +36,12 @@ class _RegistroEquiposState extends State<RegistroEquipos>
   }
 
   createEquipo() async {
-    await registroEquipoService
-        .createGranelRegistroEquipos(SpCreateGranelRegistroEquipos(
+    await registroEquipoService.createGranelRegistroEquipos(
+        SpCreateGranelRegistroEquipos(
             codEquipo: codEquipoController.text,
             equipo: equipoController.text,
             detalle: detalleController.text,
-            //puerto: puertoController.text,
+            puerto: puertoController.text,
             operacion: "GRANEL"));
     setState(() {
       obtenerListadoEquipos();
@@ -167,7 +167,7 @@ class _RegistroEquiposState extends State<RegistroEquipos>
                     const SizedBox(
                       height: 30,
                     ),
-                    /*     TextFormField(
+                    TextFormField(
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -190,7 +190,7 @@ class _RegistroEquiposState extends State<RegistroEquipos>
                     ),
                     const SizedBox(
                       height: 20,
-                    ), */
+                    ),
                     /* TextFormField(
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -277,9 +277,9 @@ class _RegistroEquiposState extends State<RegistroEquipos>
                                   DataColumn(
                                     label: Text("Detalle"),
                                   ),
-                                  /*  DataColumn(
+                                  DataColumn(
                                     label: Text("Puerto"),
-                                  ), */
+                                  ),
                                   DataColumn(
                                     label: Text("Delete"),
                                   ),
@@ -296,8 +296,8 @@ class _RegistroEquiposState extends State<RegistroEquipos>
                                                 textAlign: TextAlign.center)),
                                             DataCell(Text(e.detalle.toString(),
                                                 textAlign: TextAlign.center)),
-                                            /*  DataCell(Text(e.puerto.toString(),
-                                                textAlign: TextAlign.center)), */
+                                            DataCell(Text(e.puerto.toString(),
+                                                textAlign: TextAlign.center)),
                                             DataCell(IconButton(
                                               icon: const Icon(Icons.delete),
                                               onPressed: (() {

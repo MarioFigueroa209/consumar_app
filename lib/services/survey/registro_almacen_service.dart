@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../models/survey/RecepcionAlmacen/sp_create_recepcion_almacen.dart';
+import '../../models/survey/RecepcionAlmacen/vw_count_granel_precitos_by_codigos.dart';
 import '../../models/survey/RecepcionAlmacen/vw_lectura_by_qr_carguio.dart';
 import '../../models/survey/RecepcionAlmacen/vw_lista_precinto_by_id_precinto.dart';
 import '../api_services.dart';
@@ -15,6 +16,19 @@ class RegistroAlmacenService {
 
     if (response.statusCode == 200) {
       return VwLecturaByQrCarguio.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Fallo al cargar');
+    }
+  }
+
+  Future<VwCountGranelPrecitosByCodigos> getCountGranelPrecitosByCodigos(
+      String codCargio) async {
+    var url = Uri.parse(urlGetCountGranelPrecitosByCodigos + codCargio);
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return VwCountGranelPrecitosByCodigos.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Fallo al cargar');
     }
@@ -38,6 +52,28 @@ class RegistroAlmacenService {
     if (response.statusCode == 200) {
       // Si el servidor devuelve una repuesta OK, parseamos el JSON
       return parseListaPrecintoByIdPrecinto(response.body);
+    } else {
+      //Si esta respuesta no fue OK, lanza un error.
+      throw Exception('No se pudo obtener los registros');
+    }
+  }
+
+  List<VwListaPrecintoByIdPrecinto> parseListaPrecintoByCodCarguio(
+      String responseBody) {
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    return parsed
+        .map<VwListaPrecintoByIdPrecinto>(
+            (json) => VwListaPrecintoByIdPrecinto.fromJson(json))
+        .toList();
+  }
+
+  Future<List<VwListaPrecintoByIdPrecinto>> getListaPrecintoByCodCarguio(
+      String codCarguioPrecintado) async {
+    final response = await http.get(
+        Uri.parse("$urlGetListaPrecintosByCodCarguio$codCarguioPrecintado"));
+    if (response.statusCode == 200) {
+      // Si el servidor devuelve una repuesta OK, parseamos el JSON
+      return parseListaPrecintoByCodCarguio(response.body);
     } else {
       //Si esta respuesta no fue OK, lanza un error.
       throw Exception('No se pudo obtener los registros');

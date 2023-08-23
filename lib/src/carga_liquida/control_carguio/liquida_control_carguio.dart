@@ -255,7 +255,7 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
 
   getTanques() async {
     List<VwGetLiquidaListTanque> value =
-        await controlCarguioLiquidaService.getListTanque();
+        await controlCarguioLiquidaService.getListTanque(widget.idServiceOrder);
 
     setState(() {
       vwGetLiquidaListTanque = value;
@@ -568,12 +568,12 @@ class _LiquidaControlCarguioState extends State<LiquidaControlCarguio>
                           onPressed: () {
                             getTransporteByCod();
                           }),
-                      labelText: 'Codigo Transporte',
+                      labelText: 'Placa',
                       labelStyle: TextStyle(
                         color: kColorAzul,
                         fontSize: 20.0,
                       ),
-                      hintText: 'Ingrese Codigo de Transporte'),
+                      hintText: 'Ingrese Placa'),
                   onChanged: (value) {
                     getTransporteByCod();
                   },

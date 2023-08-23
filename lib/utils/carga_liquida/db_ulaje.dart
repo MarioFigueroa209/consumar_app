@@ -12,7 +12,7 @@ class DbUlaje {
         onCreate: (db, version) {
       db.execute("DROP TABLE IF EXISTS liquidaUlaje");
       return db.execute(
-          "CREATE TABLE liquidaUlaje (idUlaje INTEGER PRIMARY KEY, jornada INTEGER, fecha DATETIME, tanque TEXT, peso REAL,  temperatura REAL, cantidadDano REAL null,descripcionDano TEXT null, descripcionComentarios REAL null, idServiceOrder INTEGER,idUsuario INTEGER)");
+          "CREATE TABLE liquidaUlaje (idUlaje INTEGER PRIMARY KEY, jornada INTEGER, fecha DATETIME, tanque TEXT, peso REAL,  temperatura REAL, descripcionDano TEXT null, cantidadDano REAL null, descripcionComentarios REAL null, idServiceOrder INTEGER, idUsuario INTEGER)");
     }, version: 1);
   }
 
@@ -198,21 +198,4 @@ class DbTanquePesosLiquidaSqlLite {
               peso: tanquePesoConsultaMap[i]['peso'],
             ));
   }
-
-  /*  Future<List<VwTanquePesosLiquidaByIdServOrder>>
-      getVehicleByIdAndIdServiceOrder(String tanque, int idVehicle) async {
-    Database database = await openDB();
-    List<Map> result = await database.rawQuery(
-      "select * from damageConsulta where idOrdenServicio=$idServiceOrder and idVehicle=$idVehicle", /*[idServiceOrder, idVehicle]*/
-    );
-    return List.generate(
-        result.length,
-        (i) => DamageReportInsertSqlLite(
-              chasis: result[i]['chasis'],
-              marca: result[i]['marca'],
-              modelo: result[i]['modelo'],
-              consigntario: result[i]['consignatario'],
-              billOfLeading: result[i]['bl'],
-            ));
-  } */
 }

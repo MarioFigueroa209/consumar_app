@@ -263,7 +263,7 @@ class _LiquidaParalizacionesState extends State<LiquidaParalizaciones> {
 
   getTanques() async {
     List<VwGetLiquidaListTanque> value =
-        await controlCarguioLiquidaService.getListTanque();
+        await controlCarguioLiquidaService.getListTanque(widget.idServiceOrder);
 
     setState(() {
       vwGetLiquidaListTanque = value;

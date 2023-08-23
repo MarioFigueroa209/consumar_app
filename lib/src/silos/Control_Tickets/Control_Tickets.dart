@@ -88,7 +88,7 @@ class _ControlTicketsState extends State<ControlTickets> {
     codPlacaController.clear();
   }
 
-  getTransporteByCod() async {
+  /* getTransporteByCod() async {
     vwGranelConsultaTransporteByCod = await controlCarguioService
         .getGranelConsultaTransporteByCod(codigoTransporteController.text);
 
@@ -97,7 +97,7 @@ class _ControlTicketsState extends State<ControlTickets> {
     nombreTransporteController.text =
         vwGranelConsultaTransporteByCod.empresaTransporte!;
     idTransporte = vwGranelConsultaTransporteByCod.idTransporte!;
-  }
+  } */
 
   final idUsuarioController = TextEditingController();
 
@@ -143,7 +143,7 @@ class _ControlTicketsState extends State<ControlTickets> {
                         suffixIcon: IconButton(
                             icon: const Icon(Icons.search),
                             onPressed: () {
-                              getTransporteByCod();
+                              //getTransporteByCod();
                             }),
                         labelText: 'Codigo Vehiculo',
                         labelStyle: TextStyle(
@@ -152,7 +152,7 @@ class _ControlTicketsState extends State<ControlTickets> {
                         ),
                         hintText: 'Ingrese el numero de Codigo del Vehiculo'),
                     onChanged: (value) {
-                      getTransporteByCod();
+                      //getTransporteByCod();
                     },
                     controller: codigoTransporteController,
                     validator: (value) {

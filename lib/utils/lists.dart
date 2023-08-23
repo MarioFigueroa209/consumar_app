@@ -393,7 +393,13 @@ final listaDescarga = [
   'Descarga 3',
 ];
 
-final tipoPrecinto = [
+final tipoPrecintoLiquida = [
   'Valvula Ingreso',
   'Valvula Salida',
+];
+
+final tipoPrecintoGranel = [
+  'COMPUERTA TOLVA',
+  'CAJA COMANDO HIDRAULICA',
+  'MANTA CORREDIZA',
 ];

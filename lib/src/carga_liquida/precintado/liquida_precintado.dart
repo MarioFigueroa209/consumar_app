@@ -300,10 +300,14 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                                                   Icons.delete,
                                                   color: Colors.grey,
                                                 ),
-                                                onPressed: () {
-                                                  deleteCarguioPrecintos(
+                                                onPressed: () async {
+                                                  await deleteCarguioPrecintos(
                                                       listLiquidaPrecinto[index]
                                                           .idCarguio!);
+                                                  getListaPrecintos();
+                                                  setState(() {
+                                                    listLiquidaPrecinto;
+                                                  });
                                                   /*    dialogoEliminar(
                                                       context, allDR[index]); */
                                                 },
@@ -466,7 +470,7 @@ class _LiquidaPrecintadoState extends State<LiquidaPrecintado>
                           icon: const Icon(
                             Icons.arrow_drop_down_circle_outlined,
                           ),
-                          items: tipoPrecinto.map((String a) {
+                          items: tipoPrecintoLiquida.map((String a) {
                             return DropdownMenuItem<String>(
                               value: a,
                               child: Center(

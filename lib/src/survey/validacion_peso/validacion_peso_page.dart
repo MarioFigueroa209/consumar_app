@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../models/survey/RecepcionAlmacen/vw_lectura_by_qr_carguio.dart';
 import '../../../models/survey/ValidacionPesos/sp_create_validacion_peso.dart';
 import '../../../models/survey/ValidacionPesos/vw_lista_pesos_historicos.dart';
+
 import '../../../services/survey/registro_almacen_service.dart';
 import '../../../services/survey/validacion_pesos_service.dart';
 import '../../../utils/constants.dart';
@@ -59,6 +60,8 @@ class _ValidacionPesoState extends State<ValidacionPeso> {
     placaController.text = vwLecturaByQrCarguio.placa!;
     tolvaController.text = vwLecturaByQrCarguio.tolva!;
     transporteController.text = vwLecturaByQrCarguio.empresaTransporte!;
+    productoController.text = vwLecturaByQrCarguio.mercaderia!;
+    nTicketController.text = vwLecturaByQrCarguio.nticket!;
   }
 
   obtenerPesosHistorico() {
@@ -92,11 +95,10 @@ class _ValidacionPesoState extends State<ValidacionPeso> {
     placaController.clear();
     tolvaController.clear();
     transporteController.clear();
-
     pesoBrutoController.clear();
+    productoController.clear();
     taraCamionController.clear();
     pesoNetoController.clear();
-
     nTicketController.clear();
   }
 
@@ -128,7 +130,8 @@ class _ValidacionPesoState extends State<ValidacionPeso> {
                         final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const BarcodeScannerWithScanWindow()));
+                                builder: (context) =>
+                                    const BarcodeScannerWithScanWindow()));
                         codPrecintadoController.text = result;
                       }),
                   suffixIcon: IconButton(
@@ -171,6 +174,7 @@ class _ValidacionPesoState extends State<ValidacionPeso> {
                 hintText: '',
               ),
               controller: placaController,
+              enabled: false,
             ),
             const SizedBox(height: 20),
             TextFormField(
@@ -190,6 +194,7 @@ class _ValidacionPesoState extends State<ValidacionPeso> {
                 hintText: '',
               ),
               controller: tolvaController,
+              enabled: false,
             ),
             const SizedBox(height: 20.0),
             TextFormField(
@@ -307,6 +312,7 @@ class _ValidacionPesoState extends State<ValidacionPeso> {
                 hintText: '',
               ),
               controller: nTicketController,
+              enabled: false,
             ),
             const SizedBox(height: 20),
             TextFormField(

@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../models/file_upload_result.dart';
 import '../../../models/survey/MonitoreoProducto/create_monitoreo_producto.dart';
+import '../../../models/survey/MonitoreoProducto/vw_bodega_granel_byServiceOrder.dart';
 import '../../../models/survey/sqlLiteModels/monitoreo_producto_sql_lite_model.dart';
 import '../../../models/survey/sqlLiteModels/mp_bodega_foto.dart';
 import '../../../models/survey/sqlLiteModels/mp_observado_foto.dart';
@@ -19,7 +20,6 @@ import '../../../services/usuario_service.dart';
 import '../../../utils/check_internet_connection.dart';
 import '../../../utils/connection_status_cubit.dart';
 import '../../../utils/constants.dart';
-import '../../../utils/lists.dart';
 import '../../../utils/survey/sqlLiteDB/db_monitoreo_producto.dart';
 
 class MonitoreoProducto extends StatefulWidget {
@@ -346,10 +346,43 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
     //print(idApmtc);
   }
 
+  List<VwBodegaGranelByServiceOrder> bodegaGranelByServiceOrder = [];
+
+  cargarLista() async {
+    DbBodegasPesosGranelSqlLite dbBodegasPesosGranelSqlLite =
+        DbBodegasPesosGranelSqlLite();
+
+    List<VwBodegaGranelByServiceOrder> value =
+        await dbBodegasPesosGranelSqlLite.listBodegasPesos();
+
+    setState(() {
+      bodegaGranelByServiceOrder = value;
+    });
+
+    print("llegaron los registros ${bodegaGranelByServiceOrder.length}");
+  }
+
+  List<DropdownMenuItem<String>> getBodegaPesoItems(
+      List<VwBodegaGranelByServiceOrder> orders) {
+    List<DropdownMenuItem<String>> dropDownItems = [];
+
+    for (var element in orders) {
+      var newDropDown = DropdownMenuItem(
+        value: element.bodega.toString(),
+        child: Text(
+          element.bodega.toString(),
+        ),
+      );
+      dropDownItems.add(newDropDown);
+    }
+    return dropDownItems;
+  }
+
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_handleTabIndex);
+    cargarLista();
     listTableMonitoreoProductoSqLite();
     obtenerMonitoreoProductoList();
     obtenerMpBodegaFoto();
@@ -442,13 +475,7 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
                       icon: const Icon(
                         Icons.arrow_drop_down_circle_outlined,
                       ),
-                      items: registroReestibas.map((String a) {
-                        return DropdownMenuItem<String>(
-                          value: a,
-                          child:
-                              Center(child: Text(a, textAlign: TextAlign.left)),
-                        );
-                      }).toList(),
+                      items: getBodegaPesoItems(bodegaGranelByServiceOrder),
                       onChanged: (value) => {
                         setState(() {
                           _valueBodegaropdown = value.toString();
