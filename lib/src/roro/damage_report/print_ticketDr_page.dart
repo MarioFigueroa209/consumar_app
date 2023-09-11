@@ -1,22 +1,44 @@
+import 'package:barcode_widget/barcode_widget.dart';
 import 'package:bluetooth_print/bluetooth_print.dart';
 import 'package:bluetooth_print/bluetooth_print_model.dart';
+import 'package:consumar_app/models/roro/damage_report/vw_ticket_dr_listado.dart';
+import 'package:consumar_app/services/roro/damage_report/damage_report_consulta_service.dart';
 import 'package:flutter/material.dart';
 
-class PrintPage extends StatefulWidget {
-  // final List<Map<String, dynamic>> data;
-  final int idVehiculo;
-  PrintPage(/* this.data, */ this.idVehiculo);
+class PrintTicketDrPage extends StatefulWidget {
+  const PrintTicketDrPage({super.key});
 
   @override
-  _PrintPageState createState() => _PrintPageState();
+  State<PrintTicketDrPage> createState() => _PrintTicketDrPageState();
 }
 
-class _PrintPageState extends State<PrintPage> {
+class _PrintTicketDrPageState extends State<PrintTicketDrPage> {
   BluetoothPrint bluetoothPrint = BluetoothPrint.instance;
 
   bool _connected = false;
   BluetoothDevice? _device;
   String tips = 'Ningun dispositivo conectado';
+
+  DamageReportConsultaService damageReportConsultaService =
+      DamageReportConsultaService();
+
+  String nave = "";
+  String puerto = "";
+
+  List<VwTicketDrListado> vwTicketDrListado = [];
+
+  getVVwTicketDrListado(BigInt idDamageReport) async {
+    vwTicketDrListado =
+        await damageReportConsultaService.getVwTicketDrListado(idDamageReport);
+
+    nave = vwTicketDrListado[0].nombreNave!;
+
+    if (vwTicketDrListado[0].puerto != null) {
+      puerto = vwTicketDrListado[0].puerto!.toUpperCase();
+    } else {
+      puerto = "";
+    }
+  }
 
   @override
   void initState() {
@@ -152,7 +174,7 @@ class _PrintPageState extends State<PrintPage> {
                     ),
                     Divider(),
                     OutlinedButton(
-                      child: Text('Imprimir QR de Vehiculo'),
+                      child: Text('Imprimir Dr Ticket'),
                       onPressed: _connected
                           ? () async {
                               Map<String, dynamic> config = Map();
@@ -162,23 +184,122 @@ class _PrintPageState extends State<PrintPage> {
 
                               List<LineText> list = [];
 
-                              /*   list.add(LineText(
-                                  type: LineText.TYPE_TEXT,
-                                  x: 1,
-                                  y: 1,
-                                  content: 'CONSUMAR ETIQUETADO \n\n',
-                                  align: LineText.ALIGN_CENTER,
-                                ));
- */
+                              list.add(LineText(
+                                type: LineText.TYPE_TEXT,
+                                x: 1,
+                                y: 1,
+                                content: 'DAMAGE REPORT LIST',
+                                align: LineText.ALIGN_CENTER,
+                              ));
 
-                              setState(() {
+                              list.add(LineText(
+                                type: LineText.TYPE_TEXT,
+                                x: 1,
+                                y: 1,
+                                content: "DATE & TIME: ${DateTime.now()}",
+                                align: LineText.ALIGN_CENTER,
+                              ));
+                              list.add(LineText(
+                                type: LineText.TYPE_TEXT,
+                                x: 1,
+                                y: 1,
+                                content: "VESSEL: $nave",
+                                align: LineText.ALIGN_CENTER,
+                              ));
+
+                              list.add(LineText(
+                                type: LineText.TYPE_TEXT,
+                                x: 1,
+                                y: 1,
+                                content: "DESCRIPTION",
+                                align: LineText.ALIGN_CENTER,
+                              ));
+
+                              list.add(LineText(
+                                type: LineText.TYPE_TEXT,
+                                x: 1,
+                                y: 1,
+                                content: "PORT: $puerto",
+                                align: LineText.ALIGN_CENTER,
+                              ));
+
+                              list.add(LineText(
+                                type: LineText.TYPE_TEXT,
+                                x: 1,
+                                y: 1,
+                                content: "INVENTORY",
+                                align: LineText.ALIGN_CENTER,
+                              ));
+
+                              Table(children: [
+                                for (var i = 0;
+                                    i < vwTicketDrListado.length;
+                                    i++)
+                                  TableRow(children: [
+                                    Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: 2),
+                                          Text(
+                                              '${vwTicketDrListado[i].idVista!}) Nº DR: ${vwTicketDrListado[i].codDr!}',
+                                              style:
+                                                  const TextStyle(fontSize: 6)),
+                                          Text(
+                                              'Chassis: ${vwTicketDrListado[i].chasis!}',
+                                              style:
+                                                  const TextStyle(fontSize: 6)),
+                                          SizedBox(height: 2),
+                                          Divider(
+                                              color: Colors.grey, height: 0.5),
+                                          SizedBox(height: 2),
+                                        ]),
+                                    Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: 2),
+                                          Text(
+                                              'Amount of damage: ${vwTicketDrListado[i].cantidadDanos}',
+                                              style:
+                                                  const TextStyle(fontSize: 6)),
+                                          Text(
+                                              'BL: ${vwTicketDrListado[i].bl!}',
+                                              style:
+                                                  const TextStyle(fontSize: 6)),
+                                          SizedBox(height: 2),
+                                          Divider(
+                                              color: Colors.grey, height: 0.5),
+                                          SizedBox(height: 2),
+                                          //Divider(color: const PdfColor.fromInt(0xff9e9e9e))
+                                        ]),
+                                  ])
+                              ]);
+
+                              BarcodeWidget(
+                                barcode: Barcode.qrCode(),
+                                data: 'consumarport.com.pe/login',
+                                height: 60.0,
+                                width: 60.0,
+                              );
+
+                              list.add(LineText(
+                                  type: LineText.TYPE_QRCODE,
+                                  x: 10,
+                                  y: 190,
+                                  align: LineText.ALIGN_CENTER,
+                                  content:
+                                      "Representation of the electronic document, "
+                                      "please visit and consult this document on the web: consumarport.com.pe/login"));
+
+                              /*  setState(() {
                                 list.add(LineText(
                                     type: LineText.TYPE_QRCODE,
                                     x: 10,
                                     y: 190,
                                     align: LineText.ALIGN_CENTER,
-                                    content: widget.idVehiculo.toString()));
-                              });
+                                    content: 1.toString()));
+                              }); */
 
                               await bluetoothPrint.printLabel(config, list);
                             }

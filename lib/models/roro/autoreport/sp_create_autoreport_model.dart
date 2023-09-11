@@ -80,6 +80,56 @@ class SpCreateAutoreportModel {
   int? idVehicle;
   int? idTravel;
   String? codAutoreport;
+  int? cantPlumillasDelanteras;
+  int? cantPlumillasTraseras;
+  int? cantAntena;
+  int? cantEspejosInteriores;
+  int? cantEspejosLaterales;
+  int? cantTapaLlanta;
+  int? cantRadio;
+  int? cantControlRemotoRadio;
+  int? cantTacografo;
+  int? cantTacometro;
+  int? cantEncendedor;
+  int? cantReloj;
+  int? cantPisosAdicionales;
+  int? cantCopasAro;
+  int? cantLlantaRepuesto;
+  int? cantHerramientas;
+  int? cantPinRemolque;
+  int? cantCaja;
+  int? cantCajaEstado;
+  int? cantMaletin;
+  int? cantMaletinEstado;
+  int? cantBolsaPlastica;
+  int? cantBolsaPlasticaEstado;
+  int? cantEstuche;
+  int? cantRelays;
+  int? cantCeniceros;
+  int? cantGata;
+  int? cantExtintor;
+  int? cantTrianguloSeguridad;
+  int? cantPantallaTactil;
+  int? cantCatalogo;
+  int? cantLinterna;
+  int? cantCableCargadorBateria;
+  int? cantCirculina;
+  int? cantCableCargadorVehiculoElectrico;
+  int? cantCd;
+  int? cantUsb;
+  int? cantMemoriaSd;
+  int? cantCamaraSeguridad;
+  int? cantRadioComunicador;
+  int? cantMangueraAire;
+  int? cantCableCargador;
+  int? cantLlaveRuedas;
+  int? cantChaleco;
+  int? cantGalonera;
+  int? cantControlRemotoMaquinaria;
+  bool? presenciaPolvoSuciedad;
+  bool? protectorPlastico;
+  String? detalleProtectorPlastico;
+  bool? llavesVisibles;
 
   SpCreateAutoreportModel({
     this.jornada,
@@ -151,6 +201,56 @@ class SpCreateAutoreportModel {
     this.idVehicle,
     this.idTravel,
     this.codAutoreport,
+    this.cantPlumillasDelanteras,
+    this.cantPlumillasTraseras,
+    this.cantAntena,
+    this.cantEspejosInteriores,
+    this.cantEspejosLaterales,
+    this.cantTapaLlanta,
+    this.cantRadio,
+    this.cantControlRemotoRadio,
+    this.cantTacografo,
+    this.cantTacometro,
+    this.cantEncendedor,
+    this.cantReloj,
+    this.cantPisosAdicionales,
+    this.cantCopasAro,
+    this.cantLlantaRepuesto,
+    this.cantHerramientas,
+    this.cantPinRemolque,
+    this.cantCaja,
+    this.cantCajaEstado,
+    this.cantMaletin,
+    this.cantMaletinEstado,
+    this.cantBolsaPlastica,
+    this.cantBolsaPlasticaEstado,
+    this.cantEstuche,
+    this.cantRelays,
+    this.cantCeniceros,
+    this.cantGata,
+    this.cantExtintor,
+    this.cantTrianguloSeguridad,
+    this.cantPantallaTactil,
+    this.cantCatalogo,
+    this.cantLinterna,
+    this.cantCableCargadorBateria,
+    this.cantCirculina,
+    this.cantCableCargadorVehiculoElectrico,
+    this.cantCd,
+    this.cantUsb,
+    this.cantMemoriaSd,
+    this.cantCamaraSeguridad,
+    this.cantRadioComunicador,
+    this.cantMangueraAire,
+    this.cantCableCargador,
+    this.cantLlaveRuedas,
+    this.cantChaleco,
+    this.cantGalonera,
+    this.cantControlRemotoMaquinaria,
+    this.presenciaPolvoSuciedad,
+    this.protectorPlastico,
+    this.detalleProtectorPlastico,
+    this.llavesVisibles,
   });
 
   factory SpCreateAutoreportModel.fromJson(Map<String, dynamic> json) =>
@@ -224,6 +324,57 @@ class SpCreateAutoreportModel {
         idVehicle: json["idVehicle"],
         idTravel: json["idTravel"],
         codAutoreport: json["codAutoreport"],
+        cantPlumillasDelanteras: json["cantPlumillasDelanteras"],
+        cantPlumillasTraseras: json["cantPlumillasTraseras"],
+        cantAntena: json["cantAntena"],
+        cantEspejosInteriores: json["cantEspejosInteriores"],
+        cantEspejosLaterales: json["cantEspejosLaterales"],
+        cantTapaLlanta: json["cantTapaLlanta"],
+        cantRadio: json["cantRadio"],
+        cantControlRemotoRadio: json["cantControlRemotoRadio"],
+        cantTacografo: json["cantTacografo"],
+        cantTacometro: json["cantTacometro"],
+        cantEncendedor: json["cantEncendedor"],
+        cantReloj: json["cantReloj"],
+        cantPisosAdicionales: json["cantPisosAdicionales"],
+        cantCopasAro: json["cantCopasAro"],
+        cantLlantaRepuesto: json["cantLlantaRepuesto"],
+        cantHerramientas: json["cantHerramientas"],
+        cantPinRemolque: json["cantPinRemolque"],
+        cantCaja: json["cantCaja"],
+        cantCajaEstado: json["cantCajaEstado"],
+        cantMaletin: json["cantMaletin"],
+        cantMaletinEstado: json["cantMaletinEstado"],
+        cantBolsaPlastica: json["cantBolsaPlastica"],
+        cantBolsaPlasticaEstado: json["cantBolsaPlasticaEstado"],
+        cantEstuche: json["cantEstuche"],
+        cantRelays: json["cantRelays"],
+        cantCeniceros: json["cantCeniceros"],
+        cantGata: json["cantGata"],
+        cantExtintor: json["cantExtintor"],
+        cantTrianguloSeguridad: json["cantTrianguloSeguridad"],
+        cantPantallaTactil: json["cantPantallaTactil"],
+        cantCatalogo: json["cantCatalogo"],
+        cantLinterna: json["cantLinterna"],
+        cantCableCargadorBateria: json["cantCableCargadorBateria"],
+        cantCirculina: json["cantCirculina"],
+        cantCableCargadorVehiculoElectrico:
+            json["cantCableCargadorVehiculoElectrico"],
+        cantCd: json["cantCd"],
+        cantUsb: json["cantUsb"],
+        cantMemoriaSd: json["cantMemoriaSd"],
+        cantCamaraSeguridad: json["cantCamaraSeguridad"],
+        cantRadioComunicador: json["cantRadioComunicador"],
+        cantMangueraAire: json["cantMangueraAire"],
+        cantCableCargador: json["cantCableCargador"],
+        cantLlaveRuedas: json["cantLlaveRuedas"],
+        cantChaleco: json["cantChaleco"],
+        cantGalonera: json["cantGalonera"],
+        cantControlRemotoMaquinaria: json["cantControlRemotoMaquinaria"],
+        presenciaPolvoSuciedad: json["presenciaPolvoSuciedad"],
+        protectorPlastico: json["protectorPlastico"],
+        detalleProtectorPlastico: json["detalleProtectorPlastico"],
+        llavesVisibles: json["llavesVisibles"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -296,5 +447,56 @@ class SpCreateAutoreportModel {
         "idVehicle": idVehicle,
         "idTravel": idTravel,
         "codAutoreport": codAutoreport,
+        "cantPlumillasDelanteras": cantPlumillasDelanteras,
+        "cantPlumillasTraseras": cantPlumillasTraseras,
+        "cantAntena": cantAntena,
+        "cantEspejosInteriores": cantEspejosInteriores,
+        "cantEspejosLaterales": cantEspejosLaterales,
+        "cantTapaLlanta": cantTapaLlanta,
+        "cantRadio": cantRadio,
+        "cantControlRemotoRadio": cantControlRemotoRadio,
+        "cantTacografo": cantTacografo,
+        "cantTacometro": cantTacometro,
+        "cantEncendedor": cantEncendedor,
+        "cantReloj": cantReloj,
+        "cantPisosAdicionales": cantPisosAdicionales,
+        "cantCopasAro": cantCopasAro,
+        "cantLlantaRepuesto": cantLlantaRepuesto,
+        "cantHerramientas": cantHerramientas,
+        "cantPinRemolque": cantPinRemolque,
+        "cantCaja": cantCaja,
+        "cantCajaEstado": cantCajaEstado,
+        "cantMaletin": cantMaletin,
+        "cantMaletinEstado": cantMaletinEstado,
+        "cantBolsaPlastica": cantBolsaPlastica,
+        "cantBolsaPlasticaEstado": cantBolsaPlasticaEstado,
+        "cantEstuche": cantEstuche,
+        "cantRelays": cantRelays,
+        "cantCeniceros": cantCeniceros,
+        "cantGata": cantGata,
+        "cantExtintor": cantExtintor,
+        "cantTrianguloSeguridad": cantTrianguloSeguridad,
+        "cantPantallaTactil": cantPantallaTactil,
+        "cantCatalogo": cantCatalogo,
+        "cantLinterna": cantLinterna,
+        "cantCableCargadorBateria": cantCableCargadorBateria,
+        "cantCirculina": cantCirculina,
+        "cantCableCargadorVehiculoElectrico":
+            cantCableCargadorVehiculoElectrico,
+        "cantCd": cantCd,
+        "cantUsb": cantUsb,
+        "cantMemoriaSd": cantMemoriaSd,
+        "cantCamaraSeguridad": cantCamaraSeguridad,
+        "cantRadioComunicador": cantRadioComunicador,
+        "cantMangueraAire": cantMangueraAire,
+        "cantCableCargador": cantCableCargador,
+        "cantLlaveRuedas": cantLlaveRuedas,
+        "cantChaleco": cantChaleco,
+        "cantGalonera": cantGalonera,
+        "cantControlRemotoMaquinaria": cantControlRemotoMaquinaria,
+        "presenciaPolvoSuciedad": presenciaPolvoSuciedad,
+        "protectorPlastico": protectorPlastico,
+        "detalleProtectorPlastico": detalleProtectorPlastico,
+        "llavesVisibles": llavesVisibles,
       };
 }

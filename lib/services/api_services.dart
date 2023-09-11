@@ -221,6 +221,9 @@ String urlGetVwTicketDRListado =
 
 final urlCreateAprobadoMasivoDRList =
     Uri.parse("${urlApiBase}DamageReportList/AprobadoMasivo");
+
+String urlGetVehiculoPendientAprobByIdVehicleAndIdServiceOrder =
+    "${urlApiBase}DamageReport/getVehiculoPendientAprobByIdVehicleAndIdServiceOrder?idVehicle=";
 /*------------------------------------*/
 
 /*----------------Rampa Descarga----------------- */
@@ -249,6 +252,9 @@ final urlCreateRampaEmbarqueList =
 
 String urlRampaEmbarqueGetVehicleDataByIdVehicleAndIdServiceOrder =
     "${urlApiBase}RampaEmbarque/getVehicleDataByIdVehicleAndIdServiceOrder";
+
+String urlRampaEmbarqueGetVehicleDataByChasisAndIdServiceOrder =
+    "${urlApiBase}RampaEmbarque/getVehicleDataByChassisAndIdServiceOrder?chasis=";
 
 String urlGetNaveOrigen = "${urlApiBase}RampaEmbarque/getSelectNaveOrigen/";
 

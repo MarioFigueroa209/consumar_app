@@ -1,5 +1,6 @@
 import 'package:barcode_widget/barcode_widget.dart';
-import 'package:consumar_app/src/roro/printer_app/print_page.dart';
+
+import 'package:consumar_app/src/roro/printer_app/qr_pdf_page.dart';
 import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
 
@@ -8,7 +9,6 @@ import '../../../models/roro/printer_app/insert_printer_app_pendientes.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/roro/sqliteBD/db_printer_app.dart';
 import 'printer_app_page.dart';
-//import 'qr_pdf_page.dart';
 
 class EtiquetadoPrinterApp extends StatefulWidget {
   const EtiquetadoPrinterApp(
@@ -242,14 +242,9 @@ class _EtiquetadoPrinterAppState extends State<EtiquetadoPrinterApp> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            PrintPage(int.parse(qrController.text))));
-                /*     Navigator.push(
-                    context,
-                    MaterialPageRoute(
                         builder: (context) => QrRoroPDF(
-                              idVehicle: BigInt.parse(qrController.text),
-                            ))); */
+                            idVehicle:
+                                insertPrinterAppPendientes.idVehiculo!)));
 
                 setState(() {
                   getPrinterAppPendientes;

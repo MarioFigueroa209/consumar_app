@@ -73,6 +73,7 @@ class _DrInformeFinal extends State<DrInformeFinal> {
   String operation = "";
   String stowagePosition = "";
   String portLanding = "";
+  String lineaNaviera = "";
   String portDischard = "";
   String marca = "";
   String modelo = "";
@@ -117,6 +118,7 @@ class _DrInformeFinal extends State<DrInformeFinal> {
       damageFound = vwGetDamageReportItemModel.damageFound!;
       damageOcurred = vwGetDamageReportItemModel.damageOcurred!;
       operation = vwGetDamageReportItemModel.operation!;
+      lineaNaviera = vwGetDamageReportItemModel.lineaNaviera!;
       stowagePosition = vwGetDamageReportItemModel.posicionEstibador!;
       if (vwGetDamageReportItemModel.puertoAterrizaje != null) {
         portLanding = vwGetDamageReportItemModel.puertoAterrizaje!;
@@ -216,29 +218,6 @@ class _DrInformeFinal extends State<DrInformeFinal> {
         urlFirmaResponsable: fileUploadResult.urlPhoto,
       ));
     }
-
-    /*damageReportConsultaService
-        .insertDamageReportList(SpCreateDamageReportListModel(
-      jornada: widget.jornada,
-      fecha: DateTime.now(),
-      codigoCapitan: widget.codCapitan,
-      nombreCapitan: widget.nombreCapitan,
-      aprobadoCoordinador: aprobado,
-      aprobadoSupervisorApm: aprobado,
-      aprobadoCapitan: aprobado,
-      comentariosCoordinador: controllerCommentation.text,
-      motivoRechazoCoordinador: commentDecline.text,
-      comentariosSupervisor: controllerCommentation.text,
-      motivoRechazoSupervisor: commentDecline.text,
-      comentariosCapitan: controllerCommentation.text,
-      motivoRechazoCapitan: commentDecline.text,
-      idServiceOrder: int.parse(widget.idServiceOrder.toString()),
-      idCoordinador: idcordinadorccontrol,
-      idSupervisor: idapmtccontrol,
-      idCodDr: int.parse(widget.idDamageReport.toString()),
-      imgFirmaResponsable: "imgFirma",
-      urlFirmaResponsable: "urlFirma",
-    ));*/
   }
 
   @override
@@ -368,6 +347,28 @@ class _DrInformeFinal extends State<DrInformeFinal> {
                       color: Colors.white),
                   child: Text(
                     shift,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: 20,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      color: Colors.lightBlueAccent),
+                  child: const Text(
+                    "SHIPPING LINE",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: 20,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      color: Colors.white),
+                  child: Text(
+                    lineaNaviera,
                     textAlign: TextAlign.center,
                   ),
                 ),

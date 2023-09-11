@@ -210,7 +210,7 @@ class AutoreportService {
     }
   }
 
-  Future<VwAutoreportData> getAutoreportDataById(BigInt idAutoreport) async {
+  Future<VwAutoreportData> getAutoreportDataById(int idAutoreport) async {
     var url = Uri.parse(urlGetAutoreportDataById + idAutoreport.toString());
 
     final response = await http.get(url);
@@ -269,7 +269,7 @@ class AutoreportService {
   }
 
   Future<List<VwParticipantesByAutoreportModel>> getParticipantesByAutoreport(
-      BigInt idAutoreport) async {
+      int idAutoreport) async {
     final response = await http.get(Uri.parse(
         '$urlGetParticipantesByIdAutoreport?idAutoreport=$idAutoreport'));
     if (response.statusCode == 200) {

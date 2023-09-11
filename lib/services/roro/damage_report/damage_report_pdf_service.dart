@@ -35,6 +35,7 @@ class DamageReportPdfService {
   String modelo = "";
   String chasis = "";
   String consignatario = "";
+  String lineaNaviera = "";
   String bl = "";
   String nombreConductor = "";
   String lugarAccidente = "";
@@ -113,6 +114,7 @@ class DamageReportPdfService {
     modelo = vwGetDamageReportItemModel.modelo!;
     chasis = vwGetDamageReportItemModel.chasis!;
     consignatario = vwGetDamageReportItemModel.consigntario!;
+    lineaNaviera = vwGetDamageReportItemModel.lineaNaviera!;
     bl = vwGetDamageReportItemModel.billOfLeading!;
     if (vwGetDamageReportItemModel.nombreConductor != null) {
       nombreConductor =
@@ -443,6 +445,36 @@ class DamageReportPdfService {
                             ),
                           ),
                         ],
+                      ),
+                      pw.Container(
+                        width: 510,
+                        height: 15,
+                        decoration: pw.BoxDecoration(
+                            border: pw.Border.all(
+                                color: const PdfColor.fromInt(0xff000000)),
+                            color: const PdfColor.fromInt(0xff82b1ff)),
+                        child: pw.Center(
+                          child: pw.Text(
+                            "SHIPPING LINE",
+                            textAlign: pw.TextAlign.center,
+                            style: const pw.TextStyle(fontSize: 10),
+                          ),
+                        ),
+                      ),
+                      pw.Container(
+                        width: 510,
+                        height: 15,
+                        decoration: pw.BoxDecoration(
+                            border: pw.Border.all(
+                                color: const PdfColor.fromInt(0xff000000)),
+                            color: const PdfColor.fromInt(0xffffffff)),
+                        child: pw.Center(
+                          child: pw.Text(
+                            lineaNaviera,
+                            textAlign: pw.TextAlign.center,
+                            style: const pw.TextStyle(fontSize: 10),
+                          ),
+                        ),
                       ),
                       pw.Container(
                         width: 510,

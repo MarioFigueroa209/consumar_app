@@ -58,6 +58,22 @@ class RampaEmbarqueService {
     }
   }
 
+  Future<List<VwRampaEmbarqueVehicleDataModel>>
+      getRampaEmbarqueVehicleByChasisAndIdServiceOrder(
+          String chasis, BigInt idServiceOrder) async {
+    var url = Uri.parse(
+        "$urlRampaEmbarqueGetVehicleDataByChasisAndIdServiceOrder$chasis&idServiceOrder=$idServiceOrder");
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return parseRampaEmbarqueVehiclesByIdAndIdServiceOrder(response.body);
+    } else {
+      List<VwRampaEmbarqueVehicleDataModel> list = [];
+      return list;
+    }
+  }
+
   Future<VwNaveOrigenModel> getNaveOrigen(String chasis) async {
     var url = Uri.parse(urlGetNaveOrigen + chasis);
 
@@ -173,8 +189,10 @@ class RampaEmbarqueService {
       body: jsonEncode(spRampaEmbarqueModel),
     );
     if (response.statusCode == 200) {
+      print(response.statusCode);
       return int.parse(response.body);
     } else {
+      print(response.statusCode);
       throw Exception('Failed to post data');
     }
   }

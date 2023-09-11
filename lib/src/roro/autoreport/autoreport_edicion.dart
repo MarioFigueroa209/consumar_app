@@ -196,7 +196,7 @@ class _Autoreport2EdicionState extends State<Autoreport2Edicion> {
 
   getParticipantesInspecByAutoreport() async {
     participantesInspecGetList = await autoreportService
-        .getParticipantesByAutoreport(widget.idAutoreport);
+        .getParticipantesByAutoreport(widget.idAutoreport.toInt());
   }
 
   addDanoZonaAcopio(DanoZonaAcopio item) {
@@ -283,8 +283,8 @@ class _Autoreport2EdicionState extends State<Autoreport2Edicion> {
   }
 
   getAutoreportDataById() async {
-    vwAutoreportDataEdit =
-        await autoreportService.getAutoreportDataById(widget.idAutoreport);
+    vwAutoreportDataEdit = await autoreportService
+        .getAutoreportDataById(widget.idAutoreport.toInt());
 
     setState(() {
       _desplegableZona = vwAutoreportDataEdit.zona!;

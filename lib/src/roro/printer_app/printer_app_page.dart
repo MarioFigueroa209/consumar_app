@@ -1,5 +1,4 @@
-import 'package:consumar_app/src/roro/printer_app/print_page.dart';
-//import 'package:consumar_app/src/roro/printer_app/qr_pdf_reetiquetado_page.dart';
+import 'package:consumar_app/src/roro/printer_app/qr_pdf_reetiquetado_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -750,19 +749,19 @@ class _PrinterAppState extends State<PrinterApp>
                             TextButton(
                               onPressed: () async {
                                 Navigator.pop(context);
-                                /*   Navigator.push(
+                                Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             QrPdfReetiquetadoPage(
                                               idVehicle:
                                                   allDREtiqutado.idVehicle!,
-                                            ))); */
-                                Navigator.push(
+                                            )));
+                                /*   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => PrintPage(
-                                            allDREtiqutado.idVehicle!)));
+                                            allDREtiqutado.idVehicle!))); */
                               },
                               child: const Text(
                                 "ACEPTAR",

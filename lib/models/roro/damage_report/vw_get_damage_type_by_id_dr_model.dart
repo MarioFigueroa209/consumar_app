@@ -19,6 +19,7 @@ class VwGetDamageTypeByIdDrModel {
     this.idDamageType,
     this.codigoDano,
     this.danoRegistrado,
+    this.cantidadDsMissing,
     this.parteVehiculo,
     this.zonaVehiculo,
     this.fotoDano,
@@ -29,6 +30,7 @@ class VwGetDamageTypeByIdDrModel {
   int? idDamageType;
   String? codigoDano;
   String? danoRegistrado;
+  int? cantidadDsMissing;
   String? parteVehiculo;
   String? zonaVehiculo;
   String? fotoDano;
@@ -40,6 +42,7 @@ class VwGetDamageTypeByIdDrModel {
         idDamageType: json["idDamageType"],
         codigoDano: json["codigoDano"],
         danoRegistrado: json["danoRegistrado"],
+        cantidadDsMissing: json["cantidadDsMissing"],
         parteVehiculo: json["parteVehiculo"],
         zonaVehiculo: json["zonaVehiculo"],
         fotoDano: json["fotoDano"],
@@ -51,6 +54,7 @@ class VwGetDamageTypeByIdDrModel {
         "idDamageType": idDamageType,
         "codigoDano": codigoDano,
         "danoRegistrado": danoRegistrado,
+        "cantidadDsMissing": cantidadDsMissing,
         "parteVehiculo": parteVehiculo,
         "zonaVehiculo": zonaVehiculo,
         "fotoDano": fotoDano,

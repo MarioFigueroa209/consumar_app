@@ -36,6 +36,7 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
 
   bool enableNivelDropdown = true;
   bool enableConductorController = true;
+  bool isVisible = false;
 
   final jornadaController = TextEditingController();
 
@@ -83,13 +84,34 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // getRampaDescargaTop20();
   }
 
   @override
   Widget build(BuildContext context) {
     final rampaDescargaController =
         Provider.of<RampaDescargaController>(context);
+
+    Future<void> getVehiculoPendientAprob() async {
+      await rampaDescargaController.getVehiculoPendientAprob(
+        int.parse(idVehicle.toString()),
+        int.parse(idServiceOrder.toString()),
+      );
+
+      if (rampaDescargaController
+                  .vwGetDamageReportListModel[0].aprobadoApmtc ==
+              "pendiente" ||
+          rampaDescargaController
+                  .vwGetDamageReportListModel[0].aprobadoCoordinador ==
+              "pendiente" ||
+          rampaDescargaController.vwGetDamageReportListModel[0].aprobadoApmtc ==
+              "pendiente") {
+        setState(() {
+          isVisible = true;
+        });
+      } else {
+        isVisible = false;
+      }
+    }
 
     Future<void> getVehicleDataByIdAndIdServiceOrder() async {
       await rampaDescargaController.getVehicleDataByIdAndIdServiceOrder(
@@ -174,7 +196,7 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
                                           /*builder: (context) =>
                                               const ScannerScreen()));*/
                                           builder: (context) =>
-                                          const BarcodeScannerWithScanWindow()));
+                                              const BarcodeScannerWithScanWindow()));
                                   codigoQrController.text = result;
                                 }),
                             suffixIcon: IconButton(
@@ -184,6 +206,7 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
                                       BigInt.parse(codigoQrController.text);
                                   idServiceOrder = widget.idServiceOrderRampa;
                                   getVehicleDataByIdAndIdServiceOrder();
+                                  getVehiculoPendientAprob();
                                 }),
                             labelText: 'Codigo QR',
                             labelStyle: TextStyle(
@@ -195,6 +218,7 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
                           idVehicle = BigInt.parse(codigoQrController.text);
                           idServiceOrder = widget.idServiceOrderRampa;
                           getVehicleDataByIdAndIdServiceOrder();
+                          getVehiculoPendientAprob();
                         },
                         controller: codigoQrController,
                         validator: (value) {
@@ -203,7 +227,20 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
                           }
                           return null;
                         }),
-
+                    Visibility(
+                      visible: isVisible,
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            "El vehiculo cuenta con Dr's sin aprobar",
+                            style: TextStyle(fontSize: 20, color: Colors.red),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -454,25 +491,38 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
                   if (_formKey.currentState!.validate()) {
                     if (_formKey2.currentState!.validate()) {
                       if (_formKey3.currentState!.validate()) {
-                        setState(() {
-                          RampaDescargaTable item = RampaDescargaTable();
-                          item.chasis = _chasisController.text;
-                          item.marca = _marcaController.text;
-                          item.conductor = _nombreConductorController.text;
-                          item.horaLecturaDescarga = DateTime.now();
-                          rampaDescargaController.addRampaDescargaTable(item);
-                        });
-                        rampaDescargaController.agregarListado(
-                          widget.jornada,
-                          _tipoImportacionController.text,
-                          _direccController.text,
-                          int.parse(_desplegableNivel),
-                          int.parse(widget.idServiceOrderRampa.toString()),
-                          int.parse(widget.idUsuario.toString()),
-                          int.parse(codigoQrController.text),
-                          idConductor,
-                        );
-                        clearTextFields();
+                        var result = rampaDescargaController
+                            .detalleRampaDescargaList
+                            .where((element) => element.idVehicle!
+                                .toString()
+                                .contains(idVehicle.toString()));
+                        if (result.isEmpty) {
+                          setState(() {
+                            RampaDescargaTable item = RampaDescargaTable();
+                            item.chasis = _chasisController.text;
+                            item.marca = _marcaController.text;
+                            item.conductor = _nombreConductorController.text;
+                            item.horaLecturaDescarga = DateTime.now();
+                            rampaDescargaController.addRampaDescargaTable(item);
+                          });
+                          rampaDescargaController.agregarListado(
+                            widget.jornada,
+                            _tipoImportacionController.text,
+                            _direccController.text,
+                            int.parse(_desplegableNivel),
+                            int.parse(widget.idServiceOrderRampa.toString()),
+                            int.parse(widget.idUsuario.toString()),
+                            int.parse(codigoQrController.text),
+                            idConductor,
+                          );
+                          clearTextFields();
+                        } else {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Vehiculo ya registrado"),
+                            backgroundColor: Colors.redAccent,
+                          ));
+                        }
                       } else {
                         CustomSnackBar.errorSnackBar(
                             context, "Por ingresar datos de Conductor");
@@ -517,9 +567,7 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
               SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: _buildTable1(context, rampaDescargaController)),
-
               const SizedBox(height: 20),
-
               MaterialButton(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
@@ -533,11 +581,8 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
                     content: Text("Vehiculos Registrados con exito"),
                     backgroundColor: Colors.green,
                   ));
-                  //cargarRampaDescarga();
                   rampaDescargaController.rampaDescargaTable.clear();
                   rampaDescargaController.detalleRampaDescargaList.clear();
-
-                  //setState(() {});
                 },
                 child: const Text(
                   "Registrar",
@@ -643,6 +688,8 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
                       onPressed: () {
                         rampaDescargaController
                             .deleteRampaDescargaTable(rampaDescargaTable.num!);
+                        rampaDescargaController
+                            .deleteRampaDescargaList(rampaDescargaTable.num!);
                         setState(() {});
                         Navigator.pop(context);
                       },
