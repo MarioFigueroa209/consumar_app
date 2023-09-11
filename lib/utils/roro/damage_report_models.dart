@@ -110,6 +110,7 @@ class DamageItem {
     //this.idDamageTypeRegister,
     this.codigoDao,
     this.daoRegistrado,
+    this.cantidadDsMissing,
     this.descripcionFaltantes,
     this.parteVehiculo,
     this.zonaVehiculo,
@@ -121,6 +122,7 @@ class DamageItem {
   // int? idDamageTypeRegister;
   String? codigoDao;
   String? daoRegistrado;
+  int? cantidadDsMissing;
   String? descripcionFaltantes;
   String? parteVehiculo;
   String? zonaVehiculo;
@@ -132,6 +134,7 @@ class DamageItem {
         // idDamageTypeRegister: json["idDamageTypeRegister"],
         codigoDao: json["codigoDaño"],
         daoRegistrado: json["dañoRegistrado"],
+        cantidadDsMissing: json["cantidadDsMissing"],
         descripcionFaltantes: json["descripcionFaltantes"],
         parteVehiculo: json["parteVehiculo"],
         zonaVehiculo: json["zonaVehiculo"],
@@ -143,6 +146,7 @@ class DamageItem {
         // "idDamageTypeRegister": idDamageTypeRegister,
         "codigoDaño": codigoDao,
         "dañoRegistrado": daoRegistrado,
+        "cantidadDsMissing": cantidadDsMissing,
         "descripcionFaltantes": descripcionFaltantes,
         "parteVehiculo": parteVehiculo,
         "zonaVehiculo": zonaVehiculo,
@@ -179,23 +183,25 @@ String damageReportInsertSqlLiteToJson(List<DamageReportInsertSqlLite> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class DamageReportInsertSqlLite {
+  int? idServiceOrder;
+  int? idVehiculo;
+  String? chasis;
+  String? marca;
+  String? modelo;
+  String? lineaNaviera;
+  String? consigntario;
+  String? billOfLeading;
+
   DamageReportInsertSqlLite({
     this.idServiceOrder,
     this.idVehiculo,
     this.chasis,
     this.marca,
     this.modelo,
+    this.lineaNaviera,
     this.consigntario,
     this.billOfLeading,
   });
-
-  int? idServiceOrder;
-  int? idVehiculo;
-  String? chasis;
-  String? marca;
-  String? modelo;
-  String? consigntario;
-  String? billOfLeading;
 
   factory DamageReportInsertSqlLite.fromJson(Map<String, dynamic> json) =>
       DamageReportInsertSqlLite(
@@ -204,6 +210,7 @@ class DamageReportInsertSqlLite {
         chasis: json["chasis"],
         marca: json["marca"],
         modelo: json["modelo"],
+        lineaNaviera: json["lineaNaviera"],
         consigntario: json["consigntario"],
         billOfLeading: json["billOfLeading"],
       );
@@ -214,6 +221,7 @@ class DamageReportInsertSqlLite {
         "chasis": chasis,
         "marca": marca,
         "modelo": modelo,
+        "lineaNaviera": lineaNaviera,
         "consigntario": consigntario,
         "billOfLeading": billOfLeading,
       };

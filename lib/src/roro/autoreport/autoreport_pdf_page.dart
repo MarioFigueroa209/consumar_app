@@ -25,7 +25,8 @@ class _AutoreportPdfState extends State<AutoreportPdf> {
   Widget build(BuildContext context) {
     return PdfPreview(
       build: (format) {
-        return autoreportPdf.createPdf(widget.idAutoreport);
+        return autoreportPdf
+            .createPdf(int.parse(widget.idAutoreport.toString()));
       },
       useActions: false,
     );

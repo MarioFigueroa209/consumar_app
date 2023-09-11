@@ -1,6 +1,7 @@
 import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 
+import '../../../models/roro/damage_report/vw_get_damage_report_list_model.dart';
 import '../../../models/roro/rampa_embarque/vw_count_data_rampa_embarque_by_service_order.dart';
 import '../../../models/roro/rampa_embarque/vw_nave_origen_model.dart';
 import '../../../models/roro/rampa_embarque/vw_rampa_embarque_top_20_model.dart';
@@ -84,6 +85,8 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
   late BigInt idNaveEmbarque;
   late BigInt? idNaveOrigen;
 
+  bool isVisible = false;
+
   late BigInt idRampaEmbarque;
 
   VehicleModel vehicleModel = VehicleModel();
@@ -99,7 +102,11 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
   late List<VwRampaEmbarqueVehicleDataModel> vwRampaEmbarqueVehicleDataModel =
       [];
 
+  List<VwGetDamageReportListModel> vwGetDamageReportListModel = [];
+
   VwNaveOrigenModel vwNaveOrigenModel = VwNaveOrigenModel();
+
+  VehicleService vehicleService = VehicleService();
 
   RampaEmbarqueService rampaEmbarqueServices = RampaEmbarqueService();
   Future<List<VwRampaEmbarqueTop20Model>>? futureVwRampaEmbarqueTop20;
@@ -175,6 +182,7 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
                                         BigInt.parse(codigoQrController.text);
                                     idServiceOrder = widget.idServiceOrderRampa;
                                     await getRampaEmbarqueVehicleDataByIdAndIdServiceOrder();
+                                    getVehiculoPendientAprob();
                                     getNaveOrigen();
                                   }),
                               labelText: 'Codigo QR',
@@ -187,8 +195,7 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
                             idVehicle = BigInt.parse(codigoQrController.text);
                             idServiceOrder = widget.idServiceOrderRampa;
                             await getRampaEmbarqueVehicleDataByIdAndIdServiceOrder();
-                            //getIdVehicle();
-
+                            getVehiculoPendientAprob();
                             getNaveOrigen();
                           },
                           controller: codigoQrController,
@@ -198,6 +205,20 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
                             }
                             return null;
                           }),
+                      Visibility(
+                        visible: isVisible,
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "El vehiculo cuenta con Dr's  sin aprobar",
+                              style: TextStyle(fontSize: 20, color: Colors.red),
+                            ),
+                          ],
+                        ),
+                      ),
                       const SizedBox(
                         height: 20,
                       ),
@@ -604,15 +625,29 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
                       if (_formKey.currentState!.validate()) {
                         if (_formKey2.currentState!.validate()) {
                           if (manifestado != registrado) {
-                            setState(() {
-                              RampaEmbarqueTable item = RampaEmbarqueTable();
-                              item.chasis = _chasisController.text;
-                              item.marca = _marcaController.text;
-                              item.conductor = _nombreConductorController.text;
-                              item.horaLecturaDescarga = DateTime.now();
-                              addRampaEmbarqueTable(item);
-                            });
-                            agregarListadoEmbarque();
+                            var result = detalleRampaEmbarqueList.where(
+                                (element) => element.idVehicle!
+                                    .toString()
+                                    .contains(idVehicle.toString()));
+
+                            if (result.isEmpty) {
+                              setState(() {
+                                RampaEmbarqueTable item = RampaEmbarqueTable();
+                                item.chasis = _chasisController.text;
+                                item.marca = _marcaController.text;
+                                item.conductor =
+                                    _nombreConductorController.text;
+                                item.horaLecturaDescarga = DateTime.now();
+                                addRampaEmbarqueTable(item);
+                              });
+                              agregarListadoEmbarque();
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text("Vehiculo ya registrado"),
+                                backgroundColor: Colors.redAccent,
+                              ));
+                            }
                           } else {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
@@ -674,8 +709,8 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
                     minWidth: double.infinity,
                     height: 50.0,
                     color: kColorNaranja,
-                    onPressed: () {
-                      cargarRampaEmbarque();
+                    onPressed: () async {
+                      await cargarRampaEmbarque();
                       rampaEmbarqueTable.clear();
                       detalleRampaEmbarqueList.clear();
 
@@ -719,6 +754,14 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
     }
   }
 
+  deleteRampaEmbarqueList(int id) {
+    for (int i = 0; i < detalleRampaEmbarqueList.length; i++) {
+      if (detalleRampaEmbarqueList[i].id == id) {
+        detalleRampaEmbarqueList.removeAt(i);
+      }
+    }
+  }
+
   List<RampaEmbarqueList> detalleRampaEmbarqueList = [];
 
   addRampaEmbarqueItem(RampaEmbarqueList item) {
@@ -726,7 +769,6 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
     contador++;
     item.id = contador;
     detalleRampaEmbarqueList.add(item);
-    //print("Cantidad registros${detalleRampaEmbarqueList.length}");
   }
 
   agregarListadoEmbarque() {
@@ -738,13 +780,11 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
     item.idUsuarios = int.parse(widget.idUsuario.toString());
     item.idVehicle = int.parse(codigoQrController.text);
     item.idConductor = idConductor;
-    // item.idShipOrigen = int.parse(idNaveOrigen.toString());
     if (idNaveOrigen != null) {
       item.idShipOrigen = int.parse(idNaveOrigen.toString());
     } else {
       item.idShipOrigen = null;
     }
-    //debugPrint(item.idShipOrigen as String?);
     item.idShipDestino = int.parse(idNaveEmbarque.toString());
     item.idBl = int.parse(idBl.toString());
     addRampaEmbarqueItem(item);
@@ -778,7 +818,6 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
 
   getUserConductorDataByCodUser() async {
     UsuarioService usuarioService = UsuarioService();
-    // _nombreConductorController.text = '';
 
     vwgetUserDataByCodUser = await usuarioService
         .getUserDataByCodUser(_codigoConductorController.text);
@@ -786,12 +825,9 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
     _nombreConductorController.text =
         "${vwgetUserDataByCodUser.nombres!} ${vwgetUserDataByCodUser.apellidos!}";
     idConductor = vwgetUserDataByCodUser.idUsuario!;
-    //print(idConductor);
   }
 
   getIdVehicle() async {
-    VehicleService vehicleService = VehicleService();
-
     vehicleModel = await vehicleService.getVehicleById(idVehicle);
 
     if (vehicleModel.chasis != null && vehicleModel.chasis != 'no encontrado') {
@@ -861,10 +897,30 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
         chasis = vwRampaEmbarqueVehicleDataModel[0].chasis!;
         //   nivel= vwRampaEmbarqueVehicleDataModel[0].nivelDistribucionEmbarque!;
       });
+      CustomSnackBar.successSnackBar(context, "Vehiculo encontrado");
+
       // //print(idServiceOrder);
       // //print(idVehicle);
       // //print(idBl);
       // //print(idNaveEmbarque);
+    }
+  }
+
+  getVehiculoPendientAprob() async {
+    vwGetDamageReportListModel = (await vehicleService.getVehiculoPendientAprob(
+        int.parse(idVehicle.toString()),
+        int.parse(widget.idServiceOrderRampa.toString())));
+
+    if (vwGetDamageReportListModel[0].aprobadoApmtc == "pendiente" ||
+        vwGetDamageReportListModel[0].aprobadoCoordinador == "pendiente" ||
+        vwGetDamageReportListModel[0].aprobadoApmtc == "pendiente") {
+      setState(() {
+        isVisible = true;
+      });
+    } else {
+      setState(() {
+        isVisible = false;
+      });
     }
   }
 
@@ -971,9 +1027,10 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
                     TextButton(
                       onPressed: () {
                         deleteRampaEmbarqueTable(rampaEmbarqueTable.num!);
+                        deleteRampaEmbarqueList(rampaEmbarqueTable.num!);
                         setState(() {
                           registrado--;
-                          detalleRampaEmbarqueList.clear();
+                          //detalleRampaEmbarqueList.clear();
                         });
                         calcularSaldo();
                         Navigator.pop(context);

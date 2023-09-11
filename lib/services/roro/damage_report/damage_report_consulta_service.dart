@@ -48,6 +48,7 @@ class DamageReportConsultaService {
       aux.chasis = value[count].chasis;
       aux.marca = value[count].marca;
       aux.modelo = value[count].modelo;
+      aux.lineaNaviera = value[count].lineaNaviera;
       aux.consigntario = value[count].consigntario;
       aux.billOfLeading = value[count].billOfLeading;
       damageReportInsertSqlLite.add(aux);

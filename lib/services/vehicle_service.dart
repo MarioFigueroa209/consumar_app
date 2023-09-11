@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../models/roro/damage_report/vw_get_damage_report_list_model.dart';
 import '../models/vehicle_model.dart';
 import '../models/vw_vehicle_data_model.dart';
 import 'api_services.dart';
@@ -58,6 +59,30 @@ class VehicleService {
       return parseVehiclesByIdAndIdServiceOrder(response.body);
     } else {
       List<VwVehicleDataModel> list = [];
+      return list;
+    }
+  }
+
+  List<VwGetDamageReportListModel> parsegetVehiculoPendientAprob(
+      String responseBody) {
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    return parsed
+        .map<VwGetDamageReportListModel>(
+            (json) => VwGetDamageReportListModel.fromJson(json))
+        .toList();
+  }
+
+  Future<List<VwGetDamageReportListModel>> getVehiculoPendientAprob(
+      int idVehicle, int idServiceOrder) async {
+    var url = Uri.parse(
+        "$urlGetVehiculoPendientAprobByIdVehicleAndIdServiceOrder$idVehicle&idServiceOrder=$idServiceOrder");
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return parsegetVehiculoPendientAprob(response.body);
+    } else {
+      List<VwGetDamageReportListModel> list = [];
       return list;
     }
   }

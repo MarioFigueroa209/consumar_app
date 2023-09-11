@@ -157,8 +157,12 @@ class _DamageReportState extends State<DamageReport>
 
   final TextEditingController _blController = TextEditingController();
 
+  final TextEditingController _lineaNavieraController = TextEditingController();
+
   final TextEditingController _stowagePositionController =
       TextEditingController();
+
+  TextEditingController cantidadFaltanteController = TextEditingController();
 
   final TextEditingController _companyNameController = TextEditingController();
 
@@ -207,13 +211,12 @@ class _DamageReportState extends State<DamageReport>
   bool isVisibleDamageDescription = false;
   bool isVisiblePartVehicle = false;
 
+  bool visibleCantidadFaltantes = false;
+
   bool valueResponsableApm = false;
   bool value2 = false;
   bool value3 = false;
   bool value4 = false;
-
-  /*  bool valueDamageFound = true;
-  bool valueDamageOcurred = false; */
 
   bool isVisible = false;
   bool isVisible2 = false;
@@ -228,6 +231,10 @@ class _DamageReportState extends State<DamageReport>
   late int idVehicleDr;
   int? idApmtc;
   int? idConductor;
+
+  bool ingnoreDriver = true;
+
+  bool ingnoreZone = false;
 
   DamageReportConsultaService damageReportConsultaService =
       DamageReportConsultaService();
@@ -251,6 +258,8 @@ class _DamageReportState extends State<DamageReport>
 
   DamageReportInsertSqlLite damageReportInsertSqlLite =
       DamageReportInsertSqlLite();
+
+  TextEditingController chasisBusquedaController = TextEditingController();
 
   List<DamageReportInsertSqlLite> damageReportInsertSqlLiteList = [];
 
@@ -312,6 +321,27 @@ class _DamageReportState extends State<DamageReport>
     _consignatarioController.text =
         damageReportInsertSqlLiteList[0].consigntario!;
     _blController.text = damageReportInsertSqlLiteList[0].billOfLeading!;
+    _lineaNavieraController.text =
+        damageReportInsertSqlLiteList[0].lineaNaviera!;
+  }
+
+  getVehicleDataByChasisAndIdServiceOrder() async {
+    damageReportInsertSqlLiteList =
+        (await dbDamageReportSqlLite.getVehicleByChasisAndIdServiceOrder(
+      idServiceOrder,
+      chasisBusquedaController.text,
+    ));
+    _chasisController.text = damageReportInsertSqlLiteList[0].chasis!;
+    _marcaController.text = damageReportInsertSqlLiteList[0].marca!;
+    _modeloController.text = damageReportInsertSqlLiteList[0].modelo!;
+    _consignatarioController.text =
+        damageReportInsertSqlLiteList[0].consigntario!;
+    _blController.text = damageReportInsertSqlLiteList[0].billOfLeading!;
+    _lineaNavieraController.text =
+        damageReportInsertSqlLiteList[0].lineaNaviera!;
+    idVehicleDr = damageReportInsertSqlLiteList[0].idVehiculo!;
+
+    print(idVehicleDr);
   }
 
   /*----------Metodos para comprobar si hay datos guardados sin cargar--------*/
@@ -338,6 +368,8 @@ class _DamageReportState extends State<DamageReport>
 
     String? nombreCompania;
 
+    String? codQr;
+
     if (_damageInformation == 'ARRIVAL CONDITION') {
       danoEncontrado = _damageFound;
     } else {
@@ -359,6 +391,12 @@ class _DamageReportState extends State<DamageReport>
       danoOcurrido = '';
       terceroOperacion = '';
       nombreCompania = '';
+    }
+
+    if (codigoQrController.text.isNotEmpty) {
+      codQr = codigoQrController.text;
+    } else {
+      codQr = chasisBusquedaController.text;
     }
 
     setState(() {
@@ -387,7 +425,7 @@ class _DamageReportState extends State<DamageReport>
           lugarAccidente: _lugarAccidenteController.text,
           fechaAccidente: DateTime.now(),
           comentarios: comentariosController.text,
-          codQr: codigoQrController.text,
+          codQr: codQr,
           idServiceOrder: int.parse(widget.idServiceOrder.toString()),
           idUsuarios: int.parse(widget.idUsuario.toString()),
           idVehicle: idVehicleDr,
@@ -402,7 +440,6 @@ class _DamageReportState extends State<DamageReport>
       damageTypeItemsList.clear();
       obtenerListadoDRSqLite();
     });
-    _tabController.animateTo((_tabController.index = 1));
   }
 
   //Metodo para obtener y cargar la lista de Damage Report en la tabla
@@ -617,6 +654,7 @@ class _DamageReportState extends State<DamageReport>
       SpDamageType aux = SpDamageType();
       aux.codigoDano = damageItemList[count].codigoDao;
       aux.danoRegistrado = damageItemList[count].daoRegistrado;
+      aux.cantidadDsMissing = damageItemList[count].cantidadDsMissing;
       aux.descripcionFaltantes = damageItemList[count].descripcionFaltantes;
       aux.parteVehiculo = damageItemList[count].parteVehiculo;
       aux.zonaVehiculo = damageItemList[count].zonaVehiculo;
@@ -658,24 +696,19 @@ class _DamageReportState extends State<DamageReport>
 
   List<Zone> selectedZona = [];
 
-  /*crearDamageReportLista() {
-    setState(() {
-      //idDr++;
-      DamageReportListSqlLite item = DamageReportListSqlLite();
-      item.codDr = "DR$codDr";
-      item.chasis = _chasisController.text;
-      item.marca = _marcaController.text;
-      item.cantidadDanos = int.parse(_cantidadDanos);
-      addDamageReportTable(item);
-      //futuredamageReportListSqlLite;
-    });
-}
-addDamageReportTable(DamageReportListSqlLite item) {
-    int contador = damageReportListSqlLite.length;
-    contador++;
-    item.idDamageReport = contador;
-    damageReportListSqlLite.add(item);
-*/
+  List<String> damageInformationChange = [];
+
+  cambiosListadoDamageInformation() {
+    if (valueResponsableApm == false) {
+      setState(() {
+        damageInformationChange = damageInformation2;
+      });
+    } else if (valueResponsableApm == true) {
+      setState(() {
+        damageInformationChange = damageInformation;
+      });
+    }
+  }
 
   late TabController _tabController;
 
@@ -684,7 +717,7 @@ addDamageReportTable(DamageReportListSqlLite item) {
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_handleTabIndex);
     super.initState();
-
+    cambiosListadoDamageInformation();
     cargarLista();
     imprimirListaDamageReport();
     obtenerListadoDRSqLite();
@@ -802,10 +835,16 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(20.0),
                                   ),
-                                  prefixIcon: Icon(
-                                    Icons.qr_code,
-                                    color: kColorAzul,
-                                  ),
+                                  prefixIcon: IconButton(
+                                      icon: const Icon(Icons.qr_code),
+                                      onPressed: () async {
+                                        final result = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const BarcodeScannerWithScanWindow()));
+                                        codigoQrController.text = result;
+                                      }),
                                   suffixIcon: IconButton(
                                       icon: const Icon(Icons.search),
                                       onPressed: () {
@@ -836,6 +875,48 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                   return null;
                                 } */
                             ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  /*  prefixIcon: IconButton(
+                          icon: const Icon(Icons.qr_code),
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const BarcodeScannerWithScanWindow()));
+                            chasisBusquedaController.text = result;
+                          }), */
+                                  suffixIcon: IconButton(
+                                      icon: const Icon(Icons.search),
+                                      onPressed: () {
+                                        idServiceOrder = int.parse(
+                                            widget.idServiceOrder.toString());
+                                        getVehicleDataByChasisAndIdServiceOrder();
+                                      }),
+                                  labelText: 'Chasis',
+                                  labelStyle: TextStyle(
+                                    color: kColorAzul,
+                                    fontSize: 20.0,
+                                  ),
+                                  hintText: 'Ingrese el Chasis'),
+                              onChanged: (value) {
+                                idServiceOrder =
+                                    int.parse(widget.idServiceOrder.toString());
+                                getVehicleDataByChasisAndIdServiceOrder();
+                              },
+                              controller: chasisBusquedaController,
+                              /*  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, Ingrese Chasis';
+                    }
+                    return null;
+                  } */
+                            ),
                             const SizedBox(height: 10),
                             Row(
                               children: [
@@ -850,6 +931,8 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                   onChanged: (value) => setState(() {
                                     valueResponsableApm = value;
                                     isVisible = !isVisible;
+                                    ingnoreDriver = !ingnoreDriver;
+                                    cambiosListadoDamageInformation();
                                     /*   valueDamageOcurred = value;
                                         if (valueDamageFound == true) {
                                           valueDamageFound = false;
@@ -1208,12 +1291,31 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                     Icons.wysiwyg,
                                     color: kColorAzul,
                                   ),
+                                  labelText: 'Linea Naviera',
+                                  labelStyle: TextStyle(
+                                    color: kColorAzul,
+                                    fontSize: 20.0,
+                                  ),
+                                  hintText: 'Linea Naviera'),
+                              controller: _lineaNavieraController,
+                              enabled: false,
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.wysiwyg,
+                                    color: kColorAzul,
+                                  ),
                                   labelText: 'Bill of Lading',
                                   labelStyle: TextStyle(
                                     color: kColorAzul,
                                     fontSize: 20.0,
                                   ),
-                                  hintText: 'Bill of Ladin'),
+                                  hintText: 'Bill of Lading'),
                               controller: _blController,
                               enabled: false,
                             ),
@@ -1265,7 +1367,7 @@ addDamageReportTable(DamageReportListSqlLite item) {
                               icon: const Icon(
                                 Icons.arrow_drop_down_circle_outlined,
                               ),
-                              items: damageInformation.map((String a) {
+                              items: damageInformationChange.map((String a) {
                                 return DropdownMenuItem<String>(
                                   value: a,
                                   child: Center(
@@ -1631,17 +1733,20 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                   ),
                                   Row(
                                     children: [
-                                      Switch(
-                                        value: value2,
-                                        onChanged: (value) => setState(
-                                          () {
-                                            value2 = value;
-                                            isVisible3 = !isVisible3;
-                                          },
+                                      IgnorePointer(
+                                        ignoring: ingnoreDriver,
+                                        child: Switch(
+                                          value: value2,
+                                          onChanged: (value) => setState(
+                                            () {
+                                              value2 = value;
+                                              isVisible3 = !isVisible3;
+                                            },
+                                          ),
+                                          activeTrackColor:
+                                              Colors.lightGreenAccent,
+                                          activeColor: Colors.green,
                                         ),
-                                        activeTrackColor:
-                                            Colors.lightGreenAccent,
-                                        activeColor: Colors.green,
                                       ),
                                       const SizedBox(
                                         width: 10,
@@ -2080,7 +2185,21 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                           }),
                                         }
                                       else
-                                        {isVisibleDamageDescription = false}
+                                        {isVisibleDamageDescription = false},
+                                      if (_desplegableDano == "Missing")
+                                        {
+                                          setState(() {
+                                            visibleCantidadFaltantes = true;
+                                            ingnoreZone = true;
+                                          }),
+                                        }
+                                      else
+                                        {
+                                          setState(() {
+                                            visibleCantidadFaltantes = false;
+                                            ingnoreZone = false;
+                                          }),
+                                        }
                                     },
                                     hint: Text(_desplegableDano),
                                   ),
@@ -2108,6 +2227,33 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                           )
                                         ],
                                       )),
+                                  Visibility(
+                                    visible: visibleCantidadFaltantes,
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(height: 20),
+                                        TextFormField(
+                                          decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              prefixIcon: Icon(
+                                                Icons.grid_3x3,
+                                                color: kColorAzul,
+                                              ),
+                                              labelText: 'Cantidad Faltante',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 20.0,
+                                              ),
+                                              hintText: 'ingrese cantidad'),
+                                          controller:
+                                              cantidadFaltanteController,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   const SizedBox(height: 20),
                                   DropdownButtonFormField(
                                     key: _key2,
@@ -2208,39 +2354,43 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                       const SizedBox(
                                         height: 20,
                                       ), */
-                                  MultiSelectDialogField(
-                                    items: _itemszonaVehiculo,
-                                    title: const Text("Seleccione Zona:"),
-                                    selectedColor: Colors.blue,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20.0),
-                                      border: Border.all(
-                                        color: Colors.grey,
-                                        width: 1,
+                                  IgnorePointer(
+                                    ignoring: ingnoreZone,
+                                    child: MultiSelectDialogField(
+                                      items: _itemszonaVehiculo,
+                                      title: const Text("Seleccione Zona:"),
+                                      selectedColor: Colors.blue,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                        border: Border.all(
+                                          color: Colors.grey,
+                                          width: 1,
+                                        ),
                                       ),
-                                    ),
-                                    buttonIcon: const Icon(
-                                      Icons.arrow_drop_down_circle_outlined,
-                                      color: Colors.blue,
-                                    ),
-                                    buttonText: Text(
-                                      "Zone:",
-                                      style: TextStyle(
-                                        color: Colors.blue[800],
-                                        fontSize: 16,
+                                      buttonIcon: const Icon(
+                                        Icons.arrow_drop_down_circle_outlined,
+                                        color: Colors.blue,
                                       ),
-                                    ),
-                                    onConfirm: (results) {
-                                      selectedZona = results;
-                                      //print(selectedZona.length);
-                                      cityNames = selectedZona
-                                          .map((city) => city.zona)
-                                          .toList();
-                                      stringList = cityNames.join(", ");
+                                      buttonText: Text(
+                                        "Zone:",
+                                        style: TextStyle(
+                                          color: Colors.blue[800],
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      onConfirm: (results) {
+                                        selectedZona = results;
+                                        //print(selectedZona.length);
+                                        cityNames = selectedZona
+                                            .map((city) => city.zona)
+                                            .toList();
+                                        stringList = cityNames.join(", ");
 
-                                      //debugPrint(stringList);
-                                    },
+                                        //debugPrint(stringList);
+                                      },
+                                    ),
                                   ),
                                   const SizedBox(
                                     height: 20,
@@ -2409,7 +2559,58 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                     if (damageList.length <
                                         int.parse(_cantidadDanos)) {
                                       if (isVisible2 == false) {
-                                        if (selectedZona.length <= 3) {
+                                        if (ingnoreZone == false) {
+                                          if (selectedZona.length <= 3) {
+                                            String? menuDanos;
+                                            String? menuParteVeh;
+
+                                            if (_desplegableDano == 'Others') {
+                                              menuDanos =
+                                                  _otherDamageDescriptionController
+                                                      .text;
+                                            } else {
+                                              menuDanos = _desplegableDano;
+                                            }
+
+                                            if (_desplegableParte == 'Others') {
+                                              menuParteVeh =
+                                                  _otherPartVehicleController
+                                                      .text;
+                                            } else {
+                                              menuParteVeh = _desplegableParte;
+                                            }
+
+                                            damageList.add(DamageItem(
+                                                //idDamageTypeRegister: 2,
+                                                codigoDao: "",
+                                                daoRegistrado: menuDanos,
+                                                parteVehiculo: menuParteVeh,
+                                                zonaVehiculo: stringList,
+                                                descripcionFaltantes:
+                                                    faltantesController.text,
+                                                /*  cantidadDsMissing: int.parse(
+                                                  cantidadFaltanteController
+                                                      .text,
+                                                ), */
+                                                fotoDao:
+                                                    imageDanoRegistro!.path,
+                                                fotoViewDao:
+                                                    imageDanoRegistro!));
+                                            clearDamageItem();
+                                            setState(() {
+                                              selectedZona.clear();
+                                              cityNames.clear();
+                                              stringList = "";
+                                            });
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  "Maximo 3 items en Zone"),
+                                              backgroundColor: Colors.redAccent,
+                                            ));
+                                          }
+                                        } else if (ingnoreZone == true) {
                                           String? menuDanos;
                                           String? menuParteVeh;
 
@@ -2434,9 +2635,12 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                               codigoDao: "",
                                               daoRegistrado: menuDanos,
                                               parteVehiculo: menuParteVeh,
-                                              zonaVehiculo: stringList,
+                                              zonaVehiculo: "",
                                               descripcionFaltantes:
                                                   faltantesController.text,
+                                              cantidadDsMissing: int.parse(
+                                                cantidadFaltanteController.text,
+                                              ),
                                               fotoDao: imageDanoRegistro!.path,
                                               fotoViewDao: imageDanoRegistro!));
                                           clearDamageItem();
@@ -2445,13 +2649,6 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                             cityNames.clear();
                                             stringList = "";
                                           });
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(
-                                            content:
-                                                Text("Maximo 3 items en Zone"),
-                                            backgroundColor: Colors.redAccent,
-                                          ));
                                         }
                                       } else {
                                         damageList.add(DamageItem(
@@ -2755,9 +2952,10 @@ addDamageReportTable(DamageReportListSqlLite item) {
                               height: 50.0,
                               color: kColorNaranja,
                               onPressed: () async {
-                                if (codigoQrController.text.isNotEmpty &&
-                                    _damageTypeOperation !=
-                                        'Seleccione Operación') {
+                                if (codigoQrController.text.isNotEmpty ||
+                                    chasisBusquedaController.text.isNotEmpty &&
+                                        _damageTypeOperation !=
+                                            'Seleccione Operación') {
                                   if (imageChasis != null) {
                                     if (_stowagePositionController
                                         .text.isNotEmpty) {
@@ -2772,6 +2970,14 @@ addDamageReportTable(DamageReportListSqlLite item) {
                                             clearDamageReportForm();
                                             await imprimirListaDamageItem();
                                             await imprimirListaDamageReport();
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        super.widget));
+                                            /*       _tabController.animateTo(
+                                                (_tabController.index = 1)); */
                                           } else if (valueResponsableApm ==
                                               true) {
                                             dialogoAdvertenciaApm(context);

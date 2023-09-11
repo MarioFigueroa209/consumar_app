@@ -20,6 +20,7 @@ class VwGetDamageReportItemModel {
     this.nave,
     this.puerto,
     this.numeroViaje,
+    this.lineaNaviera,
     this.damageFound,
     this.damageOcurred,
     this.operation,
@@ -55,6 +56,7 @@ class VwGetDamageReportItemModel {
   String? nave;
   String? puerto;
   String? numeroViaje;
+  String? lineaNaviera;
   String? damageFound;
   String? damageOcurred;
   String? operation;
@@ -91,6 +93,7 @@ class VwGetDamageReportItemModel {
         nave: json["nave"],
         puerto: json["puerto"],
         numeroViaje: json["numeroViaje"],
+        lineaNaviera: json["lineaNaviera"],
         damageFound: json["damageFound"],
         damageOcurred: json["damageOcurred"],
         operation: json["operation"],
@@ -127,6 +130,7 @@ class VwGetDamageReportItemModel {
         "nave": nave,
         "puerto": puerto,
         "numeroViaje": numeroViaje,
+        "lineaNaviera": lineaNaviera,
         "damageFound": damageFound,
         "damageOcurred": damageOcurred,
         "operation": operation,

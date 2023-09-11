@@ -1,6 +1,7 @@
 import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 
+//import 'package:dropdown_search/dropdown_search.dart';
 import '../../../models/roro/rampa_embarque/vw_rampa_embarque_vehicle_data_model.dart';
 import '../../../models/vehicle_model.dart';
 import '../../../models/vw_ship_and_travel_by_id_service_order_model.dart';
@@ -44,6 +45,9 @@ class _Autoreport1State extends State<Autoreport1> {
   final TextEditingController _marcaController = TextEditingController();
   final TextEditingController _bLController = TextEditingController();
   final TextEditingController codigoQrController = TextEditingController();
+
+  final TextEditingController chasisBusquedaController =
+      TextEditingController();
 
   VwShipAndTravelByIdServiceOrderModel vwShipAndTravelByIdServiceOrderModel =
       VwShipAndTravelByIdServiceOrderModel();
@@ -124,6 +128,43 @@ class _Autoreport1State extends State<Autoreport1> {
     }
   }
 
+  List<String> vehicleDataList = [];
+
+  getVehicleDataByChasisAndIdServiceOrder() async {
+    RampaEmbarqueService rampaEmbarqueService = RampaEmbarqueService();
+
+    vwRampaEmbarqueVehicleDataModel = (await rampaEmbarqueService
+        .getRampaEmbarqueVehicleByChasisAndIdServiceOrder(
+            chasisBusquedaController.text, widget.idServiceOrder));
+
+    if (vwRampaEmbarqueVehicleDataModel != []) {
+      if (vwRampaEmbarqueVehicleDataModel[0].eliminadoDamageReport == 'no') {
+        codDr = vwRampaEmbarqueVehicleDataModel[0].codDr!;
+      } else {
+        codDr = 'SIN DR';
+      }
+      //print(vwRampaEmbarqueVehicleDataModel[0].tipoMercaderia);
+      codDr = vwRampaEmbarqueVehicleDataModel[0].codDr!;
+      _bLController.text = vwRampaEmbarqueVehicleDataModel[0].billOfLeading!;
+      _chasisController.text = vwRampaEmbarqueVehicleDataModel[0].chasis!;
+      _marcaController.text = vwRampaEmbarqueVehicleDataModel[0].marca!;
+      idBl = BigInt.parse(vwRampaEmbarqueVehicleDataModel[0].idBl!.toString());
+      idVehicle = BigInt.parse(
+          vwRampaEmbarqueVehicleDataModel[0].idVehiculo!.toString());
+      idNave = BigInt.parse(
+          vwRampaEmbarqueVehicleDataModel[0].idNaveEmbarque!.toString());
+      idTravel =
+          BigInt.parse(vwRampaEmbarqueVehicleDataModel[0].idTravel!.toString());
+      if (context.mounted) {
+        CustomSnackBar.successSnackBar(context, "Vehiculo Encontrado");
+      }
+    } else {
+      if (context.mounted) {
+        CustomSnackBar.errorSnackBar(context, "Vehiculo no encontrado");
+      }
+    }
+  }
+
   validationAutoreport2() {
     String? zona;
 
@@ -169,6 +210,9 @@ class _Autoreport1State extends State<Autoreport1> {
 
   @override
   Widget build(BuildContext context) {
+    /*  vehicleDataList =
+        vwEquiposRegistradosGranelList.map((city) => city.codEquipo!).toList(); */
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kColorAzul,
@@ -182,11 +226,55 @@ class _Autoreport1State extends State<Autoreport1> {
           child: Column(
             children: [
               TextFormField(
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      prefixIcon: IconButton(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    prefixIcon: IconButton(
+                        icon: const Icon(Icons.qr_code),
+                        onPressed: () async {
+                          final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const BarcodeScannerWithScanWindow()));
+                          codigoQrController.text = result;
+                        }),
+                    suffixIcon: IconButton(
+                        icon: const Icon(Icons.search),
+                        onPressed: () {
+                          idVehicle = BigInt.parse(codigoQrController.text);
+                          idServiceOrder = widget.idServiceOrder;
+                          // getIdVehicle();
+                          getVehicleDataByIdAndIdServiceOrder();
+                        }),
+                    labelText: 'Codigo QR',
+                    labelStyle: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                    hintText: 'Ingrese el codigo QR'),
+                onChanged: (value) {
+                  idVehicle = BigInt.parse(codigoQrController.text);
+                  idServiceOrder = widget.idServiceOrder;
+                  //getIdVehicle();
+                  getVehicleDataByIdAndIdServiceOrder();
+                },
+                controller: codigoQrController,
+                /* validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, Ingrese codigo de vehiculo';
+                    }
+                    return null;
+                  } */
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    /*  prefixIcon: IconButton(
                           icon: const Icon(Icons.qr_code),
                           onPressed: () async {
                             final result = await Navigator.push(
@@ -194,35 +282,58 @@ class _Autoreport1State extends State<Autoreport1> {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         const BarcodeScannerWithScanWindow()));
-                            codigoQrController.text = result;
-                          }),
-                      suffixIcon: IconButton(
-                          icon: const Icon(Icons.search),
-                          onPressed: () {
-                            idVehicle = BigInt.parse(codigoQrController.text);
-                            idServiceOrder = widget.idServiceOrder;
-                            // getIdVehicle();
-                            getVehicleDataByIdAndIdServiceOrder();
-                          }),
-                      labelText: 'Codigo QR',
-                      labelStyle: TextStyle(
-                        color: kColorAzul,
-                        fontSize: 20.0,
-                      ),
-                      hintText: 'Ingrese el codigo QR'),
-                  onChanged: (value) {
-                    idVehicle = BigInt.parse(codigoQrController.text);
-                    idServiceOrder = widget.idServiceOrder;
-                    //getIdVehicle();
-                    getVehicleDataByIdAndIdServiceOrder();
-                  },
-                  controller: codigoQrController,
-                  validator: (value) {
+                            chasisBusquedaController.text = result;
+                          }), */
+                    suffixIcon: IconButton(
+                        icon: const Icon(Icons.search),
+                        onPressed: () {
+                          getVehicleDataByChasisAndIdServiceOrder();
+                        }),
+                    labelText: 'Chasis',
+                    labelStyle: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                    hintText: 'Ingrese el Chasis'),
+                onChanged: (value) {
+                  getVehicleDataByChasisAndIdServiceOrder();
+                },
+                controller: chasisBusquedaController,
+                /*  validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, Ingrese codigo de vehiculo';
+                      return 'Por favor, Ingrese Chasis';
                     }
                     return null;
+                  } */
+              ),
+              /*   DropdownSearch<String>(
+                items: vehicleDataList,
+                popupProps: const PopupProps.menu(
+                  showSearchBox: true,
+                  title: Text('Busque el Codigo del Equipo'),
+                ),
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    labelText: "Lista Codigo Equipo",
+                    labelStyle: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                    hintText: "Seleccione Equipo",
+                    filled: true,
+                  ),
+                ),
+                onChanged: (value) => {
+                  setState(() {
+                    _valueEquipoDropdown = value as String;
+                    // codEquipo = _valueEquipoDropdown;
                   }),
+                  getVehicleDataByChasisAndIdServiceOrder(),
+                },
+              ), */
               const SizedBox(
                 height: 20,
               ),
@@ -261,7 +372,7 @@ class _Autoreport1State extends State<Autoreport1> {
                             Icons.airplane_ticket_outlined,
                             color: kColorAzul,
                           ),
-                          labelText: 'Viaje',
+                          labelText: 'Manifiesto',
                           labelStyle: TextStyle(
                             color: kColorAzul,
                             fontSize: 20.0,

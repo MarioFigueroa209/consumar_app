@@ -1,9 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:another_flushbar/flushbar.dart';
+import 'package:consumar_app/models/vw_get_user_data_by_cod_user.dart';
+import 'package:consumar_app/services/usuario_service.dart';
+import 'package:consumar_app/utils/qr_scanner/barcode_scanner_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
 
 import '../../../models/file_upload_result.dart';
 import '../../../models/roro/autoreport/sp_autoreport_create_model.dart';
@@ -48,22 +54,32 @@ class Autoreport2 extends StatefulWidget {
   State<Autoreport2> createState() => _Autoreport2State();
 }
 
+class ProtectoPlastico {
+  final String? items;
+
+  ProtectoPlastico({
+    this.items,
+  });
+}
+
+final List<ProtectoPlastico> itemsList = [
+  ProtectoPlastico(items: "CAPOT"),
+  ProtectoPlastico(items: "TECHO"),
+  ProtectoPlastico(items: "MALETERA"),
+];
+
 class _Autoreport2State extends State<Autoreport2> {
   bool danosAcopio = false;
   bool participantesInspeccion = false;
   bool plumillasDelanteras = false;
   bool plumillasTraseras = false;
   bool antena = false;
-
   bool tapaNeumatico = false;
   bool copasAro = false;
-
   bool radio = false;
   bool controlRemotoradio = false;
-
   bool tacometro = false;
   bool tacografo = false;
-
   bool encendedor = false;
   bool reloj = false;
   bool pisosAdicionales = false;
@@ -73,39 +89,28 @@ class _Autoreport2State extends State<Autoreport2> {
   bool estuche = false;
   bool pinRemolque = false;
   bool caja = false;
-
   bool cajaEstado = false;
-
   bool maletin = false;
-
   bool maletinEstado = false;
-
   bool bolsaPlastica = false;
-
   bool bolsaPlasticaEstado = false;
-
   bool ceniceros = false;
   bool espejosInterior = false;
   bool espejosLaterales = false;
   bool gata = false;
   bool extintor = false;
   bool pantallaTactil = false;
-
   bool linterna = false;
   bool cableCargadorBateria = false;
-
   bool circulina = false;
-
   bool cableCargadorVehiculoElectrico = false;
-
   bool cd = false;
-
   bool trianguloSeguridad = false;
   bool catalogo = false;
   bool llaves = false;
   bool llavesPrecintas = false;
+  bool llavesVisibles = false;
   bool presenciaSeguro = false;
-
   bool usb = false;
   bool memoriaSd = false;
   bool camaraSeguridad = false;
@@ -116,11 +121,11 @@ class _Autoreport2State extends State<Autoreport2> {
   bool chaleco = false;
   bool galonera = false;
   bool controlRemotoMaquinaria = false;
-
+  bool presenciaPolvoSuciedadController = false;
+  bool protectorPlasticoController = false;
   String textCajaEstado = "Cerrado";
   String textMaletinEstado = "Cerrado";
   String textBolsaPlastEstado = "Cerrado";
-
   bool ignRadio = false;
   bool ignControlRemotoRadio = false;
   bool ignReloj = false;
@@ -305,6 +310,16 @@ class _Autoreport2State extends State<Autoreport2> {
   File? image2;
   File? image3;
 
+  final _itemsProtectorPlastico = itemsList
+      .map((animal) => MultiSelectItem<ProtectoPlastico>(animal, animal.items!))
+      .toList();
+
+  List<ProtectoPlastico> selectedItems = [];
+
+  late List<String?> cityNames;
+
+  late String? stringList;
+
   Future pickImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
@@ -456,9 +471,160 @@ class _Autoreport2State extends State<Autoreport2> {
     spAutoreport.idShip = int.parse(widget.idShip.toString());
     spAutoreport.idVehicle = int.parse(widget.idVehicle.toString());
     spAutoreport.idTravel = int.parse(widget.idTravel.toString());
+    spAutoreport.cantPlumillasDelanteras =
+        int.tryParse(cantPlumillasDelanterasController.text) ?? 0;
+    spAutoreport.cantPlumillasTraseras =
+        int.tryParse(cantPlumillasTraserasController.text) ?? 0;
+    spAutoreport.cantAntena = int.tryParse(cantAntenaController.text) ?? 0;
+    spAutoreport.cantEspejosInteriores =
+        int.tryParse(cantEspejosInterioresController.text) ?? 0;
+    spAutoreport.cantEspejosLaterales =
+        int.tryParse(cantEspejosLateralesController.text) ?? 0;
+    spAutoreport.cantTapaLlanta =
+        int.tryParse(cantTapaLlantaController.text) ?? 0;
+    spAutoreport.cantRadio = int.tryParse(cantRadioController.text) ?? 0;
+    spAutoreport.cantControlRemotoRadio =
+        int.tryParse(cantControlRemotoRadioController.text) ?? 0;
+    spAutoreport.cantTacografo =
+        int.tryParse(cantTacografoController.text) ?? 0;
+    spAutoreport.cantTacometro =
+        int.tryParse(cantTacometroController.text) ?? 0;
+    spAutoreport.cantEncendedor =
+        int.tryParse(cantEncendedorController.text) ?? 0;
+    spAutoreport.cantReloj = int.tryParse(cantRelojController.text) ?? 0;
+    spAutoreport.cantPisosAdicionales =
+        int.tryParse(cantPisosAdicionalesController.text) ?? 0;
+    spAutoreport.cantCopasAro = int.tryParse(cantCopasAroController.text) ?? 0;
+    spAutoreport.cantLlantaRepuesto =
+        int.tryParse(cantLlantaRepuestoController.text) ?? 0;
+    spAutoreport.cantHerramientas =
+        int.tryParse(cantHerramientasController.text) ?? 0;
+    spAutoreport.cantPinRemolque =
+        int.tryParse(cantPinRemolqueController.text) ?? 0;
+    spAutoreport.cantCaja = int.tryParse(cantCajaController.text) ?? 0;
+    /*   spAutoreport.cantCajaEstado = int.parse(cantCajaEstadoController.text); */
+    spAutoreport.cantMaletin = int.tryParse(cantMaletinController.text) ?? 0;
+    /*  spAutoreport.cantMaletinEstado =
+        int.parse(cantMaletinEstadoController.text); */
+    spAutoreport.cantBolsaPlastica =
+        int.tryParse(cantBolsaPlasticaController.text) ?? 0;
+    /*    spAutoreport.cantBolsaPlasticaEstado =
+        int.parse(cantBolsaPlasticaEstadoController.text); */
+    spAutoreport.cantEstuche = int.tryParse(cantEstucheController.text) ?? 0;
+    spAutoreport.cantRelays = int.tryParse(cantRelaysController.text) ?? 0;
+    spAutoreport.cantCeniceros =
+        int.tryParse(cantCenicerosController.text) ?? 0;
+    spAutoreport.cantGata = int.tryParse(cantGataController.text) ?? 0;
+    spAutoreport.cantExtintor = int.tryParse(cantExtintorController.text) ?? 0;
+    spAutoreport.cantTrianguloSeguridad =
+        int.tryParse(cantTrianguloSeguridadController.text) ?? 0;
+    spAutoreport.cantPantallaTactil =
+        int.tryParse(cantPantallaTactilController.text) ?? 0;
+    spAutoreport.cantCatalogo = int.tryParse(cantCatalogoController.text) ?? 0;
+    spAutoreport.cantLinterna = int.tryParse(cantLinternaController.text) ?? 0;
+    spAutoreport.cantCableCargadorBateria =
+        int.tryParse(cantCableCargadorBateriaController.text) ?? 0;
+    spAutoreport.cantCirculina =
+        int.tryParse(cantCirculinaController.text) ?? 0;
+    spAutoreport.cantCableCargadorVehiculoElectrico =
+        int.tryParse(cantCableCargadorVehiculoElectricoController.text) ?? 0;
+    spAutoreport.cantCd = int.tryParse(cantCdController.text) ?? 0;
+    spAutoreport.cantUsb = int.tryParse(cantUsbController.text) ?? 0;
+    spAutoreport.cantMemoriaSd =
+        int.tryParse(cantMemoriaSdController.text) ?? 0;
+    spAutoreport.cantCamaraSeguridad =
+        int.tryParse(cantCamaraSeguridadController.text) ?? 0;
+    spAutoreport.cantRadioComunicador =
+        int.tryParse(cantRadioComunicadorController.text) ?? 0;
+    spAutoreport.cantMangueraAire =
+        int.tryParse(cantMangueraAireController.text) ?? 0;
+    spAutoreport.cantCableCargador =
+        int.tryParse(cantCableCargadorController.text) ?? 0;
+    spAutoreport.cantLlaveRuedas =
+        int.tryParse(cantLlaveRuedasController.text) ?? 0;
+    spAutoreport.cantChaleco = int.tryParse(cantChalecoController.text) ?? 0;
+    spAutoreport.cantGalonera = int.tryParse(cantGaloneraController.text) ?? 0;
+    spAutoreport.cantControlRemotoMaquinaria =
+        int.tryParse(cantControlRemotoMaquinariaController.text) ?? 0;
+    spAutoreport.presenciaPolvoSuciedad = presenciaPolvoSuciedadController;
+    spAutoreport.protectorPlastico = protectorPlasticoController;
+    spAutoreport.detalleProtectorPlastico = stringList;
+    spAutoreport.llavesVisibles = llavesVisibles;
 
     return spAutoreport;
   }
+
+  final TextEditingController cantPlumillasDelanterasController =
+      TextEditingController();
+  final TextEditingController cantPlumillasTraserasController =
+      TextEditingController();
+  final TextEditingController cantAntenaController = TextEditingController();
+  final TextEditingController cantEspejosInterioresController =
+      TextEditingController();
+  final TextEditingController cantEspejosLateralesController =
+      TextEditingController();
+  final TextEditingController cantTapaLlantaController =
+      TextEditingController();
+  final TextEditingController cantRadioController = TextEditingController();
+  final TextEditingController cantControlRemotoRadioController =
+      TextEditingController();
+  final TextEditingController cantTacografoController = TextEditingController();
+  final TextEditingController cantTacometroController = TextEditingController();
+  final TextEditingController cantEncendedorController =
+      TextEditingController();
+  final TextEditingController cantRelojController = TextEditingController();
+  final TextEditingController cantPisosAdicionalesController =
+      TextEditingController();
+  final TextEditingController cantCopasAroController = TextEditingController();
+  final TextEditingController cantLlantaRepuestoController =
+      TextEditingController();
+  final TextEditingController cantHerramientasController =
+      TextEditingController();
+  final TextEditingController cantPinRemolqueController =
+      TextEditingController();
+  final TextEditingController cantCajaController = TextEditingController();
+  final TextEditingController cantCajaEstadoController =
+      TextEditingController();
+  final TextEditingController cantMaletinController = TextEditingController();
+  final TextEditingController cantMaletinEstadoController =
+      TextEditingController();
+  final TextEditingController cantBolsaPlasticaController =
+      TextEditingController();
+  final TextEditingController cantBolsaPlasticaEstadoController =
+      TextEditingController();
+  final TextEditingController cantEstucheController = TextEditingController();
+  final TextEditingController cantRelaysController = TextEditingController();
+  final TextEditingController cantCenicerosController = TextEditingController();
+  final TextEditingController cantGataController = TextEditingController();
+  final TextEditingController cantExtintorController = TextEditingController();
+  final TextEditingController cantTrianguloSeguridadController =
+      TextEditingController();
+  final TextEditingController cantPantallaTactilController =
+      TextEditingController();
+  final TextEditingController cantCatalogoController = TextEditingController();
+  final TextEditingController cantLinternaController = TextEditingController();
+  final TextEditingController cantCableCargadorBateriaController =
+      TextEditingController();
+  final TextEditingController cantCirculinaController = TextEditingController();
+  final TextEditingController cantCableCargadorVehiculoElectricoController =
+      TextEditingController();
+  final TextEditingController cantCdController = TextEditingController();
+  final TextEditingController cantUsbController = TextEditingController();
+  final TextEditingController cantMemoriaSdController = TextEditingController();
+  final TextEditingController cantCamaraSeguridadController =
+      TextEditingController();
+  final TextEditingController cantRadioComunicadorController =
+      TextEditingController();
+  final TextEditingController cantMangueraAireController =
+      TextEditingController();
+  final TextEditingController cantCableCargadorController =
+      TextEditingController();
+  final TextEditingController cantLlaveRuedasController =
+      TextEditingController();
+  final TextEditingController cantChalecoController = TextEditingController();
+  final TextEditingController cantGaloneraController = TextEditingController();
+  final TextEditingController cantControlRemotoMaquinariaController =
+      TextEditingController();
 
   final TextEditingController descripcionDanoAcopioController =
       TextEditingController();
@@ -474,16 +640,69 @@ class _Autoreport2State extends State<Autoreport2> {
       TextEditingController();
   final TextEditingController otrosController = TextEditingController();
 
+  final TextEditingController idSupervisorController = TextEditingController();
+  final TextEditingController nombresSupervisorController =
+      TextEditingController();
+
   final TextEditingController nLlavesPinController = TextEditingController();
   final TextEditingController comentarioController = TextEditingController();
 
   bool visibleDanosAcopio = false;
   bool visibleParticipantesInspeccion = false;
   bool visiblellaves = false;
-
   bool visibleCajaEstado = false;
   bool visibleMaletinEstado = false;
   bool visibleBolsaPlasticaEstado = false;
+
+  bool visiblePlumillasdelanteras = false;
+  bool visiblePlumillastraseras = false;
+  bool visibleAntena = false;
+  bool visibleEspejosinteriores = false;
+  bool visibleEspejoslaterales = false;
+  bool visibleTapallanta = false;
+  bool visibleRadio = false;
+  bool visibleControlremotoradio = false;
+  bool visibleTacografo = false;
+  bool visibleTacometro = false;
+  bool visibleEncendedor = false;
+  bool visibleReloj = false;
+  bool visiblePisosadicionales = false;
+  bool visibleCopasaro = false;
+  bool visibleLlantarepuesto = false;
+  bool visibleHerramientas = false;
+  bool visiblePinremolque = false;
+  bool visibleCaja = false;
+  bool visibleCajaestado = false;
+  bool visibleMaletin = false;
+  bool visibleMaletinestado = false;
+  bool visibleBolsaplastica = false;
+  bool visibleBolsaplasticaestado = false;
+  bool visibleEstuche = false;
+  bool visibleRelays = false;
+  bool visibleCeniceros = false;
+  bool visibleGata = false;
+  bool visibleExtintor = false;
+  bool visibleTrianguloseguridad = false;
+  bool visiblePantallatactil = false;
+  bool visibleCatalogos = false;
+  bool visibleLlaves = false;
+  bool visibleLlavesprecintas = false;
+  bool visibleLinterna = false;
+  bool visibleCablecargadorbateria = false;
+  bool visibleCirculina = false;
+  bool visibleCablecargagorvehiculoelectrico = false;
+  bool visibleCd = false;
+  bool visibleUsb = false;
+  bool visibleMemoriasd = false;
+  bool visibleCamaraseguridad = false;
+  bool visibleRadiocomunicador = false;
+  bool visibleMangueraaire = false;
+  bool visibleCablecargador = false;
+  bool visibleLlaveruedas = false;
+  bool visibleChaleco = false;
+  bool visibleGalonera = false;
+  bool visibleControlremotomaquinaria = false;
+  bool visibleProtectorPlastico = false;
 
   bool visibleOtros = false;
 
@@ -582,6 +801,24 @@ class _Autoreport2State extends State<Autoreport2> {
     }
   }
 
+  int? idApmtc;
+
+  String? puesto;
+
+  getSupervisorByCodUser() async {
+    UsuarioService usuarioService = UsuarioService();
+    VwgetUserDataByCodUser vwgetUserDataByCodUser = VwgetUserDataByCodUser();
+
+    vwgetUserDataByCodUser =
+        await usuarioService.getUserDataByCodUser(idSupervisorController.text);
+
+    nombresSupervisorController.text =
+        "${vwgetUserDataByCodUser.nombres!} ${vwgetUserDataByCodUser.apellidos!}";
+    idApmtc = vwgetUserDataByCodUser.idUsuario;
+    puesto = vwgetUserDataByCodUser.puesto;
+    //print(idApmtc);
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -658,7 +895,14 @@ class _Autoreport2State extends State<Autoreport2> {
                             onChanged: (value) => setState(
                               () {
                                 danosAcopio = value;
-                                visibleDanosAcopio = value;
+                                if (danosAcopio == true) {
+                                  dialogoConfirmarDanoAcopio(context);
+                                }
+                                if (value == false) {
+                                  visibleDanosAcopio = false;
+                                  danosAcopio = false;
+                                }
+                                // visibleDanosAcopio = value;
                               },
                             ),
                           ),
@@ -1327,225 +1571,1020 @@ class _Autoreport2State extends State<Autoreport2> {
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignPlumillasDelanteras,
-                        child: AutoReportSwitch(
-                          size: 3,
-                          value: plumillasDelanteras,
-                          title: "Plumillas Delanteras",
-                          onChanged: (value) => setState(
-                            () {
-                              plumillasDelanteras = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              size: 3,
+                              value: plumillasDelanteras,
+                              title: "Plumillas Delanteras",
+                              onChanged: (value) => setState(
+                                () {
+                                  plumillasDelanteras = value;
+                                  visiblePlumillasdelanteras = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visiblePlumillasdelanteras,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller:
+                                              cantPlumillasDelanterasController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                )),
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignPlumillasTraseras,
-                        child: AutoReportSwitch(
-                          title: "Plumillas Traseras",
-                          size: 3,
-                          value: plumillasTraseras,
-                          onChanged: (value) => setState(
-                            () {
-                              plumillasTraseras = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            Column(
+                              children: [
+                                AutoReportSwitch(
+                                  title: "Plumillas Traseras",
+                                  size: 3,
+                                  value: plumillasTraseras,
+                                  onChanged: (value) => setState(
+                                    () {
+                                      plumillasTraseras = value;
+                                      visiblePlumillastraseras = value;
+                                    },
+                                  ),
+                                ),
+                                Visibility(
+                                    visible: visiblePlumillastraseras,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 30),
+                                      child: Column(
+                                        children: [
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          TextFormField(
+                                              decoration: InputDecoration(
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.0),
+                                                ),
+                                                labelText: 'Cantidad',
+                                                labelStyle: TextStyle(
+                                                  color: kColorAzul,
+                                                  fontSize: 18.0,
+                                                ),
+                                                hintText: 'ingrese cantidad',
+                                              ),
+                                              //controller: idUsuarioController,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return "ingrese cantidad";
+                                                } else {
+                                                  setState(() {
+                                                    nLlavesSimples =
+                                                        int.parse(value);
+                                                  });
+                                                }
+                                                return null;
+                                              },
+                                              controller:
+                                                  cantPlumillasTraserasController,
+                                              enabled: true),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                        ],
+                                      ),
+                                    ))
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignAntena,
-                        child: AutoReportSwitch(
-                          title: "Antena",
-                          size: 3,
-                          value: antena,
-                          onChanged: (value) => setState(
-                            () {
-                              antena = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Antena",
+                              size: 3,
+                              value: antena,
+                              onChanged: (value) => setState(
+                                () {
+                                  antena = value;
+                                  visibleAntena = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleAntena,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantAntenaController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignTapasLlanta,
-                        child: AutoReportSwitch(
-                          title: "Tapas de Llanta",
-                          size: 3,
-                          value: tapaNeumatico,
-                          onChanged: (value) => setState(
-                            () {
-                              tapaNeumatico = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Tapas de Llanta",
+                              size: 3,
+                              value: tapaNeumatico,
+                              onChanged: (value) => setState(
+                                () {
+                                  tapaNeumatico = value;
+                                  visibleTapallanta = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleTapallanta,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantTapaLlantaController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignCopasAro,
-                        child: AutoReportSwitch(
-                          title: "Copas de Aro",
-                          size: 3,
-                          value: copasAro,
-                          onChanged: (value) => setState(
-                            () {
-                              copasAro = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Copas de Aro",
+                              size: 3,
+                              value: copasAro,
+                              onChanged: (value) => setState(
+                                () {
+                                  copasAro = value;
+                                  visibleCopasaro = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleCopasaro,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantCopasAroController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignRadio,
-                        child: AutoReportSwitch(
-                          title: "Radio",
-                          size: 3,
-                          value: radio,
-                          onChanged: (value) => setState(
-                            () {
-                              radio = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Radio",
+                              size: 3,
+                              value: radio,
+                              onChanged: (value) => setState(
+                                () {
+                                  radio = value;
+                                  visibleRadio = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleRadio,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantRadioController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignControlRemotoRadio,
-                        child: AutoReportSwitch(
-                          title: "Control Remoto de Radio",
-                          size: 3,
-                          value: controlRemotoradio,
-                          onChanged: (value) => setState(
-                            () {
-                              controlRemotoradio = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Control Remoto de Radio",
+                              size: 3,
+                              value: controlRemotoradio,
+                              onChanged: (value) => setState(
+                                () {
+                                  controlRemotoradio = value;
+                                  visibleControlremotoradio = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleControlremotoradio,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller:
+                                              cantControlRemotoRadioController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignTacografo,
-                        child: AutoReportSwitch(
-                          title: "Tacógrafo",
-                          size: 3,
-                          value: tacografo,
-                          onChanged: (value) => setState(
-                            () {
-                              tacografo = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Tacógrafo",
+                              size: 3,
+                              value: tacografo,
+                              onChanged: (value) => setState(
+                                () {
+                                  tacografo = value;
+                                  visibleTacografo = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleTacografo,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantTacografoController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignTacometro,
-                        child: AutoReportSwitch(
-                          title: "Tacómetro",
-                          size: 3,
-                          value: tacometro,
-                          onChanged: (value) => setState(
-                            () {
-                              tacometro = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Tacómetro",
+                              size: 3,
+                              value: tacometro,
+                              onChanged: (value) => setState(
+                                () {
+                                  tacometro = value;
+                                  visibleTacometro = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleTacometro,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantTacometroController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignEncendedor,
-                        child: AutoReportSwitch(
-                          title: "Encendedor",
-                          size: 3,
-                          value: encendedor,
-                          onChanged: (value) => setState(
-                            () {
-                              encendedor = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Encendedor",
+                              size: 3,
+                              value: encendedor,
+                              onChanged: (value) => setState(
+                                () {
+                                  encendedor = value;
+                                  visibleEncendedor = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleEncendedor,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantEncendedorController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignReloj,
-                        child: AutoReportSwitch(
-                          title: "Reloj",
-                          size: 3,
-                          value: reloj,
-                          onChanged: (value) => setState(
-                            () {
-                              reloj = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Reloj",
+                              size: 3,
+                              value: reloj,
+                              onChanged: (value) => setState(
+                                () {
+                                  reloj = value;
+                                  visibleReloj = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleReloj,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantRelojController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignPisosAdicionales,
-                        child: AutoReportSwitch(
-                          title: "Pisos Adicionales",
-                          size: 3,
-                          value: pisosAdicionales,
-                          onChanged: (value) => setState(
-                            () {
-                              pisosAdicionales = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Pisos Adicionales",
+                              size: 3,
+                              value: pisosAdicionales,
+                              onChanged: (value) => setState(
+                                () {
+                                  pisosAdicionales = value;
+                                  visiblePisosadicionales = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visiblePisosadicionales,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller:
+                                              cantPisosAdicionalesController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignLlantaRepuesto,
-                        child: AutoReportSwitch(
-                          title: "Llanta De respuesto",
-                          size: 3,
-                          value: llantaRepuesto,
-                          onChanged: (value) => setState(
-                            () {
-                              llantaRepuesto = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Llanta De respuesto",
+                              size: 3,
+                              value: llantaRepuesto,
+                              onChanged: (value) => setState(
+                                () {
+                                  llantaRepuesto = value;
+                                  visibleLlantarepuesto = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleLlantarepuesto,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller:
+                                              cantLlantaRepuestoController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignHerramientas,
-                        child: AutoReportSwitch(
-                          title: "Herramientas",
-                          size: 3,
-                          value: herramientas,
-                          onChanged: (value) => setState(
-                            () {
-                              herramientas = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Herramientas",
+                              size: 3,
+                              value: herramientas,
+                              onChanged: (value) => setState(
+                                () {
+                                  herramientas = value;
+                                  visibleHerramientas = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleHerramientas,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller:
+                                              cantHerramientasController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignRelays,
-                        child: AutoReportSwitch(
-                          title: "Relays",
-                          size: 3,
-                          value: relays,
-                          onChanged: (value) => setState(
-                            () {
-                              relays = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Relays",
+                              size: 3,
+                              value: relays,
+                              onChanged: (value) => setState(
+                                () {
+                                  relays = value;
+                                  visibleRelays = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleRelays,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantRelaysController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignPinRemolque,
-                        child: AutoReportSwitch(
-                          title: "Pin de Remolque",
-                          size: 3,
-                          value: pinRemolque,
-                          onChanged: (value) => setState(
-                            () {
-                              pinRemolque = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Pin de Remolque",
+                              size: 3,
+                              value: pinRemolque,
+                              onChanged: (value) => setState(
+                                () {
+                                  pinRemolque = value;
+                                  visiblePinremolque = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visiblePinremolque,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantPinRemolqueController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
@@ -1553,16 +2592,20 @@ class _Autoreport2State extends State<Autoreport2> {
                         children: [
                           IgnorePointer(
                             ignoring: ignCaja,
-                            child: AutoReportSwitch(
-                              title: "Caja",
-                              size: 3,
-                              value: caja,
-                              onChanged: (value) => setState(
-                                () {
-                                  caja = value;
-                                  visibleCajaEstado = value;
-                                },
-                              ),
+                            child: Column(
+                              children: [
+                                AutoReportSwitch(
+                                  title: "Caja",
+                                  size: 3,
+                                  value: caja,
+                                  onChanged: (value) => setState(
+                                    () {
+                                      caja = value;
+                                      visibleCajaEstado = value;
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Visibility(
@@ -1623,6 +2666,35 @@ class _Autoreport2State extends State<Autoreport2> {
                                         ),
                                       ],
                                     ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    TextFormField(
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
+                                          labelText: 'Cantidad',
+                                          labelStyle: TextStyle(
+                                            color: kColorAzul,
+                                            fontSize: 18.0,
+                                          ),
+                                          hintText: 'ingrese cantidad',
+                                        ),
+                                        //controller: idUsuarioController,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "ingrese cantidad";
+                                          } else {
+                                            setState(() {
+                                              nLlavesSimples = int.parse(value);
+                                            });
+                                          }
+                                          return null;
+                                        },
+                                        controller: cantCajaController,
+                                        enabled: true)
                                   ],
                                 ),
                               ))
@@ -1693,6 +2765,35 @@ class _Autoreport2State extends State<Autoreport2> {
                                         ),
                                       ],
                                     ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    TextFormField(
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
+                                          labelText: 'Cantidad',
+                                          labelStyle: TextStyle(
+                                            color: kColorAzul,
+                                            fontSize: 18.0,
+                                          ),
+                                          hintText: 'ingrese cantidad',
+                                        ),
+                                        //controller: idUsuarioController,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "ingrese cantidad";
+                                          } else {
+                                            setState(() {
+                                              nLlavesSimples = int.parse(value);
+                                            });
+                                          }
+                                          return null;
+                                        },
+                                        controller: cantMaletinController,
+                                        enabled: true)
                                   ],
                                 ),
                               ))
@@ -1765,6 +2866,35 @@ class _Autoreport2State extends State<Autoreport2> {
                                         ),
                                       ],
                                     ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    TextFormField(
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
+                                          labelText: 'Cantidad',
+                                          labelStyle: TextStyle(
+                                            color: kColorAzul,
+                                            fontSize: 18.0,
+                                          ),
+                                          hintText: 'ingrese cantidad',
+                                        ),
+                                        //controller: idUsuarioController,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "ingrese cantidad";
+                                          } else {
+                                            setState(() {
+                                              nLlavesSimples = int.parse(value);
+                                            });
+                                          }
+                                          return null;
+                                        },
+                                        controller: cantBolsaPlasticaController,
+                                        enabled: true)
                                   ],
                                 ),
                               ))
@@ -1773,127 +2903,577 @@ class _Autoreport2State extends State<Autoreport2> {
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignEstuche,
-                        child: AutoReportSwitch(
-                          title: "Estuche",
-                          size: 3,
-                          value: estuche,
-                          onChanged: (value) => setState(
-                            () {
-                              estuche = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            Column(
+                              children: [
+                                AutoReportSwitch(
+                                  title: "Estuche",
+                                  size: 3,
+                                  value: estuche,
+                                  onChanged: (value) => setState(
+                                    () {
+                                      estuche = value;
+                                      visibleEstuche = value;
+                                    },
+                                  ),
+                                ),
+                                Visibility(
+                                    visible: visibleEstuche,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 30),
+                                      child: Column(
+                                        children: [
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          TextFormField(
+                                              decoration: InputDecoration(
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.0),
+                                                ),
+                                                labelText: 'Cantidad',
+                                                labelStyle: TextStyle(
+                                                  color: kColorAzul,
+                                                  fontSize: 18.0,
+                                                ),
+                                                hintText: 'ingrese cantidad',
+                                              ),
+                                              //controller: idUsuarioController,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return "ingrese cantidad";
+                                                } else {
+                                                  setState(() {
+                                                    nLlavesSimples =
+                                                        int.parse(value);
+                                                  });
+                                                }
+                                                return null;
+                                              },
+                                              controller: cantEstucheController,
+                                              enabled: true),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                        ],
+                                      ),
+                                    ))
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignCenicero,
-                        child: AutoReportSwitch(
-                          title: "Ceniceros",
-                          size: 3,
-                          value: ceniceros,
-                          onChanged: (value) => setState(
-                            () {
-                              ceniceros = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Ceniceros",
+                              size: 3,
+                              value: ceniceros,
+                              onChanged: (value) => setState(
+                                () {
+                                  ceniceros = value;
+                                  visibleCeniceros = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleCeniceros,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantCenicerosController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignEspejosInteriores,
-                        child: AutoReportSwitch(
-                          title: "Espejos Interiores",
-                          size: 3,
-                          value: espejosInterior,
-                          onChanged: (value) => setState(
-                            () {
-                              espejosInterior = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Espejos Interiores",
+                              size: 3,
+                              value: espejosInterior,
+                              onChanged: (value) => setState(
+                                () {
+                                  espejosInterior = value;
+                                  visibleEspejosinteriores = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleEspejosinteriores,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller:
+                                              cantEspejosInterioresController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignEspejosLaterales,
-                        child: AutoReportSwitch(
-                          title: "Espejos Laterales",
-                          size: 3,
-                          value: espejosLaterales,
-                          onChanged: (value) => setState(
-                            () {
-                              espejosLaterales = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Espejos Laterales",
+                              size: 3,
+                              value: espejosLaterales,
+                              onChanged: (value) => setState(
+                                () {
+                                  espejosLaterales = value;
+                                  visibleEspejoslaterales = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleEspejoslaterales,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller:
+                                              cantEspejosLateralesController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignGata,
-                        child: AutoReportSwitch(
-                          title: "Gata",
-                          size: 3,
-                          value: gata,
-                          onChanged: (value) => setState(
-                            () {
-                              gata = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Gata",
+                              size: 3,
+                              value: gata,
+                              onChanged: (value) => setState(
+                                () {
+                                  gata = value;
+                                  visibleGata = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleGata,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantGataController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignExtintor,
-                        child: AutoReportSwitch(
-                          title: "Extintor",
-                          size: 3,
-                          value: extintor,
-                          onChanged: (value) => setState(
-                            () {
-                              extintor = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Extintor",
+                              size: 3,
+                              value: extintor,
+                              onChanged: (value) => setState(
+                                () {
+                                  extintor = value;
+                                  visibleExtintor = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleExtintor,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantExtintorController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignTrianguloSeguridad,
-                        child: AutoReportSwitch(
-                          title: "Triangulo Seguridad",
-                          size: 3,
-                          value: trianguloSeguridad,
-                          onChanged: (value) => setState(
-                            () {
-                              trianguloSeguridad = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Triangulo Seguridad",
+                              size: 3,
+                              value: trianguloSeguridad,
+                              onChanged: (value) => setState(
+                                () {
+                                  trianguloSeguridad = value;
+                                  visibleTrianguloseguridad = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleTrianguloseguridad,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller:
+                                              cantTrianguloSeguridadController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignCatalogos,
-                        child: AutoReportSwitch(
-                          title: "Catálogo",
-                          size: 3,
-                          value: catalogo,
-                          onChanged: (value) => setState(
-                            () {
-                              catalogo = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Catálogo",
+                              size: 3,
+                              value: catalogo,
+                              onChanged: (value) => setState(
+                                () {
+                                  catalogo = value;
+                                  visibleCatalogos = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleCatalogos,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller: cantCatalogoController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
                       IgnorePointer(
                         ignoring: ignPantallaTactil,
-                        child: AutoReportSwitch(
-                          title: "Pantalla Táctil",
-                          size: 3,
-                          value: pantallaTactil,
-                          onChanged: (value) => setState(
-                            () {
-                              pantallaTactil = value;
-                            },
-                          ),
+                        child: Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Pantalla Táctil",
+                              size: 3,
+                              value: pantallaTactil,
+                              onChanged: (value) => setState(
+                                () {
+                                  pantallaTactil = value;
+                                  visiblePantallatactil = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visiblePantallatactil,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      TextFormField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            labelText: 'Cantidad',
+                                            labelStyle: TextStyle(
+                                              color: kColorAzul,
+                                              fontSize: 18.0,
+                                            ),
+                                            hintText: 'ingrese cantidad',
+                                          ),
+                                          //controller: idUsuarioController,
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "ingrese cantidad";
+                                            } else {
+                                              setState(() {
+                                                nLlavesSimples =
+                                                    int.parse(value);
+                                              });
+                                            }
+                                            return null;
+                                          },
+                                          controller:
+                                              cantPantallaTactilController,
+                                          enabled: true),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
                         ),
                       ),
                       const CustomDivider(),
@@ -1925,6 +3505,36 @@ class _Autoreport2State extends State<Autoreport2> {
                                   Row(
                                     children: [
                                       Text(
+                                        "Llaves Visible",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16,
+                                            color: kColorAzul),
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Switch(
+                                        value: llavesVisibles,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            //this.value1 = value;
+                                            llavesVisibles = value;
+                                          });
+                                        },
+                                        activeTrackColor: kColorAzul,
+                                        activeColor: kColorNaranja,
+                                        inactiveThumbColor: Colors.grey,
+                                        inactiveTrackColor: Colors.black12,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
                                         "Llaves Precintadas",
                                         style: TextStyle(
                                             fontWeight: FontWeight.w500,
@@ -1948,6 +3558,9 @@ class _Autoreport2State extends State<Autoreport2> {
                                         inactiveTrackColor: Colors.black12,
                                       ),
                                     ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
                                   ),
                                   TextFormField(
                                       decoration: InputDecoration(
@@ -2060,224 +3673,1040 @@ class _Autoreport2State extends State<Autoreport2> {
                                       },
                                       controller: nLlavesPinController,
                                       enabled: true),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
                                 ],
                               ),
                             )),
-                        const SizedBox(
-                          height: 25,
-                        ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignLinterna,
-                          child: AutoReportSwitch(
-                            title: "Linterna",
-                            size: 3,
-                            value: linterna,
-                            onChanged: (value) => setState(
-                              () {
-                                linterna = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "Linterna",
+                                size: 3,
+                                value: linterna,
+                                onChanged: (value) => setState(
+                                  () {
+                                    linterna = value;
+                                    visibleLinterna = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleLinterna,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller: cantLinternaController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignCableCargadoBateria,
-                          child: AutoReportSwitch(
-                            title: "Cable Cargador de \n Batería",
-                            size: 3,
-                            value: cableCargadorBateria,
-                            onChanged: (value) => setState(
-                              () {
-                                cableCargadorBateria = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "Cable Cargador de \n Batería",
+                                size: 3,
+                                value: cableCargadorBateria,
+                                onChanged: (value) => setState(
+                                  () {
+                                    cableCargadorBateria = value;
+                                    visibleCablecargadorbateria = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleCablecargadorbateria,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller:
+                                                cantCableCargadorBateriaController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignCirculina,
-                          child: AutoReportSwitch(
-                            title: "Circulina",
-                            size: 3,
-                            value: circulina,
-                            onChanged: (value) => setState(
-                              () {
-                                circulina = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "Circulina",
+                                size: 3,
+                                value: circulina,
+                                onChanged: (value) => setState(
+                                  () {
+                                    circulina = value;
+                                    visibleCirculina = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleCirculina,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller: cantCirculinaController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignCableCargagorVehiculoElectrico,
-                          child: AutoReportSwitch(
-                            title: "Cable Cargagor Para \n Vehículo Electrico",
-                            size: 3,
-                            value: cableCargadorVehiculoElectrico,
-                            onChanged: (value) => setState(
-                              () {
-                                cableCargadorVehiculoElectrico = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title:
+                                    "Cable Cargagor Para \n Vehículo Electrico",
+                                size: 3,
+                                value: cableCargadorVehiculoElectrico,
+                                onChanged: (value) => setState(
+                                  () {
+                                    cableCargadorVehiculoElectrico = value;
+                                    visibleCablecargagorvehiculoelectrico =
+                                        value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible:
+                                      visibleCablecargagorvehiculoelectrico,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller:
+                                                cantCableCargadorVehiculoElectricoController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignCd,
-                          child: AutoReportSwitch(
-                            title: "CD",
-                            size: 3,
-                            value: cd,
-                            onChanged: (value) => setState(
-                              () {
-                                cd = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "CD",
+                                size: 3,
+                                value: cd,
+                                onChanged: (value) => setState(
+                                  () {
+                                    cd = value;
+                                    visibleCd = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleCd,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller: cantCdController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignUsb,
-                          child: AutoReportSwitch(
-                            title: "USB",
-                            size: 3,
-                            value: usb,
-                            onChanged: (value) => setState(
-                              () {
-                                usb = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "USB",
+                                size: 3,
+                                value: usb,
+                                onChanged: (value) => setState(
+                                  () {
+                                    usb = value;
+                                    visibleUsb = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleUsb,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller: cantUsbController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignMemoriaSd,
-                          child: AutoReportSwitch(
-                            title: "Memoria SD",
-                            size: 3,
-                            value: memoriaSd,
-                            onChanged: (value) => setState(
-                              () {
-                                memoriaSd = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "Memoria SD",
+                                size: 3,
+                                value: memoriaSd,
+                                onChanged: (value) => setState(
+                                  () {
+                                    memoriaSd = value;
+                                    visibleMemoriasd = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleMemoriasd,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller: cantMemoriaSdController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignCamaraSeguridad,
-                          child: AutoReportSwitch(
-                            title: "Cámara De Seguridad",
-                            size: 3,
-                            value: camaraSeguridad,
-                            onChanged: (value) => setState(
-                              () {
-                                camaraSeguridad = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "Cámara De Seguridad",
+                                size: 3,
+                                value: camaraSeguridad,
+                                onChanged: (value) => setState(
+                                  () {
+                                    camaraSeguridad = value;
+                                    visibleCamaraseguridad = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleCamaraseguridad,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller:
+                                                cantCamaraSeguridadController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignRadioComunicador,
-                          child: AutoReportSwitch(
-                            title: "Radio Comunicador",
-                            size: 3,
-                            value: radioComunicador,
-                            onChanged: (value) => setState(
-                              () {
-                                radioComunicador = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "Radio Comunicador",
+                                size: 3,
+                                value: radioComunicador,
+                                onChanged: (value) => setState(
+                                  () {
+                                    radioComunicador = value;
+                                    visibleRadiocomunicador = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleRadiocomunicador,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller:
+                                                cantRadioComunicadorController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignMangueraAire,
-                          child: AutoReportSwitch(
-                            title: "Manguera De Aire",
-                            size: 3,
-                            value: mangueraAire,
-                            onChanged: (value) => setState(
-                              () {
-                                mangueraAire = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "Manguera De Aire",
+                                size: 3,
+                                value: mangueraAire,
+                                onChanged: (value) => setState(
+                                  () {
+                                    mangueraAire = value;
+                                    visibleMangueraaire = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleMangueraaire,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller:
+                                                cantMangueraAireController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignCableCargador,
-                          child: AutoReportSwitch(
-                            title: "Cable Cargador",
-                            size: 3,
-                            value: cableCargador,
-                            onChanged: (value) => setState(
-                              () {
-                                cableCargador = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "Cable Cargador",
+                                size: 3,
+                                value: cableCargador,
+                                onChanged: (value) => setState(
+                                  () {
+                                    cableCargador = value;
+                                    visibleCablecargador = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleCablecargador,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller:
+                                                cantCableCargadorController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignLlaveRuedas,
-                          child: AutoReportSwitch(
-                            title: "Llave De Ruedas",
-                            size: 3,
-                            value: llaveRuedas,
-                            onChanged: (value) => setState(
-                              () {
-                                llaveRuedas = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "Llave De Ruedas",
+                                size: 3,
+                                value: llaveRuedas,
+                                onChanged: (value) => setState(
+                                  () {
+                                    llaveRuedas = value;
+                                    visibleLlaveruedas = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleLlaveruedas,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller:
+                                                cantLlaveRuedasController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignChaleco,
-                          child: AutoReportSwitch(
-                            title: "Chaleco",
-                            size: 3,
-                            value: chaleco,
-                            onChanged: (value) => setState(
-                              () {
-                                chaleco = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "Chaleco",
+                                size: 3,
+                                value: chaleco,
+                                onChanged: (value) => setState(
+                                  () {
+                                    chaleco = value;
+                                    visibleChaleco = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleChaleco,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller: cantChalecoController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignGalonera,
-                          child: AutoReportSwitch(
-                            title: "Galonera",
-                            size: 3,
-                            value: galonera,
-                            onChanged: (value) => setState(
-                              () {
-                                galonera = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "Galonera",
+                                size: 3,
+                                value: galonera,
+                                onChanged: (value) => setState(
+                                  () {
+                                    galonera = value;
+                                    visibleGalonera = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleGalonera,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller: cantGaloneraController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
                         ),
                         const CustomDivider(),
                         IgnorePointer(
                           ignoring: ignControlRemotoMaquinaria,
-                          child: AutoReportSwitch(
-                            title: "Control Remoto De \n Maquinaria",
-                            size: 3,
-                            value: controlRemotoMaquinaria,
-                            onChanged: (value) => setState(
-                              () {
-                                controlRemotoMaquinaria = value;
-                              },
-                            ),
+                          child: Column(
+                            children: [
+                              AutoReportSwitch(
+                                title: "Control Remoto De \n Maquinaria",
+                                size: 3,
+                                value: controlRemotoMaquinaria,
+                                onChanged: (value) => setState(
+                                  () {
+                                    controlRemotoMaquinaria = value;
+                                    visibleControlremotomaquinaria = value;
+                                  },
+                                ),
+                              ),
+                              Visibility(
+                                  visible: visibleControlremotomaquinaria,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30),
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              labelText: 'Cantidad',
+                                              labelStyle: TextStyle(
+                                                color: kColorAzul,
+                                                fontSize: 18.0,
+                                              ),
+                                              hintText: 'ingrese cantidad',
+                                            ),
+                                            //controller: idUsuarioController,
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return "ingrese cantidad";
+                                              } else {
+                                                setState(() {
+                                                  nLlavesSimples =
+                                                      int.parse(value);
+                                                });
+                                              }
+                                              return null;
+                                            },
+                                            controller:
+                                                cantControlRemotoMaquinariaController,
+                                            enabled: true),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                            ],
                           ),
+                        ),
+                        const CustomDivider(),
+                        AutoReportSwitch(
+                          title: "Unidad con presencia de \n Polvo y Suciedad",
+                          size: 3,
+                          value: presenciaPolvoSuciedadController,
+                          onChanged: (value) => setState(
+                            () {
+                              presenciaPolvoSuciedadController = value;
+                            },
+                          ),
+                        ),
+                        const CustomDivider(),
+                        Column(
+                          children: [
+                            AutoReportSwitch(
+                              title: "Unidad cuenta con \n Protector Plastico",
+                              size: 3,
+                              value: protectorPlasticoController,
+                              onChanged: (value) => setState(
+                                () {
+                                  protectorPlasticoController = value;
+                                  visibleProtectorPlastico = value;
+                                },
+                              ),
+                            ),
+                            Visibility(
+                                visible: visibleProtectorPlastico,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      MultiSelectDialogField(
+                                        items: _itemsProtectorPlastico,
+                                        title: const Text("Seleccione items:"),
+                                        selectedColor: Colors.blue,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                          border: Border.all(
+                                            color: Colors.grey,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        buttonIcon: const Icon(
+                                          Icons.arrow_drop_down_circle_outlined,
+                                          color: Colors.blue,
+                                        ),
+                                        buttonText: Text(
+                                          "Items Protector:",
+                                          style: TextStyle(
+                                            color: Colors.blue[800],
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        onConfirm: (results) {
+                                          selectedItems = results;
+                                          //print(selectedZona.length);
+                                          cityNames = selectedItems
+                                              .map((city) => city.items)
+                                              .toList();
+                                          stringList = cityNames.join(", ");
+
+                                          //debugPrint(stringList);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                            //visibleProtectorPlastico
+                          ],
                         ),
                         const CustomDivider(),
                         Column(
@@ -2392,5 +4821,124 @@ class _Autoreport2State extends State<Autoreport2> {
         ),
       ),
     );
+  }
+
+  dialogoConfirmarDanoAcopio(BuildContext context) {
+    showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+              insetPadding: const EdgeInsets.all(70),
+              actions: [
+                const Center(
+                  child: SizedBox(
+                    width: 230,
+                    child: Text(
+                      'Validar Daño Acopio Supervisor',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      prefixIcon: IconButton(
+                          icon: Icon(Icons.qr_code, color: kColorAzul),
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const BarcodeScannerWithScanWindow()));
+                            idSupervisorController.text = result;
+                          }),
+                      suffixIcon: IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: () {
+                            getSupervisorByCodUser();
+                          }),
+                      labelText: 'Id.Job',
+                      labelStyle: TextStyle(
+                        color: kColorAzul,
+                        fontSize: 20.0,
+                      ),
+                      hintText: 'Ingrese el numero de ID Job'),
+                  onChanged: (value) {
+                    getSupervisorByCodUser();
+                  },
+                  controller: idSupervisorController,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.badge,
+                      color: kColorAzul,
+                    ),
+                    labelText: 'Nombre usuario',
+                    labelStyle: TextStyle(
+                      color: kColorAzul,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  enabled: false,
+                  controller: nombresSupervisorController,
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        if (idApmtc != null && puesto == 'SUPERVISOR') {
+                          setState(() {
+                            danosAcopio = true;
+                            visibleDanosAcopio = true;
+                          });
+                          Navigator.pop(context);
+                          idSupervisorController.clear();
+                          nombresSupervisorController.clear();
+                        } else {
+                          print("Nop");
+                          Flushbar(
+                            backgroundColor: Colors.red,
+                            message: 'NO CUENTA CON AUTORIZACION',
+                            duration: Duration(seconds: 3),
+                          ).show(context);
+                        }
+                      },
+                      child: const Text(
+                        "Aceptar",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          danosAcopio = false;
+                          visibleDanosAcopio = false;
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "Cancelar",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ));
   }
 }

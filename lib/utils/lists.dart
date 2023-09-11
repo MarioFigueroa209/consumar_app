@@ -71,6 +71,13 @@ final damageInformation = [
   'ARRIVAL CONDITION',
   'STEVEDORE RESPONSABILITY',
   'THIRD PARTIES IN THE OPERATION',
+  'RECEPTION CONDITION'
+];
+
+final damageInformation2 = [
+  'ARRIVAL CONDITION',
+  'THIRD PARTIES IN THE OPERATION',
+  'RECEPTION CONDITION'
 ];
 
 final numeroTrabajador = [
@@ -100,6 +107,9 @@ final damageOccurred = [
   'BEFORE DISCHARGE',
   'DURING DISCHARGE',
   'AFTER DISCHARGE',
+  'BEFORE LOADING',
+  'DURING LOADING',
+  'AFTER LOADING',
 ];
 
 final partiesOperation = [

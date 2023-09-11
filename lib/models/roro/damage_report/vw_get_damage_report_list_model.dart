@@ -17,6 +17,7 @@ class VwGetDamageReportListModel {
   VwGetDamageReportListModel({
     this.idVista,
     this.jornada,
+    this.idVehiculo,
     this.idDamageReport,
     this.codDr,
     this.chasis,
@@ -31,6 +32,7 @@ class VwGetDamageReportListModel {
 
   int? idVista;
   int? jornada;
+  int? idVehiculo;
   int? idDamageReport;
   String? codDr;
   String? chasis;
@@ -46,6 +48,7 @@ class VwGetDamageReportListModel {
       VwGetDamageReportListModel(
         idVista: json["idVista"],
         jornada: json["jornada"],
+        idVehiculo: json["idVehiculo"],
         idDamageReport: json["idDamageReport"],
         codDr: json["codDr"],
         chasis: json["chasis"],
@@ -61,6 +64,7 @@ class VwGetDamageReportListModel {
   Map<String, dynamic> toJson() => {
         "idVista": idVista,
         "jornada": jornada,
+        "idVehiculo": idVehiculo,
         "idDamageReport": idDamageReport,
         "codDr": codDr,
         "chasis": chasis,

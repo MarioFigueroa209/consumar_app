@@ -1201,26 +1201,34 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(
-                            'NAVE: ${_nombreNaveController.text}',
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
-                          Text(
-                            'VIAJE: ${_viajeController.text}',
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'NAVE: ${_nombreNaveController.text}',
+                              //overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(
+                              width: 7,
+                            ),
+                            Text(
+                              'VIAJE: ${_viajeController.text}',
+                              //overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(
                         height: 20,

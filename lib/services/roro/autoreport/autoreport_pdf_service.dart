@@ -65,54 +65,56 @@ class AutoreportPdfService {
   String participantesInspeccionText = "NO";
   String presenciaSeguroText = "NO";
 
-  String plumillasDelanterasText = "no visible";
-  String plumillasTraserasText = "no visible";
-  String antenaText = "no visible";
-  String tapaNeumaticoText = "no visible";
-  String copasAroText = "no visible";
-  String radioText = "no visible";
-  String controlRemotoradioText = "no visible";
-  String tacometroText = "no visible";
-  String tacografoText = "no visible";
-  String encendedorText = "no visible";
-  String relojText = "no visible";
-  String pisosAdicionalesText = "no visible";
-  String llantaRepuestoText = "no visible";
-  String herramientasText = "no visible";
-  String relaysText = "no visible";
-  String estucheText = "no visible";
-  String pinRemolqueText = "no visible";
-  String cajaText = "no visible";
-  String cajaEstadoText = "no visible";
-  String maletinText = "no visible";
-  String maletinEstadoText = "no visible";
-  String bolsaPlasticaText = "no visible";
-  String bolsaPlasticaEstadoText = "no visible";
-  String cenicerosText = "no visible";
-  String espejosInteriorText = "no visible";
-  String espejosLateralesText = "no visible";
-  String gataText = "no visible";
-  String extintorText = "no visible";
-  String pantallaTactilText = "no visible";
-  String linternaText = "no visible";
-  String cableCargadorBateriaText = "no visible";
-  String circulinaText = "no visible";
-  String cableCargadorVehiculoElectricoText = "no visible";
-  String cdText = "no visible";
-  String trianguloSeguridadText = "no visible";
-  String catalogoText = "no visible";
-  String llavesText = "no visible";
-  String usbText = "no visible";
-  String memoriaSdText = "no visible";
-  String camaraSeguridadText = "no visible";
-  String radioComunicadorText = "no visible";
-  String mangueraAireText = "no visible";
-  String cableCargadorText = "no visible";
-  String llaveRuedasText = "no visible";
-  String chalecoText = "no visible";
-  String galoneraText = "no visible";
-  String controlRemotoMaquinariaText = "no visible";
+  String plumillasDelanterasText = "no";
+  String plumillasTraserasText = "no";
+  String antenaText = "no";
+  String tapaNeumaticoText = "no";
+  String copasAroText = "no";
+  String radioText = "no";
+  String controlRemotoradioText = "no";
+  String tacometroText = "no";
+  String tacografoText = "no";
+  String encendedorText = "no";
+  String relojText = "no";
+  String pisosAdicionalesText = "no";
+  String llantaRepuestoText = "no";
+  String herramientasText = "no";
+  String relaysText = "no";
+  String estucheText = "no";
+  String pinRemolqueText = "no";
+  String cajaText = "no";
+  String cajaEstadoText = "no";
+  String maletinText = "no";
+  String maletinEstadoText = "no";
+  String bolsaPlasticaText = "no";
+  String bolsaPlasticaEstadoText = "no";
+  String cenicerosText = "no";
+  String espejosInteriorText = "no";
+  String espejosLateralesText = "no";
+  String gataText = "no";
+  String extintorText = "no";
+  String pantallaTactilText = "no";
+  String linternaText = "no";
+  String cableCargadorBateriaText = "no";
+  String circulinaText = "no";
+  String cableCargadorVehiculoElectricoText = "no";
+  String cdText = "no";
+  String trianguloSeguridadText = "no";
+  String catalogoText = "no";
+  String llavesText = "no";
+  String usbText = "no";
+  String memoriaSdText = "no";
+  String camaraSeguridadText = "no";
+  String radioComunicadorText = "no";
+  String mangueraAireText = "no";
+  String cableCargadorText = "no";
+  String llaveRuedasText = "no";
+  String chalecoText = "no";
+  String galoneraText = "no";
+  String controlRemotoMaquinariaText = "no";
   String llavesPrecintasText = "no";
+
+  String presenciaPolvoSuciedadText = "no";
 
   String zona = "";
   DateTime? fecha;
@@ -132,6 +134,57 @@ class AutoreportPdfService {
 
   String otros = "";
 
+  int cantPlumillasDelanteras = 0;
+  int cantPlumillasTraseras = 0;
+  int cantAntena = 0;
+  int cantEspejosInteriores = 0;
+  int cantEspejosLaterales = 0;
+  int cantTapaLlanta = 0;
+  int cantRadio = 0;
+  int cantControlRemotoRadio = 0;
+  int cantTacografo = 0;
+  int cantTacometro = 0;
+  int cantEncendedor = 0;
+  int cantReloj = 0;
+  int cantPisosAdicionales = 0;
+  int cantCopasAro = 0;
+  int cantLlantaRepuesto = 0;
+  int cantHerramientas = 0;
+  int cantPinRemolque = 0;
+  int cantCaja = 0;
+  int cantCajaEstado = 0;
+  int cantMaletin = 0;
+  int cantMaletinEstado = 0;
+  int cantBolsaPlastica = 0;
+  int cantBolsaPlasticaEstado = 0;
+  int cantEstuche = 0;
+  int cantRelays = 0;
+  int cantCeniceros = 0;
+  int cantGata = 0;
+  int cantExtintor = 0;
+  int cantTrianguloSeguridad = 0;
+  int cantPantallaTactil = 0;
+  int cantCatalogo = 0;
+  int cantLinterna = 0;
+  int cantCableCargadorBateria = 0;
+  int cantCirculina = 0;
+  int cantCableCargadorVehiculoElectrico = 0;
+  int cantCd = 0;
+  int cantUsb = 0;
+  int cantMemoriaSd = 0;
+  int cantCamaraSeguridad = 0;
+  int cantRadioComunicador = 0;
+  int cantMangueraAire = 0;
+  int cantCableCargador = 0;
+  int cantLlaveRuedas = 0;
+  int cantChaleco = 0;
+  int cantGalonera = 0;
+  int cantControlRemotoMaquinaria = 0;
+  bool presenciaPolvoSuciedad = false;
+  bool protectorPlastico = false;
+  String detalleProtectorPlastico = "";
+  bool llavesVisibles = false;
+
   int nllavesSimples = 0;
   int nllavesInteligentes = 0;
   int nllavesComando = 0;
@@ -140,7 +193,7 @@ class AutoreportPdfService {
   AutoreportService autoreportService = AutoreportService();
   VwAutoreportData vwAutoreportDataEdit = VwAutoreportData();
 
-  getAutoreportDataById(BigInt idAutoreport) async {
+  getAutoreportDataById(int idAutoreport) async {
     vwAutoreportDataEdit =
         await autoreportService.getAutoreportDataById(idAutoreport);
 
@@ -213,6 +266,59 @@ class AutoreportPdfService {
     comentario = vwAutoreportDataEdit.comentario!;
     codAutoreport = vwAutoreportDataEdit.codAutoreport!;
 
+    cantPlumillasDelanteras = vwAutoreportDataEdit.cantPlumillasDelanteras!;
+    cantPlumillasTraseras = vwAutoreportDataEdit.cantPlumillasTraseras!;
+    cantAntena = vwAutoreportDataEdit.cantAntena!;
+    cantEspejosInteriores = vwAutoreportDataEdit.cantEspejosInteriores!;
+    cantEspejosLaterales = vwAutoreportDataEdit.cantEspejosLaterales!;
+    cantTapaLlanta = vwAutoreportDataEdit.cantTapaLlanta!;
+    cantRadio = vwAutoreportDataEdit.cantRadio!;
+    cantControlRemotoRadio = vwAutoreportDataEdit.cantControlRemotoRadio!;
+    cantTacografo = vwAutoreportDataEdit.cantTacografo!;
+    cantTacometro = vwAutoreportDataEdit.cantTacometro!;
+    cantEncendedor = vwAutoreportDataEdit.cantEncendedor!;
+    cantReloj = vwAutoreportDataEdit.cantReloj!;
+    cantPisosAdicionales = vwAutoreportDataEdit.cantPisosAdicionales!;
+    cantCopasAro = vwAutoreportDataEdit.cantCopasAro!;
+    cantLlantaRepuesto = vwAutoreportDataEdit.cantLlantaRepuesto!;
+    cantHerramientas = vwAutoreportDataEdit.cantHerramientas!;
+    cantPinRemolque = vwAutoreportDataEdit.cantPinRemolque!;
+    cantCaja = vwAutoreportDataEdit.cantCaja!;
+    // cantCajaEstado = vwAutoreportDataEdit.cantCajaEstado!;
+    cantMaletin = vwAutoreportDataEdit.cantMaletin!;
+    // cantMaletinEstado = vwAutoreportDataEdit.cantMaletinEstado!;
+    cantBolsaPlastica = vwAutoreportDataEdit.cantBolsaPlastica!;
+    // cantBolsaPlasticaEstado = vwAutoreportDataEdit.cantBolsaPlasticaEstado!;
+    cantEstuche = vwAutoreportDataEdit.cantEstuche!;
+    cantRelays = vwAutoreportDataEdit.cantRelays!;
+    cantCeniceros = vwAutoreportDataEdit.cantCeniceros!;
+    cantGata = vwAutoreportDataEdit.cantGata!;
+    cantExtintor = vwAutoreportDataEdit.cantExtintor!;
+    cantTrianguloSeguridad = vwAutoreportDataEdit.cantTrianguloSeguridad!;
+    cantPantallaTactil = vwAutoreportDataEdit.cantPantallaTactil!;
+    cantCatalogo = vwAutoreportDataEdit.cantCatalogo!;
+    cantLinterna = vwAutoreportDataEdit.cantLinterna!;
+    cantCableCargadorBateria = vwAutoreportDataEdit.cantCableCargadorBateria!;
+    cantCirculina = vwAutoreportDataEdit.cantCirculina!;
+    cantCableCargadorVehiculoElectrico =
+        vwAutoreportDataEdit.cantCableCargadorVehiculoElectrico!;
+    cantCd = vwAutoreportDataEdit.cantCd!;
+    cantUsb = vwAutoreportDataEdit.cantUsb!;
+    cantMemoriaSd = vwAutoreportDataEdit.cantMemoriaSd!;
+    cantCamaraSeguridad = vwAutoreportDataEdit.cantCamaraSeguridad!;
+    cantRadioComunicador = vwAutoreportDataEdit.cantRadioComunicador!;
+    cantMangueraAire = vwAutoreportDataEdit.cantMangueraAire!;
+    cantCableCargador = vwAutoreportDataEdit.cantCableCargador!;
+    cantLlaveRuedas = vwAutoreportDataEdit.cantLlaveRuedas!;
+    cantChaleco = vwAutoreportDataEdit.cantChaleco!;
+    cantGalonera = vwAutoreportDataEdit.cantGalonera!;
+    cantControlRemotoMaquinaria =
+        vwAutoreportDataEdit.cantControlRemotoMaquinaria!;
+    presenciaPolvoSuciedad = vwAutoreportDataEdit.presenciaPolvoSuciedad!;
+    protectorPlastico = vwAutoreportDataEdit.protectorPlastico!;
+    detalleProtectorPlastico = vwAutoreportDataEdit.detalleProtectorPlastico!;
+    llavesVisibles = vwAutoreportDataEdit.llavesVisibles!;
+
     if (nDamageReport != "") {
       damageReportText = "SI";
     }
@@ -226,153 +332,153 @@ class AutoreportPdfService {
       presenciaSeguroText = "SI";
     }
     if (plumillasDelanteras == true) {
-      plumillasDelanterasText = "visible";
+      plumillasDelanterasText = "si";
     }
     if (plumillasTraseras == true) {
-      plumillasTraserasText = "visible";
+      plumillasTraserasText = "si";
     }
     if (antena == true) {
-      antenaText = "visible";
+      antenaText = "si";
     }
     if (espejosInterior == true) {
-      espejosInteriorText = "visible";
+      espejosInteriorText = "si";
     }
     if (espejosLaterales == true) {
-      espejosLateralesText = "visible";
+      espejosLateralesText = "si";
     }
     if (tapaNeumatico == true) {
-      tapaNeumaticoText = "visible";
+      tapaNeumaticoText = "si";
     }
     if (espejosInterior == true) {
-      espejosInteriorText = "visible";
+      espejosInteriorText = "si";
     }
     if (espejosLaterales == true) {
-      espejosLateralesText = "visible";
+      espejosLateralesText = "si";
     }
     if (copasAro == true) {
-      copasAroText = "visible";
+      copasAroText = "si";
     }
     if (radio == true) {
-      radioText = "visible";
+      radioText = "si";
     }
     if (controlRemotoradio == true) {
-      controlRemotoradioText = "visible";
+      controlRemotoradioText = "si";
     }
     if (tacografo == true) {
-      tacografoText = "visible";
+      tacografoText = "si";
     }
     if (tacometro == true) {
-      tacometroText = "visible";
+      tacometroText = "si";
     }
     if (encendedor == true) {
-      encendedorText = "visible";
+      encendedorText = "si";
     }
     if (extintor == true) {
-      extintorText = "visible";
+      extintorText = "si";
     }
     if (reloj == true) {
-      relojText = "visible";
+      relojText = "si";
     }
     if (pantallaTactil == true) {
-      pantallaTactilText = "visible";
+      pantallaTactilText = "si";
     }
     if (pisosAdicionales == true) {
-      pisosAdicionalesText = "visible";
+      pisosAdicionalesText = "si";
     }
     if (llantaRepuesto == true) {
-      llantaRepuestoText = "visible";
+      llantaRepuestoText = "si";
     }
     if (herramientas == true) {
-      herramientasText = "visible";
+      herramientasText = "si";
     }
     if (relays == true) {
-      relaysText = "visible";
+      relaysText = "si";
     }
     if (linterna == true) {
-      linternaText = "visible";
+      linternaText = "si";
     }
     if (cableCargadorBateria == true) {
-      cableCargadorBateriaText = "visible";
+      cableCargadorBateriaText = "si";
     }
     if (circulina == true) {
-      circulinaText = "visible";
+      circulinaText = "si";
     }
     if (cableCargadorVehiculoElectrico == true) {
-      cableCargadorVehiculoElectricoText = "visible";
+      cableCargadorVehiculoElectricoText = "si";
     }
     if (cd == true) {
-      cdText = "visible";
+      cdText = "si";
     }
     if (usb == true) {
-      usbText = "visible";
+      usbText = "si";
     }
     if (memoriaSd == true) {
-      memoriaSdText = "visible";
+      memoriaSdText = "si";
     }
     if (camaraSeguridad == true) {
-      camaraSeguridadText = "visible";
+      camaraSeguridadText = "si";
     }
     if (radioComunicador == true) {
-      radioComunicadorText = "visible";
+      radioComunicadorText = "si";
     }
     if (mangueraAire == true) {
-      mangueraAireText = "visible";
+      mangueraAireText = "si";
     }
     if (cableCargador == true) {
-      cableCargadorText = "visible";
+      cableCargadorText = "si";
     }
     if (llaveRuedas == true) {
-      llaveRuedasText = "visible";
+      llaveRuedasText = "si";
     }
     if (chaleco == true) {
-      chalecoText = "visible";
+      chalecoText = "si";
     }
     if (galonera == true) {
-      galoneraText = "visible";
+      galoneraText = "si";
     }
     if (controlRemotoMaquinaria == true) {
-      controlRemotoMaquinariaText = "visible";
+      controlRemotoMaquinariaText = "si";
     }
 
     if (pinRemolque == true) {
-      pinRemolqueText = "visible";
+      pinRemolqueText = "si";
     }
     if (caja == true) {
-      cajaText = "visible";
+      cajaText = "si";
     }
     if (cajaEstado == true) {
-      cajaEstadoText = "visible";
+      cajaEstadoText = "si";
     }
     if (maletin == true) {
-      maletinText = "visible";
+      maletinText = "si";
     }
     if (maletinEstado == true) {
-      maletinEstadoText = "visible";
+      maletinEstadoText = "si";
     }
     if (bolsaPlastica == true) {
-      bolsaPlasticaText = "visible";
+      bolsaPlasticaText = "si";
     }
     if (bolsaPlasticaEstado == true) {
-      bolsaPlasticaEstadoText = "visible";
+      bolsaPlasticaEstadoText = "si";
     }
     if (estuche == true) {
-      estucheText = "visible";
+      estucheText = "si";
     }
 
     if (ceniceros == true) {
-      cenicerosText = "visible";
+      cenicerosText = "si";
     }
     if (gata == true) {
-      gataText = "visible";
+      gataText = "si";
     }
     if (trianguloSeguridad == true) {
-      trianguloSeguridadText = "visible";
+      trianguloSeguridadText = "si";
     }
     if (catalogo == true) {
-      catalogoText = "visible";
+      catalogoText = "si";
     }
     if (llaves == true) {
-      llavesText = "visible";
+      llavesText = "si";
     }
     if (llavesPrecintas == true) {
       llavesPrecintasText = "si";
@@ -389,11 +495,15 @@ class AutoreportPdfService {
     if (nllavesPin != 0) {
       llavesPinText = "si";
     }
+
+    if (presenciaPolvoSuciedad == true) {
+      presenciaPolvoSuciedadText = "si";
+    }
   }
 
   List<VwParticipantesByAutoreportModel> spParticipantesInspeccionModel = [];
 
-  getParticipantesByIdAutoreport(BigInt idAutoreport) async {
+  getParticipantesByIdAutoreport(int idAutoreport) async {
     spParticipantesInspeccionModel =
         await autoreportService.getParticipantesByAutoreport(idAutoreport);
   }
@@ -403,14 +513,14 @@ class AutoreportPdfService {
   var pdf = pw.Document;
   late Future<Uint8List> archivoPdf;
 
-  Future<void> initPDF(BigInt idAutoreport) async {
+  Future<void> initPDF(int idAutoreport) async {
     getAutoreportDataById(idAutoreport);
     getParticipantesByIdAutoreport(idAutoreport);
     // //print("inicalizando pdf$idAutoreport");
     archivoPdf = createPdf(idAutoreport);
   }
 
-  Future<Uint8List> createPdf(BigInt idAutoreport) async {
+  Future<Uint8List> createPdf(int idAutoreport) async {
     await getAutoreportDataById(idAutoreport);
     await getParticipantesByIdAutoreport(idAutoreport);
 
@@ -760,6 +870,18 @@ class AutoreportPdfService {
                               child: pw.Text("Control Remoto Maquinaria",
                                   style: kTextoCuerpoPdfAutoreport(ttf))),
                           pw.SizedBox(height: 2),
+                          pw.Container(
+                              width: 70,
+                              child: pw.Text(
+                                  "Unidad con presencia Polvo y Suciedad",
+                                  style: kTextoCuerpoPdfAutoreport(ttf))),
+                          pw.SizedBox(height: 2),
+                          pw.Container(
+                              width: 70,
+                              child: pw.Text(
+                                  "Unidad cuenta con protector Plastico",
+                                  style: kTextoCuerpoPdfAutoreport(ttf))),
+                          pw.SizedBox(height: 6),
                           pw.Text("Otros",
                               style: kTextoCuerpoPdfAutoreport(ttf)),
                         ]),
@@ -920,6 +1042,14 @@ class AutoreportPdfService {
                           pw.Text(controlRemotoMaquinariaText,
                               style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 12),
+                          pw.Text(presenciaPolvoSuciedadText,
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 18),
+                          pw.Container(
+                              width: 32,
+                              child: pw.Text(detalleProtectorPlastico,
+                                  style: kTextoCuerpoPdfAutoreport(ttf))),
+                          pw.SizedBox(height: 2),
                           pw.Container(
                               width: 30,
                               child: pw.Text(otros,
@@ -932,65 +1062,92 @@ class AutoreportPdfService {
                           pw.Text("Cantidad",
                               style: kTextoTituloPdfAutoreport(ttf)),
                           pw.SizedBox(height: 5),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantAntena.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantCatalogo.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantCeniceros.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantEncendedor.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantPlumillasDelanteras.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantPlumillasTraseras.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantRadio.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantControlRemotoRadio.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantEspejosInteriores.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantEspejosLaterales.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantTacografo.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantTacometro.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantTapaLlanta.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantCopasAro.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantReloj.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantPisosAdicionales.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantPantallaTactil.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantLlantaRepuesto.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)), //----
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantHerramientas.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantRelays.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantPinRemolque.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 2),
+                          pw.Text(cantCaja.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
                           pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantMaletin.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
                           pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantBolsaPlastica.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
                           pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantEstuche.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantGata.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantExtintor.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
                           pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
@@ -1006,35 +1163,50 @@ class AutoreportPdfService {
                           pw.Text(nllavesPin.toString(),
                               style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantLinterna.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantCableCargadorBateria.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 9),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantCirculina.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 8),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
-                          pw.SizedBox(height: 15),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantCableCargadorVehiculoElectrico.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.SizedBox(height: 17),
+                          pw.Text(cantCd.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantUsb.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantMemoriaSd.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantCamaraSeguridad.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantRadioComunicador.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantMangueraAire.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantCableCargador.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantLlaveRuedas.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantChaleco.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantGalonera.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                           pw.SizedBox(height: 2),
-                          pw.Text("-", style: kTextoCuerpoPdfAutoreport(ttf)),
+                          pw.Text(cantControlRemotoMaquinaria.toString(),
+                              style: kTextoCuerpoPdfAutoreport(ttf)),
                         ]),
                   ]),
               pw.SizedBox(height: 5),

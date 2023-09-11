@@ -18,7 +18,7 @@ class DBdamageReport {
     return openDatabase(join(await getDatabasesPath(), 'damageItem.db'),
         onCreate: (db, version) {
       return db.execute(
-          "CREATE TABLE damageItem (idDamageTypeRegister INTEGER PRIMARY KEY, codigoDao TEXT, daoRegistrado TEXT,descripcionFaltantes TEXT, parteVehiculo TEXT, zonaVehiculo TEXT, fotoDao TEXT, idDamageReport INTEGER)");
+          "CREATE TABLE damageItem (idDamageTypeRegister INTEGER PRIMARY KEY, codigoDao TEXT, daoRegistrado TEXT, cantidadDsMissing INTEGER ,descripcionFaltantes TEXT, parteVehiculo TEXT, zonaVehiculo TEXT, fotoDao TEXT, idDamageReport INTEGER)");
     }, version: 1);
   }
 
@@ -34,6 +34,7 @@ class DBdamageReport {
       batch.insert("damageItem", {
         "codigoDao": damageItem[count].codigoDao,
         "daoRegistrado": damageItem[count].daoRegistrado,
+        "cantidadDsMissing": damageItem[count].cantidadDsMissing,
         "descripcionFaltantes": damageItem[count].descripcionFaltantes,
         "parteVehiculo": damageItem[count].parteVehiculo,
         "zonaVehiculo": damageItem[count].zonaVehiculo,
@@ -165,6 +166,7 @@ class DBdamageReport {
     List<Map> maps = await database.query("damageItem", columns: [
       "codigoDao",
       "daoRegistrado",
+      "cantidadDsMissing",
       "descripcionFaltantes",
       "parteVehiculo",
       "zonaVehiculo",
@@ -176,6 +178,7 @@ class DBdamageReport {
         (i) => DamageItem(
               codigoDao: maps[i]['codigoDao'],
               daoRegistrado: maps[i]['daoRegistrado'],
+              cantidadDsMissing: maps[i]['cantidadDsMissing'],
               descripcionFaltantes: maps[i]['descripcionFaltantes'],
               parteVehiculo: maps[i]['parteVehiculo'],
               zonaVehiculo: maps[i]['zonaVehiculo'],
@@ -191,6 +194,7 @@ class DBdamageReport {
         columns: [
           "codigoDao",
           "daoRegistrado",
+          "cantidadDsMissing",
           "descripcionFaltantes",
           "parteVehiculo",
           "zonaVehiculo",
@@ -204,6 +208,7 @@ class DBdamageReport {
         (i) => DamageItem(
               codigoDao: maps[i]['codigoDao'],
               daoRegistrado: maps[i]['daoRegistrado'],
+              cantidadDsMissing: maps[i]['cantidadDsMissing'],
               descripcionFaltantes: maps[i]['descripcionFaltantes'],
               parteVehiculo: maps[i]['parteVehiculo'],
               zonaVehiculo: maps[i]['zonaVehiculo'],
@@ -266,14 +271,6 @@ class DBdamageReport {
 
     return damageReportConsultaMap;
   }
-
-/*
-    static Future<Future<int>> update(DamageItem damageItem) async {
-    Database database = await _openDB();
-
-    return database.update("damageItem", damageItem(), where: "id = ?", whereArgs: [damageItem.id]);
-  }
-*/
 }
 
 class DbDamageReportSqlLite {
@@ -282,7 +279,7 @@ class DbDamageReportSqlLite {
         onCreate: (db, version) {
       db.execute("DROP TABLE IF EXISTS damageConsulta");
       return db.execute(
-          "CREATE TABLE damageConsulta (idOrdenServicio INTEGER,idVehicle INTEGER, chasis TEXT, marca TEXT,modelo TEXT, consignatario TEXT, bl TEXT)");
+          "CREATE TABLE damageConsulta (idOrdenServicio INTEGER,idVehicle INTEGER, chasis TEXT, marca TEXT,modelo TEXT,lineaNaviera TEXT, consignatario TEXT, bl TEXT)");
     }, version: 1);
   }
 
@@ -296,6 +293,7 @@ class DbDamageReportSqlLite {
         "idOrdenServicio": damageConsulta[count].idServiceOrder,
         "idVehicle": damageConsulta[count].idVehiculo,
         "chasis": damageConsulta[count].chasis,
+        "lineaNaviera": damageConsulta[count].lineaNaviera,
         "marca": damageConsulta[count].marca,
         "modelo": damageConsulta[count].modelo,
         "consignatario": damageConsulta[count].consigntario,
@@ -318,6 +316,7 @@ class DbDamageReportSqlLite {
               chasis: damageReportConsultaMap[i]['chasis'],
               marca: damageReportConsultaMap[i]['marca'],
               modelo: damageReportConsultaMap[i]['modelo'],
+              lineaNaviera: damageReportConsultaMap[i]['lineaNaviera'],
               consigntario: damageReportConsultaMap[i]['consignatario'],
               billOfLeading: damageReportConsultaMap[i]['bl'],
             ));
@@ -335,7 +334,27 @@ class DbDamageReportSqlLite {
               chasis: result[i]['chasis'],
               marca: result[i]['marca'],
               modelo: result[i]['modelo'],
+              lineaNaviera: result[i]['lineaNaviera'],
               consigntario: result[i]['consignatario'],
+              billOfLeading: result[i]['bl'],
+            ));
+  }
+
+  Future<List<DamageReportInsertSqlLite>> getVehicleByChasisAndIdServiceOrder(
+      int idServiceOrder, String chasis) async {
+    Database database = await openDB();
+    List<Map> result = await database.rawQuery(
+      "select * from damageConsulta where idOrdenServicio=$idServiceOrder and chasis='$chasis'", /*[idServiceOrder, idVehicle]*/
+    );
+    return List.generate(
+        result.length,
+        (i) => DamageReportInsertSqlLite(
+              chasis: result[i]['chasis'],
+              marca: result[i]['marca'],
+              modelo: result[i]['modelo'],
+              lineaNaviera: result[i]['lineaNaviera'],
+              consigntario: result[i]['consignatario'],
+              idVehiculo: result[i]['idVehicle'],
               billOfLeading: result[i]['bl'],
             ));
   }
