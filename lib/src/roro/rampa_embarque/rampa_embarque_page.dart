@@ -911,15 +911,23 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
         int.parse(idVehicle.toString()),
         int.parse(widget.idServiceOrderRampa.toString())));
 
-    if (vwGetDamageReportListModel[0].aprobadoApmtc == "pendiente" ||
-        vwGetDamageReportListModel[0].aprobadoCoordinador == "pendiente" ||
-        vwGetDamageReportListModel[0].aprobadoApmtc == "pendiente") {
-      setState(() {
-        isVisible = true;
-      });
-    } else {
+    if (vwGetDamageReportListModel.isEmpty) {
       setState(() {
         isVisible = false;
+      });
+    } else if (vwGetDamageReportListModel[0].aprobadoResponsableNave ==
+            "aprobado" &&
+        vwGetDamageReportListModel[0].aprobadoCoordinador == "aprobado" &&
+        vwGetDamageReportListModel[0].aprobadoApmtc == "aprobado") {
+      setState(() {
+        isVisible = false;
+      });
+    } else if ((vwGetDamageReportListModel[0].aprobadoResponsableNave ==
+            "pendiente" ||
+        vwGetDamageReportListModel[0].aprobadoCoordinador == "pendiente" ||
+        vwGetDamageReportListModel[0].aprobadoApmtc == "pendiente")) {
+      setState(() {
+        isVisible = true;
       });
     }
   }

@@ -97,19 +97,32 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
         int.parse(idServiceOrder.toString()),
       );
 
-      if (rampaDescargaController
-                  .vwGetDamageReportListModel[0].aprobadoApmtc ==
+      if (rampaDescargaController.vwGetDamageReportListModel.isEmpty) {
+        setState(() {
+          isVisible = false;
+        });
+      } else if (rampaDescargaController
+                  .vwGetDamageReportListModel[0].aprobadoResponsableNave ==
+              "aprobado" &&
+          rampaDescargaController
+                  .vwGetDamageReportListModel[0].aprobadoCoordinador ==
+              "aprobado" &&
+          rampaDescargaController.vwGetDamageReportListModel[0].aprobadoApmtc ==
+              "aprobado") {
+        setState(() {
+          isVisible = false;
+        });
+      } else if ((rampaDescargaController
+                  .vwGetDamageReportListModel[0].aprobadoResponsableNave ==
               "pendiente" ||
           rampaDescargaController
                   .vwGetDamageReportListModel[0].aprobadoCoordinador ==
               "pendiente" ||
           rampaDescargaController.vwGetDamageReportListModel[0].aprobadoApmtc ==
-              "pendiente") {
+              "pendiente")) {
         setState(() {
           isVisible = true;
         });
-      } else {
-        isVisible = false;
       }
     }
 

@@ -19,7 +19,7 @@ class QrRoroPdfReetiquetadoService {
         pageFormat: PdfPageFormat(
           5 * PdfPageFormat.cm,
           3 * PdfPageFormat.cm,
-          marginLeft: 1.2 * PdfPageFormat.cm,
+          marginLeft: 1.1 * PdfPageFormat.cm,
           marginRight: 1 * PdfPageFormat.cm,
         ),
         build: (pw.Context context) {
