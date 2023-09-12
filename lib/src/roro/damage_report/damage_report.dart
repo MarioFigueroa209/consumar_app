@@ -2989,8 +2989,6 @@ class _DamageReportState extends State<DamageReport>
                                                     builder: (BuildContext
                                                             context) =>
                                                         super.widget));
-                                            /*       _tabController.animateTo(
-                                                (_tabController.index = 1)); */
                                           } else if (valueResponsableApm ==
                                               true) {
                                             dialogoAdvertenciaApm(context);
