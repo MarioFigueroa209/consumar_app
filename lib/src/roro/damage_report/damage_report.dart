@@ -157,7 +157,8 @@ class _DamageReportState extends State<DamageReport>
 
   final TextEditingController _blController = TextEditingController();
 
-  final TextEditingController _lineaNavieraController = TextEditingController();
+  final TextEditingController _agenciaMaritimaController =
+      TextEditingController();
 
   final TextEditingController _stowagePositionController =
       TextEditingController();
@@ -321,8 +322,8 @@ class _DamageReportState extends State<DamageReport>
     _consignatarioController.text =
         damageReportInsertSqlLiteList[0].consigntario!;
     _blController.text = damageReportInsertSqlLiteList[0].billOfLeading!;
-    _lineaNavieraController.text =
-        damageReportInsertSqlLiteList[0].lineaNaviera!;
+    _agenciaMaritimaController.text =
+        damageReportInsertSqlLiteList[0].agenciaMaritima!;
   }
 
   getVehicleDataByChasisAndIdServiceOrder() async {
@@ -337,8 +338,8 @@ class _DamageReportState extends State<DamageReport>
     _consignatarioController.text =
         damageReportInsertSqlLiteList[0].consigntario!;
     _blController.text = damageReportInsertSqlLiteList[0].billOfLeading!;
-    _lineaNavieraController.text =
-        damageReportInsertSqlLiteList[0].lineaNaviera!;
+    _agenciaMaritimaController.text =
+        damageReportInsertSqlLiteList[0].agenciaMaritima!;
     idVehicleDr = damageReportInsertSqlLiteList[0].idVehiculo!;
 
     print(idVehicleDr);
@@ -423,7 +424,7 @@ class _DamageReportState extends State<DamageReport>
           cantidadDanos: int.parse(_cantidadDanos),
           fotoVerificacion: imageFotocheckConductor?.path,
           lugarAccidente: _lugarAccidenteController.text,
-          fechaAccidente: DateTime.now(),
+          fechaAccidente: dateTime,
           comentarios: comentariosController.text,
           codQr: codQr,
           idServiceOrder: int.parse(widget.idServiceOrder.toString()),
@@ -931,8 +932,20 @@ class _DamageReportState extends State<DamageReport>
                                   onChanged: (value) => setState(() {
                                     valueResponsableApm = value;
                                     isVisible = !isVisible;
-                                    ingnoreDriver = !ingnoreDriver;
+                                    if (valueResponsableApm == false) {
+                                      setState(() {
+                                        ingnoreDriver = true;
+                                        value2 = false;
+                                        isVisible3 = false;
+                                      });
+                                    } else if (valueResponsableApm == true) {
+                                      setState(() {
+                                        ingnoreDriver = false;
+                                      });
+                                    }
+
                                     cambiosListadoDamageInformation();
+
                                     /*   valueDamageOcurred = value;
                                         if (valueDamageFound == true) {
                                           valueDamageFound = false;
@@ -1291,13 +1304,13 @@ class _DamageReportState extends State<DamageReport>
                                     Icons.wysiwyg,
                                     color: kColorAzul,
                                   ),
-                                  labelText: 'Linea Naviera',
+                                  labelText: 'Agencia Maritima',
                                   labelStyle: TextStyle(
                                     color: kColorAzul,
                                     fontSize: 20.0,
                                   ),
-                                  hintText: 'Linea Naviera'),
-                              controller: _lineaNavieraController,
+                                  hintText: 'Agencia Maritima'),
+                              controller: _agenciaMaritimaController,
                               enabled: false,
                             ),
                             const SizedBox(height: 20),
@@ -3497,9 +3510,11 @@ class _DamageReportState extends State<DamageReport>
                                 await imprimirListaDamageItem();
                                 await imprimirListaDamageReport();
                                 //if (context.mounted) return;
-                                Navigator.pop(context);
-                                _tabController
-                                    .animateTo((_tabController.index = 1));
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            super.widget));
                               },
                               child: const Text(
                                 "ACEPTAR",

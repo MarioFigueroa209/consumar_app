@@ -114,7 +114,7 @@ class DamageReportPdfService {
     modelo = vwGetDamageReportItemModel.modelo!;
     chasis = vwGetDamageReportItemModel.chasis!;
     consignatario = vwGetDamageReportItemModel.consigntario!;
-    lineaNaviera = vwGetDamageReportItemModel.lineaNaviera!;
+    agenciaMaritima = vwGetDamageReportItemModel.agenciaMaritima!;
     bl = vwGetDamageReportItemModel.billOfLeading!;
     if (vwGetDamageReportItemModel.nombreConductor != null) {
       nombreConductor =
@@ -125,13 +125,13 @@ class DamageReportPdfService {
     lugarAccidente = vwGetDamageReportItemModel.lugarAccidente!.toUpperCase();
     fechaAccidente = vwGetDamageReportItemModel.fechaHoraAccidente;
 
-    if (vwGetDamageReportItemModel.agenciaMaritica != null) {
+    /*  if (vwGetDamageReportItemModel.agenciaMaritica != null) {
       agenciaMaritima =
           vwGetDamageReportItemModel.agenciaMaritica!.toUpperCase();
     } else {
       agenciaMaritima = "";
     }
-
+ */
     vesselOficer =
         vwGetDamageReportItemModel.nombreResponsableNave!.toUpperCase();
     urlChasisFoto = vwGetDamageReportItemModel.fotoChasis!;
@@ -455,7 +455,7 @@ class DamageReportPdfService {
                             color: const PdfColor.fromInt(0xff82b1ff)),
                         child: pw.Center(
                           child: pw.Text(
-                            "SHIPPING LINE",
+                            "MARITIME AGENCY",
                             textAlign: pw.TextAlign.center,
                             style: const pw.TextStyle(fontSize: 10),
                           ),
@@ -470,7 +470,7 @@ class DamageReportPdfService {
                             color: const PdfColor.fromInt(0xffffffff)),
                         child: pw.Center(
                           child: pw.Text(
-                            lineaNaviera,
+                            agenciaMaritima,
                             textAlign: pw.TextAlign.center,
                             style: const pw.TextStyle(fontSize: 10),
                           ),

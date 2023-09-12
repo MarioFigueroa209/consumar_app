@@ -35,7 +35,7 @@ class VwGetDamageReportItemModel {
     this.aprobadoCoordinador,
     this.aprobadoApmtc,
     this.aprobadoResponsableNave,
-    this.agenciaMaritica,
+    this.agenciaMaritima,
     this.consigntario,
     this.billOfLeading,
     this.idUsuario,
@@ -71,7 +71,7 @@ class VwGetDamageReportItemModel {
   String? aprobadoCoordinador;
   String? aprobadoApmtc;
   String? aprobadoResponsableNave;
-  String? agenciaMaritica;
+  String? agenciaMaritima;
   String? consigntario;
   String? billOfLeading;
   int? idUsuario;
@@ -108,7 +108,7 @@ class VwGetDamageReportItemModel {
         aprobadoCoordinador: json["aprobadoCoordinador"],
         aprobadoApmtc: json["aprobadoApmtc"],
         aprobadoResponsableNave: json["aprobadoResponsableNave"],
-        agenciaMaritica: json["agenciaMaritica"],
+        agenciaMaritima: json["agenciaMaritima"],
         consigntario: json["consigntario"],
         billOfLeading: json["billOfLeading"],
         idUsuario: json["idUsuario"],
@@ -145,7 +145,7 @@ class VwGetDamageReportItemModel {
         "aprobadoCoordinador": aprobadoCoordinador,
         "aprobadoApmtc": aprobadoApmtc,
         "aprobadoResponsableNave": aprobadoResponsableNave,
-        "agenciaMaritica": agenciaMaritica,
+        "agenciaMaritima": agenciaMaritima,
         "consigntario": consigntario,
         "billOfLeading": billOfLeading,
         "idUsuario": idUsuario,

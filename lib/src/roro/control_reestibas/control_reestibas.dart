@@ -266,6 +266,7 @@ class _ControlReestibasState extends State<ControlReestibas>
     if (vwPrimerMovimientoDataById.cantidadMuelle == 0) {
       _cantidadPrimerMovimientoByIDController.text =
           vwPrimerMovimientoDataById.cantidadAbordo!.toString();
+      cantRegistrada = vwPrimerMovimientoDataById.cantidadAbordo!;
     } else if (vwPrimerMovimientoDataById.cantidadAbordo == 0) {
       _cantidadPrimerMovimientoByIDController.text =
           vwPrimerMovimientoDataById.cantidadMuelle!.toString();
@@ -1534,22 +1535,35 @@ class _ControlReestibasState extends State<ControlReestibas>
                               onPressed: () async {
                                 if (int.parse(_cantidadFinalController.text) <=
                                     cantRegistrada) {
-                                  if (saldo != 0) {
-                                    await createReestibasSegundoMovimiento();
-                                    setState(() {
-                                      getVwReestibasSegundoMovimientoMuelle();
-                                    });
-                                    setState(() {
-                                      getVwReestibasSegundoMovimientoAbordo();
-                                    });
+                                  if (int.parse(
+                                          _cantidadFinalController.text) <=
+                                      int.parse(
+                                          _cantidadSaldoTemporalByIDController
+                                              .text)) {
+                                    if (saldo != 0) {
+                                      await createReestibasSegundoMovimiento();
+                                      setState(() {
+                                        getVwReestibasSegundoMovimientoMuelle();
+                                      });
+                                      setState(() {
+                                        getVwReestibasSegundoMovimientoAbordo();
+                                      });
 
-                                    _tabController
-                                        .animateTo((_tabController.index = 3));
-                                    cleartxtSegundoMovimiento();
+                                      _tabController.animateTo(
+                                          (_tabController.index = 3));
+                                      cleartxtSegundoMovimiento();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text("Saldo agotado"),
+                                        backgroundColor: Colors.redAccent,
+                                      ));
+                                    }
                                   } else {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(
-                                      content: Text("Saldo agotado"),
+                                      content: Text(
+                                          "La cantidad ingresada es superior al saldo"),
                                       backgroundColor: Colors.redAccent,
                                     ));
                                   }
@@ -1557,7 +1571,7 @@ class _ControlReestibasState extends State<ControlReestibas>
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(const SnackBar(
                                     content: Text(
-                                        "La cantidad ingresada es superior a la cantidad registrada"),
+                                        "La cantidad ingresada es superior a la cantidad registrada/saldo"),
                                     backgroundColor: Colors.redAccent,
                                   ));
                                 }

@@ -188,7 +188,7 @@ class DamageReportInsertSqlLite {
   String? chasis;
   String? marca;
   String? modelo;
-  String? lineaNaviera;
+  String? agenciaMaritima;
   String? consigntario;
   String? billOfLeading;
 
@@ -198,7 +198,7 @@ class DamageReportInsertSqlLite {
     this.chasis,
     this.marca,
     this.modelo,
-    this.lineaNaviera,
+    this.agenciaMaritima,
     this.consigntario,
     this.billOfLeading,
   });
@@ -210,7 +210,7 @@ class DamageReportInsertSqlLite {
         chasis: json["chasis"],
         marca: json["marca"],
         modelo: json["modelo"],
-        lineaNaviera: json["lineaNaviera"],
+        agenciaMaritima: json["agenciaMaritima"],
         consigntario: json["consigntario"],
         billOfLeading: json["billOfLeading"],
       );
@@ -221,7 +221,7 @@ class DamageReportInsertSqlLite {
         "chasis": chasis,
         "marca": marca,
         "modelo": modelo,
-        "lineaNaviera": lineaNaviera,
+        "agenciaMaritima": agenciaMaritima,
         "consigntario": consigntario,
         "billOfLeading": billOfLeading,
       };

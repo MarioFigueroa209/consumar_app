@@ -279,7 +279,7 @@ class DbDamageReportSqlLite {
         onCreate: (db, version) {
       db.execute("DROP TABLE IF EXISTS damageConsulta");
       return db.execute(
-          "CREATE TABLE damageConsulta (idOrdenServicio INTEGER,idVehicle INTEGER, chasis TEXT, marca TEXT,modelo TEXT,lineaNaviera TEXT, consignatario TEXT, bl TEXT)");
+          "CREATE TABLE damageConsulta (idOrdenServicio INTEGER,idVehicle INTEGER, chasis TEXT, marca TEXT,modelo TEXT,agenciaMaritima TEXT, consignatario TEXT, bl TEXT)");
     }, version: 1);
   }
 
@@ -293,7 +293,7 @@ class DbDamageReportSqlLite {
         "idOrdenServicio": damageConsulta[count].idServiceOrder,
         "idVehicle": damageConsulta[count].idVehiculo,
         "chasis": damageConsulta[count].chasis,
-        "lineaNaviera": damageConsulta[count].lineaNaviera,
+        "agenciaMaritima": damageConsulta[count].agenciaMaritima,
         "marca": damageConsulta[count].marca,
         "modelo": damageConsulta[count].modelo,
         "consignatario": damageConsulta[count].consigntario,
@@ -316,7 +316,7 @@ class DbDamageReportSqlLite {
               chasis: damageReportConsultaMap[i]['chasis'],
               marca: damageReportConsultaMap[i]['marca'],
               modelo: damageReportConsultaMap[i]['modelo'],
-              lineaNaviera: damageReportConsultaMap[i]['lineaNaviera'],
+              agenciaMaritima: damageReportConsultaMap[i]['agenciaMaritima'],
               consigntario: damageReportConsultaMap[i]['consignatario'],
               billOfLeading: damageReportConsultaMap[i]['bl'],
             ));
@@ -334,7 +334,7 @@ class DbDamageReportSqlLite {
               chasis: result[i]['chasis'],
               marca: result[i]['marca'],
               modelo: result[i]['modelo'],
-              lineaNaviera: result[i]['lineaNaviera'],
+              agenciaMaritima: result[i]['agenciaMaritima'],
               consigntario: result[i]['consignatario'],
               billOfLeading: result[i]['bl'],
             ));
@@ -352,7 +352,7 @@ class DbDamageReportSqlLite {
               chasis: result[i]['chasis'],
               marca: result[i]['marca'],
               modelo: result[i]['modelo'],
-              lineaNaviera: result[i]['lineaNaviera'],
+              agenciaMaritima: result[i]['agenciaMaritima'],
               consigntario: result[i]['consignatario'],
               idVehiculo: result[i]['idVehicle'],
               billOfLeading: result[i]['bl'],

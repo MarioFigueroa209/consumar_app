@@ -118,7 +118,7 @@ class _DrInformeFinal extends State<DrInformeFinal> {
       damageFound = vwGetDamageReportItemModel.damageFound!;
       damageOcurred = vwGetDamageReportItemModel.damageOcurred!;
       operation = vwGetDamageReportItemModel.operation!;
-      lineaNaviera = vwGetDamageReportItemModel.lineaNaviera!;
+      agenciaMaritima = vwGetDamageReportItemModel.agenciaMaritima!;
       stowagePosition = vwGetDamageReportItemModel.posicionEstibador!;
       if (vwGetDamageReportItemModel.puertoAterrizaje != null) {
         portLanding = vwGetDamageReportItemModel.puertoAterrizaje!;
@@ -138,11 +138,11 @@ class _DrInformeFinal extends State<DrInformeFinal> {
       lugarAccidente = vwGetDamageReportItemModel.lugarAccidente!;
       fechaAccidente = vwGetDamageReportItemModel.fechaHoraAccidente;
 
-      if (vwGetDamageReportItemModel.agenciaMaritica != null) {
+      /*    if (vwGetDamageReportItemModel.agenciaMaritica != null) {
         agenciaMaritima = vwGetDamageReportItemModel.agenciaMaritica!;
       } else {
         agenciaMaritima = "";
-      }
+      } */
 
       vesselOficer = vwGetDamageReportItemModel.nombreResponsableNave!;
       if (vwGetDamageReportItemModel.nombreConductor != null) {
@@ -357,7 +357,7 @@ class _DrInformeFinal extends State<DrInformeFinal> {
                       border: Border.all(color: Colors.black),
                       color: Colors.lightBlueAccent),
                   child: const Text(
-                    "SHIPPING LINE",
+                    "MARITIME AGENCY",
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -368,7 +368,7 @@ class _DrInformeFinal extends State<DrInformeFinal> {
                       border: Border.all(color: Colors.black),
                       color: Colors.white),
                   child: Text(
-                    lineaNaviera,
+                    agenciaMaritima,
                     textAlign: TextAlign.center,
                   ),
                 ),
