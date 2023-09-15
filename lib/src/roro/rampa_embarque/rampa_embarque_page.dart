@@ -51,8 +51,8 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
   final List<Map<String, String>> listOfEmbarques = [];
 
   final _formKey = GlobalKey<FormState>();
-  final _formKey2 = GlobalKey<FormState>();
-  late int idConductor;
+  //final _formKey2 = GlobalKey<FormState>();
+  int? idConductor;
   UsuarioModel usuarioModel = UsuarioModel();
 
   final TextEditingController codigoQrController = TextEditingController();
@@ -403,73 +403,79 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
                     ],
                   )),
               //Caja de texto codigo conductor
-              Form(
-                  key: _formKey2,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            prefixIcon: Icon(
-                              Icons.code,
-                              color: kColorAzul,
-                            ),
-                            suffixIcon: IconButton(
-                                icon: const Icon(Icons.search),
-                                onPressed: () {
-                                  getUserConductorDataByCodUser();
-                                }),
-                            labelText: 'Codigo conductor',
-                            labelStyle: TextStyle(
-                              color: kColorAzul,
-                              fontSize: 20.0,
-                            ),
-                            hintText: 'Ingrese codigo de conductor'),
-                        onChanged: (value) {
-                          /*   idUsuario =
-                              BigInt.parse(_codigoConductorController.text); */
-                          getUserConductorDataByCodUser();
-                        },
-                        controller: _codigoConductorController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor, Ingrese codigo de conductor';
-                          }
-                          return null;
-                        },
-                        enabled: enableConductorController,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            prefixIcon: Icon(
-                              Icons.badge,
-                              color: kColorAzul,
-                            ),
-                            labelText: 'Nombre conductor',
-                            labelStyle: TextStyle(
-                              color: kColorAzul,
-                              fontSize: 20.0,
-                            ),
-                            hintText: ''),
-                        controller: _nombreConductorController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor, Ingrese datos de conductor';
-                          }
-                          return null;
-                        },
-                        enabled: false,
-                      ),
-                    ],
-                  )),
+              Column(
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        prefixIcon: Icon(
+                          Icons.code,
+                          color: kColorAzul,
+                        ),
+                        suffixIcon: IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: () {
+                              if (_codigoConductorController.text.isEmpty) {
+                                setState(() {
+                                  idConductor = null;
+                                });
+                              }
+                              getUserConductorDataByCodUser();
+                            }),
+                        labelText: 'Codigo conductor',
+                        labelStyle: TextStyle(
+                          color: kColorAzul,
+                          fontSize: 20.0,
+                        ),
+                        hintText: 'Ingrese codigo de conductor'),
+                    onChanged: (value) {
+                      if (_codigoConductorController.text.isEmpty) {
+                        setState(() {
+                          idConductor = null;
+                        });
+                      }
+                      getUserConductorDataByCodUser();
+                    },
+                    controller: _codigoConductorController,
+                    /*   validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, Ingrese codigo de conductor';
+                      }
+                      return null;
+                    }, */
+                    enabled: enableConductorController,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        prefixIcon: Icon(
+                          Icons.badge,
+                          color: kColorAzul,
+                        ),
+                        labelText: 'Nombre conductor',
+                        labelStyle: TextStyle(
+                          color: kColorAzul,
+                          fontSize: 20.0,
+                        ),
+                        hintText: ''),
+                    controller: _nombreConductorController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, Ingrese datos de conductor';
+                      }
+                      return null;
+                    },
+                    enabled: false,
+                  ),
+                ],
+              ),
               //Operaciones de manifestado
               const SizedBox(
                 height: 20,
@@ -623,46 +629,45 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
                     color: kColorNaranja,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        if (_formKey2.currentState!.validate()) {
-                          if (manifestado != registrado) {
-                            var result = detalleRampaEmbarqueList.where(
-                                (element) => element.idVehicle!
-                                    .toString()
-                                    .contains(idVehicle.toString()));
+                        // if (_formKey2.currentState!.validate()) {
+                        if (manifestado != registrado) {
+                          var result = detalleRampaEmbarqueList.where(
+                              (element) => element.idVehicle!
+                                  .toString()
+                                  .contains(idVehicle.toString()));
 
-                            if (result.isEmpty) {
-                              setState(() {
-                                RampaEmbarqueTable item = RampaEmbarqueTable();
-                                item.chasis = _chasisController.text;
-                                item.marca = _marcaController.text;
-                                item.conductor =
-                                    _nombreConductorController.text;
-                                item.horaLecturaDescarga = DateTime.now();
-                                addRampaEmbarqueTable(item);
-                              });
-                              agregarListadoEmbarque();
-                            } else {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text("Vehiculo ya registrado"),
-                                backgroundColor: Colors.redAccent,
-                              ));
-                            }
+                          if (result.isEmpty) {
+                            setState(() {
+                              RampaEmbarqueTable item = RampaEmbarqueTable();
+                              item.chasis = _chasisController.text;
+                              item.marca = _marcaController.text;
+                              item.conductor = _nombreConductorController.text;
+                              item.horaLecturaDescarga = DateTime.now();
+                              addRampaEmbarqueTable(item);
+                            });
+                            agregarListadoEmbarque();
                           } else {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
-                              content: Text("Saldo agotado"),
+                              content: Text("Vehiculo ya registrado"),
                               backgroundColor: Colors.redAccent,
                             ));
                           }
                         } else {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
+                            content: Text("Saldo agotado"),
+                            backgroundColor: Colors.redAccent,
+                          ));
+                        }
+                        /* }  else {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
                             content:
                                 Text("Por favor ingresar datos de Conductor"),
                             backgroundColor: Colors.redAccent,
                           ));
-                        }
+                        } */
                       } else {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
@@ -779,7 +784,7 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
     item.idServiceOrder = int.parse(widget.idServiceOrderRampa.toString());
     item.idUsuarios = int.parse(widget.idUsuario.toString());
     item.idVehicle = int.parse(codigoQrController.text);
-    item.idConductor = idConductor;
+    item.idConductor = idConductor ?? null;
     if (idNaveOrigen != null) {
       item.idShipOrigen = int.parse(idNaveOrigen.toString());
     } else {
@@ -804,6 +809,9 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
   }
 
   clearTextFields() {
+    setState(() {
+      idConductor = null;
+    });
     codigoQrController.clear();
     _chasisController.clear();
     _marcaController.clear();
@@ -822,9 +830,13 @@ class _RampaEmbarquePageState extends State<RampaEmbarquePage> {
     vwgetUserDataByCodUser = await usuarioService
         .getUserDataByCodUser(_codigoConductorController.text);
 
-    _nombreConductorController.text =
-        "${vwgetUserDataByCodUser.nombres!} ${vwgetUserDataByCodUser.apellidos!}";
-    idConductor = vwgetUserDataByCodUser.idUsuario!;
+    if (vwgetUserDataByCodUser.idUsuario != null) {
+      _nombreConductorController.text =
+          "${vwgetUserDataByCodUser.nombres!} ${vwgetUserDataByCodUser.apellidos!}";
+      idConductor = vwgetUserDataByCodUser.idUsuario!;
+    } else {
+      _nombreConductorController.text = "";
+    }
   }
 
   getIdVehicle() async {

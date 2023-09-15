@@ -1154,10 +1154,16 @@ class DamageReportPdfService {
                                             "${damageTypeByIdDrModelList[i].codigoDano!} / ${damageTypeByIdDrModelList[i].danoRegistrado!} / ${damageTypeByIdDrModelList[i].parteVehiculo!} / ${damageTypeByIdDrModelList[i].zonaVehiculo!}",
                                             style: const pw.TextStyle(
                                                 fontSize: 10)),
-                                        pw.Text(
-                                            "Faltantes: ${damageTypeByIdDrModelList[i].descipcionFaltantes!}",
-                                            style: const pw.TextStyle(
-                                                fontSize: 10)),
+                                        damageTypeByIdDrModelList[i]
+                                                .descipcionFaltantes!
+                                                .isNotEmpty
+                                            ? pw.Text(
+                                                "Faltantes: ${damageTypeByIdDrModelList[i].descipcionFaltantes!}",
+                                                style: const pw.TextStyle(
+                                                    fontSize: 10))
+                                            : pw.Text(
+                                                "",
+                                              ),
                                       ]),
                                     )
                                 ]),

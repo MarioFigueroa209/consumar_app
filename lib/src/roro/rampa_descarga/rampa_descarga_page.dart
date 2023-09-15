@@ -46,7 +46,7 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
   late BigInt idServiceOrder;
   ServiceOrderModel serviceOrderModel = ServiceOrderModel();
 
-  late int idConductor;
+  int? idConductor;
   UsuarioModel usuarioModel = UsuarioModel();
 
   late BigInt idRampaDescarga;
@@ -71,6 +71,9 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
       TextEditingController();
 
   clearTextFields() {
+    setState(() {
+      idConductor = null;
+    });
     codigoQrController.clear();
     _chasisController.clear();
     _marcaController.clear();
@@ -428,39 +431,51 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
                   key: _formKey3,
                   child: Column(
                     children: [
-                      IgnorePointer(
+                      /*    IgnorePointer(
                         ignoring: enableConductorController,
-                        child: TextFormField(
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                ),
-                                prefixIcon: Icon(
-                                  Icons.code,
-                                  color: kColorAzul,
-                                ),
-                                suffixIcon: IconButton(
-                                    icon: const Icon(Icons.search),
-                                    onPressed: () async {
-                                      await getConductorDataByCod();
-                                    }),
-                                labelText: 'Codigo conductor',
-                                labelStyle: TextStyle(
-                                  color: kColorAzul,
-                                  fontSize: 20.0,
-                                ),
-                                hintText: 'Ingrese codigo de conductor'),
-                            onChanged: (value) async {
-                              await getConductorDataByCod();
-                            },
-                            controller: _codigoConductorController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Por favor, Ingrese codigo de conductor';
-                              }
-                              return null;
-                            }),
+                        child: */
+                      TextFormField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            prefixIcon: Icon(
+                              Icons.code,
+                              color: kColorAzul,
+                            ),
+                            suffixIcon: IconButton(
+                                icon: const Icon(Icons.search),
+                                onPressed: () {
+                                  if (_codigoConductorController.text.isEmpty) {
+                                    setState(() {
+                                      idConductor = null;
+                                    });
+                                  }
+                                  getConductorDataByCod();
+                                }),
+                            labelText: 'Codigo conductor',
+                            labelStyle: TextStyle(
+                              color: kColorAzul,
+                              fontSize: 20.0,
+                            ),
+                            hintText: 'Ingrese codigo de conductor'),
+                        onChanged: (value) async {
+                          if (_codigoConductorController.text.isEmpty) {
+                            setState(() {
+                              idConductor = null;
+                            });
+                          }
+                          getConductorDataByCod();
+                        },
+                        controller: _codigoConductorController,
+                        /*  validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, Ingrese codigo de conductor';
+                            }
+                            return null;
+                          } */
                       ),
+                      //  ),
                       const SizedBox(
                         height: 20,
                       ),
@@ -503,43 +518,43 @@ class _RampaDescargaPageState extends State<RampaDescargaPage> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     if (_formKey2.currentState!.validate()) {
-                      if (_formKey3.currentState!.validate()) {
-                        var result = rampaDescargaController
-                            .detalleRampaDescargaList
-                            .where((element) => element.idVehicle!
-                                .toString()
-                                .contains(idVehicle.toString()));
-                        if (result.isEmpty) {
-                          setState(() {
-                            RampaDescargaTable item = RampaDescargaTable();
-                            item.chasis = _chasisController.text;
-                            item.marca = _marcaController.text;
-                            item.conductor = _nombreConductorController.text;
-                            item.horaLecturaDescarga = DateTime.now();
-                            rampaDescargaController.addRampaDescargaTable(item);
-                          });
-                          rampaDescargaController.agregarListado(
-                            widget.jornada,
-                            _tipoImportacionController.text,
-                            _direccController.text,
-                            int.parse(_desplegableNivel),
-                            int.parse(widget.idServiceOrderRampa.toString()),
-                            int.parse(widget.idUsuario.toString()),
-                            int.parse(codigoQrController.text),
-                            idConductor,
-                          );
-                          clearTextFields();
-                        } else {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text("Vehiculo ya registrado"),
-                            backgroundColor: Colors.redAccent,
-                          ));
-                        }
+                      //if (_formKey3.currentState!.validate()) {
+                      var result = rampaDescargaController
+                          .detalleRampaDescargaList
+                          .where((element) => element.idVehicle!
+                              .toString()
+                              .contains(idVehicle.toString()));
+                      if (result.isEmpty) {
+                        setState(() {
+                          RampaDescargaTable item = RampaDescargaTable();
+                          item.chasis = _chasisController.text;
+                          item.marca = _marcaController.text;
+                          item.conductor = _nombreConductorController.text;
+                          item.horaLecturaDescarga = DateTime.now();
+                          rampaDescargaController.addRampaDescargaTable(item);
+                        });
+                        rampaDescargaController.agregarListado(
+                          widget.jornada,
+                          _tipoImportacionController.text,
+                          _direccController.text,
+                          int.parse(_desplegableNivel),
+                          int.parse(widget.idServiceOrderRampa.toString()),
+                          int.parse(widget.idUsuario.toString()),
+                          int.parse(codigoQrController.text),
+                          idConductor ?? null,
+                        );
+                        clearTextFields();
                       } else {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text("Vehiculo ya registrado"),
+                          backgroundColor: Colors.redAccent,
+                        ));
+                      }
+                      /*   } else {
                         CustomSnackBar.errorSnackBar(
                             context, "Por ingresar datos de Conductor");
-                      }
+                      } */
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Por ingresar Nivel y codigo Conductor"),
