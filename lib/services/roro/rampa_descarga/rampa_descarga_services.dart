@@ -77,12 +77,12 @@ class RampaDescargaServices {
       aux.fecha = DateTime.now();
       aux.tipoImportacion = value[count].tipoImportacion;
       aux.direccionamiento = value[count].direccionamiento;
+      aux.idConductor = value[count].idConductor;
       aux.numeroNivel = value[count].numeroNivel;
       aux.horaLectura = DateTime.now();
       aux.idServiceOrder = value[count].idServiceOrder;
       aux.idUsuarios = value[count].idUsuarios;
       aux.idVehicle = value[count].idVehicle;
-      aux.idConductor = value[count].idConductor;
       spRampadescargaModel.add(aux);
     }
 
@@ -94,8 +94,10 @@ class RampaDescargaServices {
       body: jsonEncode(spRampadescargaModel),
     );
     if (response.statusCode == 200) {
+      print(response.statusCode);
       return int.parse(response.body);
     } else {
+      print(response.statusCode);
       throw Exception('Failed to post data');
     }
   }

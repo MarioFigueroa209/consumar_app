@@ -37,11 +37,11 @@ class RampaDescargaController extends ChangeNotifier {
     notifyListeners();
   }
 
-  addRampaDescargaItem(RampaDescargaList item) {
+  addRampaDescargaItem(RampaDescargaList? item) {
     int contador = detalleRampaDescargaList.length;
     contador++;
-    item.id = contador;
-    detalleRampaDescargaList.add(item);
+    item?.id = contador;
+    detalleRampaDescargaList.add(item!);
     notifyListeners();
   }
 
@@ -72,16 +72,16 @@ class RampaDescargaController extends ChangeNotifier {
   }
 
   agregarListado(
-    int jornada,
-    String tipoImportacion,
-    String direccionamiento,
-    int nivel,
-    int idServiceOrder,
-    int idUsuario,
-    int idVehicle,
-    int idConductor,
+    int? jornada,
+    String? tipoImportacion,
+    String? direccionamiento,
+    int? nivel,
+    int? idServiceOrder,
+    int? idUsuario,
+    int? idVehicle,
+    int? idConductor,
   ) {
-    RampaDescargaList item = RampaDescargaList();
+    RampaDescargaList? item = RampaDescargaList();
     item.jornada = jornada;
     item.tipoImportacion = tipoImportacion;
     item.direccionamiento = direccionamiento;
@@ -89,7 +89,7 @@ class RampaDescargaController extends ChangeNotifier {
     item.idServiceOrder = idServiceOrder;
     item.idUsuarios = idUsuario;
     item.idVehicle = idVehicle;
-    item.idConductor = idConductor;
+    item.idConductor = idConductor ?? null;
     addRampaDescargaItem(item);
     notifyListeners();
   }

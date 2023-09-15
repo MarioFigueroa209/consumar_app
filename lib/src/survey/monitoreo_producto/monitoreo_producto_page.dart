@@ -409,7 +409,7 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text("MONITOREO PRODUCTO"),
+          title: const Text("INSPECCION FITOSANITARIA"),
           bottom: TabBar(
               indicatorColor: kColorCeleste,
               labelColor: kColorCeleste,
@@ -440,7 +440,7 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   children: [
-                    Row(
+                   /*  Row(
                       children: [
                         Text("Inspeccion Fitosanitaria",
                             style: TextStyle(
@@ -460,7 +460,7 @@ class _MonitoreoProductoState extends State<MonitoreoProducto>
                     ),
                     const SizedBox(
                       height: 20,
-                    ),
+                    ), */
                     DropdownButtonFormField(
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
