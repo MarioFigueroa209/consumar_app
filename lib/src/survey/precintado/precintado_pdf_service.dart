@@ -1,5 +1,8 @@
 import 'dart:typed_data';
 
+import 'package:consumar_app/models/survey/Precintos/vw_ticket_granel_descarga_bodega.dart';
+import 'package:consumar_app/models/survey/Precintos/vw_ticket_granel_precintos_carguio.dart';
+import 'package:consumar_app/services/survey/precintado_service.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -7,11 +10,72 @@ import 'package:pdf/widgets.dart' as pw;
 import '../../../utils/constants.dart';
 
 class PrecintadoPdfService {
+  PrecintadoService precintadoService = PrecintadoService();
+
+  List<VwTicketGranelDescargaBodega> vwTicketGranelDescargaBodega = [];
+
+  List<VwTicketGranelPrecintosCarguio> vwTicketGranelPrecintosCarguio = [];
+
+  String puerto = "";
+  String nombreNave = "";
+  int? jornada;
+  String consignatario = "";
+  String nombreConductor = "";
+  String brevete = "";
+  String empresaTransporte = "";
+  String placaTolva = "";
+  String placaTracto = "";
+  String numeroViaje = "";
+  String codDam = "";
+  String codDo = "";
+  DateTime? fechaDescarga;
+  DateTime? fechaInicioCarguio;
+  DateTime? fechaTerminoCarguio;
+
+  getTicketGranelDescargaTolva(int idCarguio, int idServiceOrder) async {
+    vwTicketGranelDescargaBodega = await precintadoService
+        .getGranelDescargaTolva(idCarguio, idServiceOrder);
+
+    puerto = vwTicketGranelDescargaBodega[0].puerto!;
+    nombreNave = vwTicketGranelDescargaBodega[0].nombreNave!;
+    jornada = vwTicketGranelDescargaBodega[0].jornada!;
+    consignatario = vwTicketGranelDescargaBodega[0].consignatario!;
+    nombreConductor = vwTicketGranelDescargaBodega[0].nombreConductor!;
+    brevete = vwTicketGranelDescargaBodega[0].brevete!;
+    empresaTransporte = vwTicketGranelDescargaBodega[0].empresaTransporte!;
+    placaTolva = vwTicketGranelDescargaBodega[0].placaTolva!;
+    placaTracto = vwTicketGranelDescargaBodega[0].placaTracto!;
+    numeroViaje = vwTicketGranelDescargaBodega[0].numeroViaje!;
+    codDam = vwTicketGranelDescargaBodega[0].dam!;
+    codDo = vwTicketGranelDescargaBodega[0].vwTicketGranelDescargaBodegaDo!;
+    fechaDescarga = vwTicketGranelDescargaBodega[0].fechaDescarga!;
+    fechaInicioCarguio = vwTicketGranelDescargaBodega[0].fechaInicioCarguio!;
+    fechaTerminoCarguio = vwTicketGranelDescargaBodega[0].fechaTerminoCarguio!;
+  }
+
+  getTicketGranelPrecintosCarguio(int idCarguio, int idServiceOrder) async {
+    vwTicketGranelPrecintosCarguio = await precintadoService
+        .getTicketGranelPrecintosCarguio(idCarguio, idServiceOrder);
+  }
+
   final doc = pw.Document();
 
   var pdf = pw.Document;
 
-  Future<Uint8List> createPdf() async {
+  Future<Uint8List> createPdf(int idServiceOrder, int idCarguio) async {
+    await getTicketGranelDescargaTolva(idServiceOrder, idCarguio);
+    await getTicketGranelPrecintosCarguio(idServiceOrder, idCarguio);
+
+    String jornadaTxt = "";
+
+    if (jornada == 1) {
+      jornadaTxt = "primera";
+    } else if (jornada == 2) {
+      jornadaTxt = "segunda";
+    } else if (jornada == 3) {
+      jornadaTxt = "tercera";
+    }
+
     final consumarLogo =
         await imageFromAssetBundle('assets/images/logotipoconsumar.jpg');
 
@@ -72,6 +136,8 @@ class PrecintadoPdfService {
                         pw.SizedBox(height: 2),
                         pw.Text("Nave:", style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
+                        pw.Text("Jornada", style: textoCuerpoTicketDR),
+                        pw.SizedBox(height: 2),
                         pw.Text("Consignatario:", style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
                         pw.Text("Conductor", style: textoCuerpoTicketDR),
@@ -81,18 +147,25 @@ class PrecintadoPdfService {
                         pw.Text("Empresa de Transporte",
                             style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("Jornada", style: textoCuerpoTicketDR),
-                        pw.SizedBox(height: 2),
-                        pw.Text("Placa Tracto", style: textoCuerpoTicketDR),
-                        pw.SizedBox(height: 2),
                         pw.Text(
                           "Placa Tolva",
                           style: textoCuerpoTicketDR,
                         ),
                         pw.SizedBox(height: 2),
-                        pw.Text("N° Taria", style: textoCuerpoTicketDR),
+                        pw.Text(
+                          "Placa Tracto",
+                          style: textoCuerpoTicketDR,
+                        ),
                         pw.SizedBox(height: 2),
-                        pw.Text("N° Autorizacion", style: textoCuerpoTicketDR),
+                        pw.Text(
+                          "DO",
+                          style: textoCuerpoTicketDR,
+                        ),
+                        pw.SizedBox(height: 2),
+                        pw.Text(
+                          "DAM",
+                          style: textoCuerpoTicketDR,
+                        ),
                         pw.SizedBox(height: 2),
                         pw.Text("Fecha/Descarga", style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
@@ -102,50 +175,41 @@ class PrecintadoPdfService {
                         pw.Text("Termino de Carguio",
                             style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("Compuerta Tolva", style: textoCuerpoTicketDR),
-                        pw.SizedBox(height: 2),
-                        pw.Text("Caja de Comando Hidraulica",
-                            style: textoCuerpoTicketDR),
-                        pw.SizedBox(height: 2),
-                        pw.Text("Toldo", style: textoCuerpoTicketDR),
                       ]),
                   pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       mainAxisAlignment: pw.MainAxisAlignment.start,
                       children: [
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text("puerto", style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text(nombreNave, style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text(jornadaTxt, style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text(consignatario, style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text(nombreConductor, style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text(brevete, style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text(empresaTransporte, style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text(placaTolva, style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text(placaTracto, style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text(codDo, style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text(codDam, style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text(fechaDescarga.toString(),
+                            style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text(fechaInicioCarguio.toString(),
+                            style: textoCuerpoTicketDR),
                         pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
-                        pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
-                        pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
-                        pw.SizedBox(height: 2),
-                        pw.Text("", style: textoCuerpoTicketDR),
+                        pw.Text(fechaTerminoCarguio.toString(),
+                            style: textoCuerpoTicketDR),
                       ]),
                 ]),
             pw.SizedBox(height: 10),

@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
 
 class PrecintoPdf extends StatefulWidget {
-  const PrecintoPdf({super.key});
+  const PrecintoPdf(
+      {super.key, required this.idCarguio, required this.idServiceOrder});
+  final int idCarguio;
+  final int idServiceOrder;
 
   @override
   State<PrecintoPdf> createState() => _PrecintoPdfState();
@@ -22,7 +25,8 @@ class _PrecintoPdfState extends State<PrecintoPdf> {
   Widget build(BuildContext context) {
     return PdfPreview(
       build: (format) {
-        return precintadoPdfService.createPdf();
+        return precintadoPdfService.createPdf(
+            widget.idServiceOrder, widget.idCarguio);
       },
       useActions: false,
     );

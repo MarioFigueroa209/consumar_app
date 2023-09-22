@@ -869,7 +869,10 @@ class _Precintadostate extends State<Precintado>
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const PrecintoPdf()));
+                                  builder: (context) => PrecintoPdf(
+                                        idServiceOrder: widget.idServiceOrder,
+                                        idCarguio: idCarguio,
+                                      )));
                         },
                         child: const Text(
                           "Imprimir",
