@@ -395,6 +395,12 @@ final urlCreatePrecintados =
 String urlDeleteGranelPrecintoCarguio =
     "${urlApiBase}Precintados/DeleteLogicGranelPrecintoCarguios?id=";
 
+String urlGetGranelDescargaBodega =
+    "${urlApiBase}Precintados/getTicketGranelDescargaBodega?IdServiceOrder=";
+
+String urlGetGranelPrecintosCarguio =
+    "${urlApiBase}Precintados/getTicketGranelPrecintosCarguio?IdServiceOrder=";
+
 /*--------------- Recepcion Almacen ----------- */
 String urlGetLecturaByQrCarguio =
     "${urlApiBase}RecepcionAlmacen/getLecturaByQrCarguio/";
@@ -542,6 +548,12 @@ final urlCreateLiquidaPrecintados =
 
 String urlDeleteLogicPrecintoCarguio =
     "${urlApiBase}LiquidaPrecintados/DeleteLogicPrecintoCarguios?id=";
+
+String urlGetLiquidaLiquidaDescargaCistena =
+    "${urlApiBase}LiquidaPrecintados/getTicketLiquidaDescargaCistena?IdServiceOrder=";
+
+String urlGetLiquidaPrecintosCarguio =
+    "${urlApiBase}LiquidaPrecintados/getTicketLiquidaPrecintosCarguio?IdServiceOrder=";
 
 /*--------------- Recepcion Almacen Liquida ----------- */
 String urlGetLecturaLiquidaByQrCarguio =

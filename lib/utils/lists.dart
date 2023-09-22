@@ -32,6 +32,7 @@ final listaOperaciones = [
 
 final zona = [
   'ZONA 02',
+  'ZONA 04',
   'ALMACÉN 09',
   'ALMACÉN 10',
   'FRENTE A \n MUELLE',

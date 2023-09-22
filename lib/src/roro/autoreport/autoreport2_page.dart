@@ -21,7 +21,6 @@ import '../../../services/roro/autoreport/autoreport_service.dart';
 import '../../../utils/autoreport2_items.dart';
 import '../../../utils/constants.dart';
 import '../../widgets/custom_snack_bar.dart';
-import 'autoreport_pdf_page.dart';
 
 class Autoreport2 extends StatefulWidget {
   const Autoreport2(
@@ -318,7 +317,7 @@ class _Autoreport2State extends State<Autoreport2> {
 
   late List<String?> cityNames;
 
-  late String? stringList;
+  String stringList = "";
 
   Future pickImage(ImageSource source) async {
     try {
@@ -763,19 +762,21 @@ class _Autoreport2State extends State<Autoreport2> {
       spAutoreportCreate.spParicipantesInspeccion =
           spParticipantesInspeccionModel;
 
-      var responseIdAutoreport =
-          await autoreportService.createAutoreport(spAutoreportCreate);
+      /*   var responseIdAutoreport =
+          await */
+      await autoreportService.createAutoreport(spAutoreportCreate);
       //  if (context.mounted) return;
       // ignore: use_build_context_synchronously
       CustomSnackBar.successSnackBar(
           context, "Registro insertado correctamente");
       // ignore: use_build_context_synchronously
-      Navigator.push(
+      Navigator.of(context).pop();
+      /*  Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => AutoreportPdf(
                     idAutoreport: responseIdAutoreport,
-                  )));
+                  ))); */
 
       setState(() {
         nLlavesSimples = 0;
@@ -3575,16 +3576,21 @@ class _Autoreport2State extends State<Autoreport2> {
                                         ),
                                         hintText: 'Cantidad Llaves Simples',
                                       ),
-                                      //controller: idUsuarioController,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return "ingrese llaves inteligentes";
-                                        } else {
+                                      onChanged: (value) {
+                                        if (nLlavesSimplesController
+                                            .text.isNotEmpty) {
                                           setState(() {
-                                            nLlavesSimples = int.parse(value);
+                                            nLlavesSimples = int.parse(
+                                                nLlavesSimplesController.text);
+                                          });
+                                        } else if (nLlavesSimplesController
+                                                .text.isEmpty ||
+                                            nLlavesSimplesController.text ==
+                                                "") {
+                                          setState(() {
+                                            nLlavesSimples = 0;
                                           });
                                         }
-                                        return null;
                                       },
                                       controller: nLlavesSimplesController,
                                       enabled: true),
@@ -3606,16 +3612,23 @@ class _Autoreport2State extends State<Autoreport2> {
                                               'Cantidad Llaves Inteligentes'),
                                       //controller: idUsuarioController,
 
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return "ingrese llaves inteligente";
-                                        } else {
+                                      onChanged: (value) {
+                                        if (nLlavesInteligentesController
+                                            .text.isNotEmpty) {
                                           setState(() {
-                                            nLlavesInteligentes =
-                                                int.parse(value);
+                                            nLlavesInteligentes = int.parse(
+                                                nLlavesInteligentesController
+                                                    .text);
+                                          });
+                                        } else if (nLlavesInteligentesController
+                                                .text.isEmpty ||
+                                            nLlavesInteligentesController
+                                                    .text ==
+                                                "") {
+                                          setState(() {
+                                            nLlavesInteligentes = 0;
                                           });
                                         }
-                                        return null;
                                       },
                                       controller: nLlavesInteligentesController,
                                       enabled: true),
@@ -3634,15 +3647,21 @@ class _Autoreport2State extends State<Autoreport2> {
                                             fontSize: 18.0,
                                           ),
                                           hintText: 'Cantidad Llaves Comando'),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return "Ingrese llaves Comando";
-                                        } else {
+                                      onChanged: (value) {
+                                        if (nLlavesComandoController
+                                            .text.isNotEmpty) {
                                           setState(() {
-                                            nLlavesComando = int.parse(value);
+                                            nLlavesComando = int.parse(
+                                                nLlavesComandoController.text);
+                                          });
+                                        } else if (nLlavesComandoController
+                                                .text.isEmpty ||
+                                            nLlavesComandoController.text ==
+                                                "") {
+                                          setState(() {
+                                            nLlavesComando = 0;
                                           });
                                         }
-                                        return null;
                                       },
                                       controller: nLlavesComandoController,
                                       enabled: true),
@@ -3661,15 +3680,20 @@ class _Autoreport2State extends State<Autoreport2> {
                                             fontSize: 18.0,
                                           ),
                                           hintText: 'Cantidad Llaves Pin'),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return "ingrese llaves Pin";
-                                        } else {
+                                      onChanged: (value) {
+                                        if (nLlavesPinController
+                                            .text.isNotEmpty) {
                                           setState(() {
-                                            nLlavesPin = int.parse(value);
+                                            nLlavesPin = int.parse(
+                                                nLlavesPinController.text);
+                                          });
+                                        } else if (nLlavesPinController
+                                                .text.isEmpty ||
+                                            nLlavesPinController.text == "") {
+                                          setState(() {
+                                            nLlavesPin = 0;
                                           });
                                         }
-                                        return null;
                                       },
                                       controller: nLlavesPinController,
                                       enabled: true),

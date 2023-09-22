@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:consumar_app/models/carga_liquida/precintados/vw_ticket_liquida_descarga_cisterna.dart';
+import 'package:consumar_app/models/carga_liquida/precintados/vw_ticket_liquida_precintos_carguio.dart';
 import 'package:http/http.dart' as http;
 
 import '../../models/carga_liquida/precintados/create_liquida_precintados.dart';
@@ -66,6 +68,53 @@ class PrecintadoLiquidaService {
       throw "Eliminado con exito";
     } else {
       throw "Fallo al actualizar";
+    }
+  }
+
+  List<VwTicketLiquidaDescargaCisterna> parseLiquidaDescargaCisterna(
+      String responseBody) {
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    return parsed
+        .map<VwTicketLiquidaDescargaCisterna>(
+            (json) => VwTicketLiquidaDescargaCisterna.fromJson(json))
+        .toList();
+  }
+
+  Future<List<VwTicketLiquidaDescargaCisterna>> getLiquidaDescargaCisterna(
+      int idServiceOrder, int idCarguio) async {
+    var url = Uri.parse(
+        "$urlGetLiquidaPlacasInicioCarguio$idServiceOrder&idCarguio=$idCarguio");
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return parseLiquidaDescargaCisterna(response.body);
+    } else {
+      throw Exception('No se pudo obtener los registros');
+    }
+  }
+
+  List<VwTicketLiquidaPrecintosCarguio> parseTicketLiquidaPrecintosCarguio(
+      String responseBody) {
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    return parsed
+        .map<VwTicketLiquidaPrecintosCarguio>(
+            (json) => VwTicketLiquidaPrecintosCarguio.fromJson(json))
+        .toList();
+  }
+
+  Future<List<VwTicketLiquidaPrecintosCarguio>>
+      getTicketLiquidaPrecintosCarguio(
+          int idServiceOrder, int idCarguio) async {
+    var url = Uri.parse(
+        "$urlGetLiquidaPlacasInicioCarguio$idServiceOrder&idCarguio=$idCarguio");
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return parseTicketLiquidaPrecintosCarguio(response.body);
+    } else {
+      throw Exception('No se pudo obtener los registros');
     }
   }
 }
