@@ -771,12 +771,6 @@ class _Autoreport2State extends State<Autoreport2> {
           context, "Registro insertado correctamente");
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
-      /*  Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => AutoreportPdf(
-                    idAutoreport: responseIdAutoreport,
-                  ))); */
 
       setState(() {
         nLlavesSimples = 0;
@@ -901,6 +895,9 @@ class _Autoreport2State extends State<Autoreport2> {
                                 }
                                 if (value == false) {
                                   visibleDanosAcopio = false;
+                                  danosAcopio = false;
+                                }
+                                if (visibleDanosAcopio == false) {
                                   danosAcopio = false;
                                 }
                                 // visibleDanosAcopio = value;
@@ -4822,6 +4819,60 @@ class _Autoreport2State extends State<Autoreport2> {
               ElevatedButton(
                   style: TextButton.styleFrom(backgroundColor: kColorNaranja),
                   onPressed: () {
+                    /*   Navigator.of(context).pop(
+                      new MaterialPageRoute(
+                          builder: (_) => new Autoreport1(
+                              jornada: widget.jornada,
+                              idUsuario: BigInt.parse(0.toString()),
+                              idServiceOrder: widget.idServiceOrder)),
+                    ); */
+                    /*   Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Autoreport1(
+                                jornada: widget.jornada,
+                                idUsuario: widget.idUsuario,
+                                idServiceOrder: widget.idServiceOrder))); */
+
+                    /*    Navigator.pop(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Autoreport1(
+                                jornada: widget.jornada,
+                                idUsuario: widget.idUsuario,
+                                idServiceOrder: widget.idServiceOrder))); */
+                    /*    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Autoreport1(
+                                jornada: widget.jornada,
+                                idUsuario: widget.idUsuario,
+                                idServiceOrder: widget.idServiceOrder))); */
+                    /*  await Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (c) => Autoreport1(
+                                jornada: widget.jornada,
+                                idUsuario: widget.idUsuario,
+                                idServiceOrder: widget.idServiceOrder))); */
+                    /*    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => super.widget)); */
+                    /*   Navigator.pop(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => new Autoreport1(
+                                jornada: widget.jornada,
+                                idUsuario: widget.idUsuario,
+                                idServiceOrder: widget.idServiceOrder))); */
+                    /*     Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (c) => Autoreport1(
+                                jornada: widget.jornada,
+                                idUsuario: widget.idUsuario,
+                                idServiceOrder: widget.idServiceOrder))); */
                     createAutoreport();
                     /*   EasyLoading.show(
                         indicator: const CircularProgressIndicator(),

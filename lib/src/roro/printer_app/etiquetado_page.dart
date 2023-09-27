@@ -1,6 +1,7 @@
 import 'package:barcode_widget/barcode_widget.dart';
+import 'package:consumar_app/src/roro/printer_app/print_page.dart';
 
-import 'package:consumar_app/src/roro/printer_app/qr_pdf_page.dart';
+//import 'package:consumar_app/src/roro/printer_app/qr_pdf_page.dart';
 import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
 
@@ -242,9 +243,14 @@ class _EtiquetadoPrinterAppState extends State<EtiquetadoPrinterApp> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
+                        builder: (context) =>
+                            PrintPage(insertPrinterAppPendientes.idVehiculo!)));
+                /*     Navigator.push(
+                    context,
+                    MaterialPageRoute(
                         builder: (context) => QrRoroPDF(
                             idVehicle:
-                                insertPrinterAppPendientes.idVehiculo!)));
+                                insertPrinterAppPendientes.idVehiculo!))); */
 
                 setState(() {
                   getPrinterAppPendientes;
