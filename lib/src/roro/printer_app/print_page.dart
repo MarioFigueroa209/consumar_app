@@ -180,7 +180,7 @@ class _PrintPageState extends State<PrintPage> {
                                     content: widget.idVehiculo.toString()));
                               });
 
-                              await bluetoothPrint.printLabel(config, list);
+                              await bluetoothPrint.printReceipt(config, list);
                             }
                           : null,
                     ),
