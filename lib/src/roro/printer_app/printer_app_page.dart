@@ -1,4 +1,6 @@
-import 'package:consumar_app/src/roro/printer_app/qr_pdf_reetiquetado_page.dart';
+//import 'package:consumar_app/src/roro/autoreport/autoreport_list_page.dart';
+import 'package:consumar_app/src/roro/printer_app/print_page.dart';
+//import 'package:consumar_app/src/roro/printer_app/qr_pdf_reetiquetado_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -121,8 +123,9 @@ class _PrinterAppState extends State<PrinterApp>
           bottom: TabBar(
               indicatorColor: kColorCeleste,
               labelColor: kColorCeleste,
-              unselectedLabelColor: Colors.white,
+              unselectedLabelColor: const Color.fromARGB(255, 223, 216, 216),
               controller: _tabController,
+              //onTap: (value) => searchChassis,
               tabs: [
                 Tab(
                   child: Row(
@@ -186,7 +189,10 @@ class _PrinterAppState extends State<PrinterApp>
                         decoration: const InputDecoration(
                             hintText: 'Buscar Chasis',
                             border: InputBorder.none),
-                        onChanged: searchChassis),
+                        onChanged: ((value) {
+                          searchChassis(value);
+                          searchChassisEtiquetado(value);
+                        })),
                     trailing: IconButton(
                       icon: const Icon(Icons.cancel),
                       onPressed: () {
@@ -359,16 +365,19 @@ class _PrinterAppState extends State<PrinterApp>
                       child: ListTile(
                     leading: const Icon(Icons.search),
                     title: TextField(
-                        controller: controllerSearchChasisEtiquetado,
+                        controller: controllerSearchChasis,
                         decoration: const InputDecoration(
                             hintText: 'Buscar Chasis Etiquetado',
                             border: InputBorder.none),
-                        onChanged: searchChassisEtiquetado),
+                        onChanged: ((value) {
+                          searchChassis(value);
+                          searchChassisEtiquetado(value);
+                        })),
                     trailing: IconButton(
                       icon: const Icon(Icons.cancel),
                       onPressed: () {
                         setState(() {
-                          controllerSearchChasisEtiquetado.clear();
+                          controllerSearchChasis.clear();
                           searchChassisEtiquetado;
                         });
                       },
@@ -650,6 +659,10 @@ class _PrinterAppState extends State<PrinterApp>
     }).toList();
 
     setState(() => allDR = suggestion);
+    setState(() {
+      controllerSearchChasis;
+      // controllerSearchChasisEtiquetado;
+    });
   }
 
   void searchMarca(String query) {
@@ -752,11 +765,16 @@ class _PrinterAppState extends State<PrinterApp>
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
+                                        builder: (context) => PrintPage(
+                                            allDREtiqutado.idVehicle!)));
+                                /*    Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
                                         builder: (context) =>
                                             QrPdfReetiquetadoPage(
                                               idVehicle:
                                                   allDREtiqutado.idVehicle!,
-                                            )));
+                                            ))); */
                                 /*   Navigator.push(
                                     context,
                                     MaterialPageRoute(

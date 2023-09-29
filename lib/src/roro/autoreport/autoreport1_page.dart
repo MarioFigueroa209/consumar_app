@@ -174,6 +174,8 @@ class _Autoreport1State extends State<Autoreport1> {
       zona = _valueZonaDropdown;
     }
     if (_formKey.currentState!.validate()) {
+      /*  */
+
       //print(zona);
       //print(        vwRampaEmbarqueVehicleDataModel[0].tipoMercaderia!,      );
       Navigator.push(
@@ -192,7 +194,13 @@ class _Autoreport1State extends State<Autoreport1> {
                     codDr: codDr,
                     tipoMercaderia:
                         vwRampaEmbarqueVehicleDataModel[0].tipoMercaderia!,
-                  )));
+                  ))).then((_) => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Autoreport1(
+                  jornada: widget.jornada,
+                  idUsuario: widget.idUsuario,
+                  idServiceOrder: widget.idServiceOrder))));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Por favor llenar los datos "),
