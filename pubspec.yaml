@@ -58,6 +58,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   dropdown_search: ^5.0.6
   bluetooth_print: ^4.3.0
+  print_bluetooth_thermal: ^1.0.9
+  esc_pos_utils_plus: ^2.0.2
 
 dev_dependencies:
   flutter_test:
