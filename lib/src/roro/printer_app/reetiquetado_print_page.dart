@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
-class PrintPage extends StatefulWidget {
+class ReetiquetadoPrintPage extends StatefulWidget {
   // final List<Map<String, dynamic>> data;
   final int idVehiculo;
-  PrintPage(/* this.data, */ this.idVehiculo);
+  ReetiquetadoPrintPage(/* this.data, */ this.idVehiculo);
 
   @override
-  _PrintPageState createState() => _PrintPageState();
+  _ReetiquetadoPrintPrintPageState createState() =>
+      _ReetiquetadoPrintPrintPageState();
 }
 
-class _PrintPageState extends State<PrintPage> {
+class _ReetiquetadoPrintPrintPageState extends State<ReetiquetadoPrintPage> {
   String _info = "";
   String _msj = '';
   bool connected = false;
@@ -367,7 +368,7 @@ class _PrintPageState extends State<PrintPage> {
     //Using `ESC *`
     // bytes += generator.image(image!);
 
-    bytes += generator.text('CONSUMARPORT',
+    bytes += generator.text('CONSUMARPORT /n reetiquetado',
         styles: PosStyles(bold: true), linesAfter: 1);
 
     //QR code
