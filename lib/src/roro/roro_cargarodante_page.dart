@@ -19,7 +19,6 @@ import '../../models/vw_ship_and_travel_by_id_service_order_model.dart';
 import '../../services/roro/damage_report/damage_report_consulta_service.dart';
 import '../../services/roro/printer_app/printer_app_service.dart';
 import '../../services/service_order_services.dart';
-import '../../services/usuario_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/jornada_model.dart';
 import '../../utils/lists.dart';
@@ -140,7 +139,7 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
     ////print('Cantidad de registros${damageReportConsultaApi.length}');
   }
 
-  insertListaEmbarqueDescarga() async {
+  /*insertListaEmbarqueDescarga() async {
     if (_valueOperacionDropdown == "DESCARGA") {
       await getListVehicleDataByIdServiceOrderDescarga();
       insertServiceOrderDataToPrinterAppDescarga();
@@ -150,12 +149,12 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
     }
   }
 
-  getListVehicleDataByIdServiceOrderDescarga() async {
+  /*getListVehicleDataByIdServiceOrderDescarga() async {
     vwListVehicleDataByIdServiceOrderDescarga = await printerAppService
         .getListVehicleDataByIdServiceOrderDescarga(idServiceOrderRampa);
 
     //print(        'Cantidad de registros descarga${vwListVehicleDataByIdServiceOrderDescarga.length}');
-  }
+  }*/
 
   getListVehicleDataByIdServiceOrderEmbarque() async {
     vwListVehicleDataByIdServiceOrderEmbarque = await printerAppService
@@ -200,7 +199,7 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
       });
     }
   }
-
+*/
   getOrdenesServicio() async {
     serviceOrdersList = await serviceOrderService.getAllServiceOrders();
   }
@@ -601,7 +600,7 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                   icon: const Icon(Icons.search),
                                   onPressed: () {
                                     //getUsuarioPorIdJob();
-                                    getUserDataByCodUser();
+                                ///    getUserDataByCodUser();
                                     validationUserAcceso();
                                   }),
                               labelText: 'Id.Job',
@@ -612,7 +611,7 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                               hintText: 'Ingrese el numero de ID Job'),
                           onChanged: (value) async {
                             //getUsuarioPorIdJob();
-                            await getUserDataByCodUser();
+                        //    await getUserDataByCodUser();
                             validationUserAcceso();
                           },
                           controller: idUsuarioController,
@@ -688,8 +687,8 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
 
                               getNaveAndTravelServiceOrder();
                               getDamageReportConsulta();
-                              getListVehicleDataByIdServiceOrderDescarga();
-                              getListVehicleDataByIdServiceOrderEmbarque();
+                         /*     getListVehicleDataByIdServiceOrderDescarga();
+                              getListVehicleDataByIdServiceOrderEmbarque();*/
                               setState(() {
                                 enableDrawerValidation = false;
                                 //  _selectedServiceOrder = value.toString();
@@ -1253,7 +1252,7 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                 indicator: const CircularProgressIndicator(),
                                 status: "Sincronizando Vehículos",
                                 maskType: EasyLoadingMaskType.black);
-                            await insertDRApiListToSqlDRList();
+                           // await insertDRApiListToSqlDRList();
                             EasyLoading.dismiss();
                             ////print(e);
                           },
@@ -1503,7 +1502,7 @@ class _RoroCargaRodantePageState extends State<RoroCargaRodantePage> {
                                 indicator: const CircularProgressIndicator(),
                                 status: "Sincronizando Vehículos",
                                 maskType: EasyLoadingMaskType.black);
-                            await insertListaEmbarqueDescarga();
+                          //  await insertListaEmbarqueDescarga();
                             EasyLoading.dismiss();
                           },
                           child: const Padding(
