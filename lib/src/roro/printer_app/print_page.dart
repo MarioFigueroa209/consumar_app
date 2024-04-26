@@ -1,4 +1,5 @@
-import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
+import 'package:consumar_app/src/roro/printer_app/printer_app_page.dart';
+import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
@@ -42,6 +43,7 @@ class _PrintPageState extends State<PrintPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           title: const Text('IMPRESION TICKETS'),
@@ -95,7 +97,7 @@ class _PrintPageState extends State<PrintPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('info: $_info\n '),
+                //Text('info: $_info\n '),
                 Text(_msj),
                 Row(
                   children: [
@@ -137,18 +139,18 @@ class _PrintPageState extends State<PrintPage> {
                             ),
                           ),
                           SizedBox(width: 5),
-                          Text(_progress ? _msjprogress : "Search"),
+                          Text(_progress ? _msjprogress : "Buscar"),
                         ],
                       ),
                     ),
                     ElevatedButton(
                       onPressed: connected ? this.disconnect : null,
-                      child: Text("Disconnect"),
+                      child: Text("Desconectar"),
                     ),
-                    ElevatedButton(
+                    /*ElevatedButton(
                       onPressed: connected ? this.printTest : null,
                       child: Text("Test"),
-                    ),
+                    ),*/
                   ],
                 ),
                 Container(
@@ -178,8 +180,9 @@ class _PrintPageState extends State<PrintPage> {
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     color: Colors.grey.withOpacity(0.3),
                   ),
-                  child: Column(children: [
-                    Text(
+                  child: Center(
+                    child:
+                        /*Text(
                         "Text size without the library without external packets, print images still it should not use a library"),
                     SizedBox(height: 10),
                     Row(
@@ -211,12 +214,43 @@ class _PrintPageState extends State<PrintPage> {
                           },
                         )
                       ],
+                    ),*/
+                        Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: connected ? this.printTest : null,
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width *
+                                0.8, // 80% del ancho de la pantalla
+                            child: Text(
+                              "Imprimir",
+                              style: TextStyle(fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                          onPressed: connected ? this.disconnect2 : null,
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width *
+                                0.8, // 80% del ancho de la pantalla
+                            child: Text(
+                              "Cerrar",
+                              style: TextStyle(fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Colors.red.withOpacity(0.8)),
+                          ),
+                        ),
+                      ],
                     ),
-                    ElevatedButton(
-                      onPressed: connected ? this.printWithoutPackage : null,
-                      child: Text("Print"),
-                    ),
-                  ]),
+                  ),
                 ),
                 SizedBox(height: 10),
               ],
@@ -308,6 +342,24 @@ class _PrintPageState extends State<PrintPage> {
       connected = false;
     });
     print("status disconnect $status");
+  }
+
+  Future<void> disconnect2() async {
+    final bool status = await PrintBluetoothThermal.disconnect;
+    setState(() {
+      connected = false;
+    });
+    print("status disconnect $status");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PrinterApp(
+          jornada: 1,
+          idUsuario: BigInt.parse(1.toString()),
+          idServiceOrder: BigInt.parse(1.toString()),
+        ),
+      ),
+    );
   }
 
   Future<void> printTest() async {
