@@ -116,9 +116,14 @@ class _PrinterAppState extends State<PrinterApp>
     List<OperacionRoro> value =
         await printerAppService.getVehiclesOperacion(idTravel, idS0);
 
+    /* List<OperacionRoro> filteredList = value
+        .where((element) =>
+            element.labelledDate == null || element.labelledDate.)
+        .toList();*/
+
     setState(() {
       operacionList = value;
-      operacionListFilter=operacionList;
+      operacionListFilter = operacionList;
     });
   }
 
@@ -129,7 +134,7 @@ class _PrinterAppState extends State<PrinterApp>
     setState(() {
       syncing = true;
     });
-    
+
     // Aquí cargarías los datos de la BD o desde cualquier otro origen de datos
     await cargarListVehiculos();
 
@@ -162,6 +167,11 @@ class _PrinterAppState extends State<PrinterApp>
 
   @override
   Widget build(BuildContext context) {
+    List<OperacionRoro> filteredList = operacionList
+        .where((element) =>
+            element.labelledDate == null)
+        .toList();
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -196,7 +206,7 @@ class _PrinterAppState extends State<PrinterApp>
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
-                              operacionList.length.toString(),
+                              filteredList.length.toString(),
                               style: TextStyle(color: Colors.black),
                             ),
                           )),
@@ -245,8 +255,7 @@ class _PrinterAppState extends State<PrinterApp>
                                 hintText: 'Buscar Placas',
                                 border: InputBorder.none),
                             onChanged: ((value) {
-                              if(value.length>4)
-                              {
+                              if (value.length > 4) {
                                 searchChassis(value);
                               }
                               //searchChassisEtiquetado(value);
@@ -256,7 +265,7 @@ class _PrinterAppState extends State<PrinterApp>
                           onPressed: () {
                             setState(() {
                               controllerSearchChasis.clear();
-                              operacionListFilter=operacionList;
+                              operacionListFilter = operacionList;
                               searchChassis;
                             });
                           },
@@ -267,17 +276,23 @@ class _PrinterAppState extends State<PrinterApp>
                           scrollDirection: Axis.horizontal,
                           child: syncing
                               ? Column(
-                                children: [
-                                  Text("Cargando Vehiculos",style: TextStyle(color: Colors.white),),
-                                  SizedBox(height: 10,),
-                                  Center(
+                                  children: [
+                                    Text(
+                                      "Cargando Vehiculos",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Center(
                                       child: CircularProgressIndicator(
-                                        valueColor: AlwaysStoppedAnimation<Color>(
-                                            Colors.white),
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
                                       ),
                                     ),
-                                ],
-                              )
+                                  ],
+                                )
                               : DataTable(
                                   dividerThickness: 3,
                                   border: TableBorder.symmetric(
@@ -296,10 +311,20 @@ class _PrinterAppState extends State<PrinterApp>
                                           _getDataRowColor),
                                   columns: const <DataColumn>[
                                     DataColumn(
-                                      label: Center(child: Text("Chassis",textAlign: TextAlign.center,style: TextStyle(color: Colors.white),)),
+                                      label: Center(
+                                          child: Text(
+                                        "Chassis",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(color: Colors.white),
+                                      )),
                                     ),
                                     DataColumn(
-                                      label: Center(child: Text("Estado",textAlign: TextAlign.center,style: TextStyle(color: Colors.white),)),
+                                      label: Center(
+                                          child: Text(
+                                        "Estado",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(color: Colors.white),
+                                      )),
                                     ),
                                   ],
                                   rows: operacionListFilter
@@ -313,79 +338,134 @@ class _PrinterAppState extends State<PrinterApp>
                                             ),
                                             //DataCell(Text(e.estado!)),
                                             DataCell(
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              EtiquetadoPrinterApp(
-                                                                jornada: widget
-                                                                    .jornada,
-                                                                idUsuario: widget
-                                                                    .idUsuario,
-                                                                idServiceOrder:
-                                                                    widget
-                                                                        .idServiceOrder,
-                                                                idPendientes:
-                                                                    int.parse(
-                                                                        e.vehicleId!),
+                                              e.labelledDate == null
+                                                  ? ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        EtiquetadoPrinterApp(
+                                                                          jornada:
+                                                                              widget.jornada,
+                                                                          idUsuario:
+                                                                              widget.idUsuario,
+                                                                          idServiceOrder:
+                                                                              widget.idServiceOrder,
+                                                                          idPendientes:
+                                                                              int.parse(e.vehicleId!),
+                                                                          chassis:
+                                                                              e.chassis!,
+                                                                        )));
+                                                        OperacionRoro
+                                                            selectedVehicle =
+                                                            operacionList
+                                                                .firstWhere(
+                                                                    (vehicle) =>
+                                                                        vehicle
+                                                                            .id ==
+                                                                        e.id);
+
+                                                        Vehicle
+                                                            simplifiedVehicle =
+                                                            Vehicle(
+                                                                id: selectedVehicle
+                                                                    .vehicleId!,
                                                                 chassis:
-                                                                    e.chassis!,
-                                                              )));
-                                                  OperacionRoro
-                                                      selectedVehicle =
-                                                      operacionList.firstWhere(
-                                                          (vehicle) =>
-                                                              vehicle.id ==
-                                                              e.id);
+                                                                    selectedVehicle
+                                                                        .chassis!,
+                                                                operation: '',
+                                                                tradeMark: '',
+                                                                detail: '',
+                                                                travelId: '',
+                                                                serviceOrderId:
+                                                                    '');
 
-                                                  Vehicle simplifiedVehicle =
-                                                      Vehicle(
-                                                          id: selectedVehicle
-                                                              .vehicleId!,
-                                                          chassis:
-                                                              selectedVehicle
-                                                                  .chassis!,
-                                                          operation: '',
-                                                          tradeMark: '',
-                                                          detail: '',
-                                                          travelId: '',
-                                                          serviceOrderId: '');
+                                                        vehicleEtiquetadoList.add(
+                                                            simplifiedVehicle);
 
-                                                  vehicleEtiquetadoList
-                                                      .add(simplifiedVehicle);
-
-                                                  operacionList.removeWhere(
-                                                      (vehicle) =>
-                                                          vehicle.id == e.id);
-                                                  setState(() {
-                                                    operacionList;
-                                                    vehicleEtiquetadoList;
-                                                  });
-                                                  // Aquí puedes manejar la acción de etiquetar
-                                                },
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all<
-                                                              Color>(
-                                                          kColorCeleste2),
-                                                  shape: MaterialStateProperty
-                                                      .all<OutlinedBorder>(
-                                                    RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10.0), // Define el radio del borde
+                                                        operacionList
+                                                            .removeWhere(
+                                                                (vehicle) =>
+                                                                    vehicle
+                                                                        .id ==
+                                                                    e.id);
+                                                        setState(() {
+                                                          operacionList;
+                                                          vehicleEtiquetadoList;
+                                                        });
+                                                        // Aquí puedes manejar la acción de etiquetar
+                                                      },
+                                                      style: ButtonStyle(
+                                                        backgroundColor:
+                                                            MaterialStateProperty
+                                                                .all<Color>(
+                                                                    kColorCeleste2),
+                                                        shape: MaterialStateProperty
+                                                            .all<
+                                                                OutlinedBorder>(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0), // Define el radio del borde
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      child: Text(
+                                                        'Etiquetar',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : ElevatedButton(
+                                                      onPressed: () {
+                                                        print(e.id);
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                EtiquetadoPrinterApp(
+                                                              jornada: widget
+                                                                  .jornada,
+                                                              idUsuario: widget
+                                                                  .idUsuario,
+                                                              idServiceOrder: widget
+                                                                  .idServiceOrder,
+                                                              idPendientes:
+                                                                  int.parse(e
+                                                                      .vehicleId!),
+                                                              chassis:
+                                                                  e.chassis!,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                      style: ButtonStyle(
+                                                        backgroundColor:
+                                                            MaterialStateProperty
+                                                                .all<Color>(
+                                                                    kColorNaranja),
+                                                        shape: MaterialStateProperty
+                                                            .all<
+                                                                OutlinedBorder>(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      child: Text(
+                                                        'Etiquetado',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
-                                                child: Text(
-                                                  'Etiquetar',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
                                             )
                                           ])))
                                       .toList(),
@@ -440,12 +520,22 @@ class _PrinterAppState extends State<PrinterApp>
                           dataRowColor: MaterialStateProperty.resolveWith(
                               _getDataRowColor),
                           columns: const <DataColumn>[
-                           DataColumn(
-                                      label: Center(child: Text("Chassis",textAlign: TextAlign.center,style: TextStyle(color: Colors.white),)),
-                                    ),
-                                    DataColumn(
-                                      label: Center(child: Text("Estado",textAlign: TextAlign.center,style: TextStyle(color: Colors.white),)),
-                                    ),
+                            DataColumn(
+                              label: Center(
+                                  child: Text(
+                                "Chassis",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white),
+                              )),
+                            ),
+                            DataColumn(
+                              label: Center(
+                                  child: Text(
+                                "Estado",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white),
+                              )),
+                            ),
                           ],
                           rows: vehicleEtiquetadoList
                               .map(((e) => DataRow(cells: <DataCell>[
@@ -458,7 +548,23 @@ class _PrinterAppState extends State<PrinterApp>
                                     //DataCell(Text(e.estado!)),
                                     DataCell(
                                       ElevatedButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          print(e.id);
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      EtiquetadoPrinterApp(
+                                                        jornada: widget.jornada,
+                                                        idUsuario:
+                                                            widget.idUsuario,
+                                                        idServiceOrder: widget
+                                                            .idServiceOrder,
+                                                        idPendientes:
+                                                            int.parse(e.id),
+                                                        chassis: e.chassis,
+                                                      )));
+                                        },
                                         style: ButtonStyle(
                                           backgroundColor:
                                               MaterialStateProperty.all<Color>(
@@ -583,7 +689,7 @@ class _PrinterAppState extends State<PrinterApp>
                         print(idList.length);
                         await printerAppService.actualizarVehiculos(
                             idList, int.parse(idS0), int.parse(idTravel));
-
+                        cargarListVehiculos();
                         //cargarListaGeneralPrinterAppEtiquetados();
                         /*  await dbPrinterApp
                                       .clearTablePrinterAppEtiquetados();*/
@@ -714,7 +820,7 @@ class _PrinterAppState extends State<PrinterApp>
                             TextButton(
                               onPressed: () {
                                 // Aquí puedes manejar la acción de sincronización
-                               syncData();
+                                syncData();
                                 Navigator.of(context).pop();
                               },
                               child: Text('Sincronizar'),
@@ -763,7 +869,10 @@ class _PrinterAppState extends State<PrinterApp>
       return listDR.contains(input);
     }).toList();*/
 
-    operacionListFilter=operacionList.where((element) => element.chassis!.toLowerCase().contains(query.toLowerCase())).toList();
+    operacionListFilter = operacionList
+        .where((element) =>
+            element.chassis!.toLowerCase().contains(query.toLowerCase()))
+        .toList();
     //setState(() => allDR = suggestion);
     setState(() {
       controllerSearchChasis;

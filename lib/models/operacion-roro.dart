@@ -13,6 +13,7 @@ class OperacionRoro {
   String? serviceOrderId;
   String? travelId;
   String? vehicleId;
+  DateTime? labelledDate; // Nuevo campo
 
   OperacionRoro({
     this.id,
@@ -29,6 +30,7 @@ class OperacionRoro {
     this.serviceOrderId,
     this.travelId,
     this.vehicleId,
+    this.labelledDate, // Inicialización del nuevo campo
   });
 
   factory OperacionRoro.fromJson(Map<String, dynamic> json) {
@@ -47,6 +49,7 @@ class OperacionRoro {
       serviceOrderId: json['service_order_id'],
       travelId: json['travel_id'],
       vehicleId: json['vehicle_id'],
+      labelledDate: json['labelled_date'] != null ? DateTime.parse(json['labelled_date']) : null, // Parseo del nuevo campo
     );
   }
 
@@ -66,6 +69,7 @@ class OperacionRoro {
       'service_order_id': serviceOrderId,
       'travel_id': travelId,
       'vehicle_id': vehicleId,
+      'labelled_date': labelledDate != null ? labelledDate!.toIso8601String() : null, // Serialización del nuevo campo
     };
   }
 }
