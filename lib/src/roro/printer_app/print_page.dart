@@ -51,8 +51,9 @@ class _PrintPageState extends State<PrintPage> {
               Icons.arrow_back,
               color: Colors.black,
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
+            onPressed: () async {
+              await disconnect2();
+
             },
           ),
           title: const Text('IMPRESION TICKETS'),
@@ -242,7 +243,13 @@ class _PrintPageState extends State<PrintPage> {
                           height: 15,
                         ),
                         ElevatedButton(
-                          onPressed: connected ? this.disconnect2 : null,
+                          onPressed:() async {
+                            if(connected){
+                              await disconnect2();
+                            };
+
+                            //connected ?  this.disconnect2 : null,
+                          } ,
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width *
                                 0.8, // 80% del ancho de la pantalla
@@ -354,11 +361,15 @@ class _PrintPageState extends State<PrintPage> {
   }
 
   Future<void> disconnect2() async {
-    final bool status = await PrintBluetoothThermal.disconnect;
-    setState(() {
-      connected = false;
-    });
-    print("status disconnect $status");
+    if (connected) {
+      final bool status = await PrintBluetoothThermal.disconnect;
+      setState(() {
+        connected = false;
+      });
+      print("status disconnect $status");
+    }
+    //Navigator.of(context).pop();
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -428,7 +439,7 @@ class _PrintPageState extends State<PrintPage> {
     //Using `ESC *`
     // bytes += generator.image(image!);
 
-   /* bytes += generator.text('CONSUMARPORT',
+    /* bytes += generator.text('CONSUMARPORT',
         styles: PosStyles(bold: true), linesAfter: 1);*/
 
     //QR code
