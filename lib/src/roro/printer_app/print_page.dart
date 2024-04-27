@@ -428,8 +428,8 @@ class _PrintPageState extends State<PrintPage> {
     //Using `ESC *`
     // bytes += generator.image(image!);
 
-    bytes += generator.text('CONSUMARPORT',
-        styles: PosStyles(bold: true), linesAfter: 1);
+   /* bytes += generator.text('CONSUMARPORT',
+        styles: PosStyles(bold: true), linesAfter: 1);*/
 
     //QR code
     setState(() {
