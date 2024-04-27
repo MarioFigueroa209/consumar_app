@@ -8,8 +8,8 @@ import 'package:printing/printing.dart';
 import '../../../models/roro/printer_app/insert_printer_app_pendientes.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/roro/sqliteBD/db_printer_app.dart';
-
 class EtiquetadoPrinterApp extends StatefulWidget {
+
   const EtiquetadoPrinterApp(
       {Key? key,
       required this.jornada,

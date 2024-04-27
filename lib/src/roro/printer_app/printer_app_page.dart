@@ -36,6 +36,7 @@ List<InsertPrinterAppPendientes> getPrinterAppPendientes = [];
 List<Vehicle> vehicleList = [];
 
 List<OperacionRoro> operacionList = [];
+List<OperacionRoro> operacionListFilter = [];
 
 List<Vehicle> vehicleEtiquetadoList = [];
 
@@ -117,6 +118,7 @@ class _PrinterAppState extends State<PrinterApp>
 
     setState(() {
       operacionList = value;
+      operacionListFilter=operacionList;
     });
   }
 
@@ -234,7 +236,7 @@ class _PrinterAppState extends State<PrinterApp>
                   padding: const EdgeInsets.all(20),
                   child: Container(
                     child: Column(children: [
-                      /*Card(
+                      Card(
                           child: ListTile(
                         leading: const Icon(Icons.search),
                         title: TextField(
@@ -243,19 +245,23 @@ class _PrinterAppState extends State<PrinterApp>
                                 hintText: 'Buscar Placas',
                                 border: InputBorder.none),
                             onChanged: ((value) {
-                              searchChassis(value);
-                              searchChassisEtiquetado(value);
+                              if(value.length>4)
+                              {
+                                searchChassis(value);
+                              }
+                              //searchChassisEtiquetado(value);
                             })),
                         trailing: IconButton(
                           icon: const Icon(Icons.cancel),
                           onPressed: () {
                             setState(() {
                               controllerSearchChasis.clear();
+                              operacionListFilter=operacionList;
                               searchChassis;
                             });
                           },
                         ),
-                      )),*/
+                      )),
                       const SizedBox(height: 20),
                       SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
@@ -296,7 +302,7 @@ class _PrinterAppState extends State<PrinterApp>
                                       label: Center(child: Text("Estado",textAlign: TextAlign.center,style: TextStyle(color: Colors.white),)),
                                     ),
                                   ],
-                                  rows: operacionList
+                                  rows: operacionListFilter
                                       .map(((e) => DataRow(cells: <DataCell>[
                                             DataCell(
                                               Text(
@@ -751,13 +757,14 @@ class _PrinterAppState extends State<PrinterApp>
   }
 
   void searchChassis(String query) {
-    final suggestion = vehicleList.where((drList) {
+    /*final suggestion = vehicleList.where((drList) {
       final listDR = drList.chassis.toLowerCase();
       final input = query.toLowerCase();
       return listDR.contains(input);
-    }).toList();
+    }).toList();*/
 
-    setState(() => allDR = suggestion);
+    operacionListFilter=operacionList.where((element) => element.chassis!.toLowerCase().contains(query.toLowerCase())).toList();
+    //setState(() => allDR = suggestion);
     setState(() {
       controllerSearchChasis;
       // controllerSearchChasisEtiquetado;

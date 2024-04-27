@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final insertPrinterAppPendientes = insertPrinterAppPendientesFromJson(jsonString);
-
 import 'dart:convert';
 
 List<InsertPrinterAppPendientes> insertPrinterAppPendientesFromJson(
