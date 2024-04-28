@@ -447,7 +447,8 @@ class _PrintPageState extends State<PrintPage> {
       bytes += generator.qrcode(widget.idVehiculo.toString());
     });
 
-    bytes += generator.feed(1);
+    bytes += generator.feed(4);
+    //generator.reverseFeed(4);
     //bytes += generator.cut();
     return bytes;
   }
