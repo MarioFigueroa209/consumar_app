@@ -4,9 +4,11 @@ import 'package:consumar_app/models/service-order.dart';
 import 'package:consumar_app/models/ship.dart';
 import 'package:consumar_app/models/vehicle.dart';
 import 'package:consumar_app/src/roro/printer_app/etiquetado_page.dart';
-import 'package:consumar_app/src/roro/printer_app/reetiquetado_print_page.dart';
+import 'package:consumar_app/utils/check_internet_connection.dart';
+import 'package:consumar_app/utils/connection_status_cubit.dart';
 //import 'package:consumar_app/src/roro/printer_app/qr_pdf_reetiquetado_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/operacion-roro.dart';
 import '../../../models/roro/printer_app/create_sql_lite_printer_app.dart';
 import '../../../models/roro/printer_app/insert_printer_app_pendientes.dart';
@@ -79,9 +81,9 @@ class _PrinterAppState extends State<PrinterApp>
   }
   */
   //Metodo para hacer la carga general de vehiculos etiquetados a la base de datos (roro_printer_etiquetado)
-  /* cargarListaGeneralPrinterAppEtiquetados() {
-    printerAppService.createPrinterAppList(createSqlLitePrinterApp);
-  }*/
+  cargarListaGeneralPrinterAppEtiquetados() {
+    //printerAppService.createPrinterAppList(createSqlLitePrinterApp);
+  }
 
   //Obtener la lista en local de vehiculos sin etiquetar cargado previamente de la BD
   cargarListaBarcos() async {
@@ -167,10 +169,8 @@ class _PrinterAppState extends State<PrinterApp>
 
   @override
   Widget build(BuildContext context) {
-    List<OperacionRoro> filteredList = operacionList
-        .where((element) =>
-            element.labelledDate == null)
-        .toList();
+    List<OperacionRoro> filteredList =
+        operacionList.where((element) => element.labelledDate == null).toList();
 
     return DefaultTabController(
       length: 2,
@@ -481,7 +481,58 @@ class _PrinterAppState extends State<PrinterApp>
                     const SizedBox(
                       height: 20,
                     ),
-                    /*Card(
+                    BlocProvider(
+                      create: (context) => ConnectionStatusCubit(),
+                      child:
+                          BlocBuilder<ConnectionStatusCubit, ConnectionStatus>(
+                        builder: (context, status) {
+                          return Visibility(
+                              visible: status != ConnectionStatus.online,
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                height: 60,
+                                color: Colors.red,
+                                child: const Row(
+                                  children: [
+                                    Icon(Icons.wifi_off),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text("SIN CONEXIÓN A INTERNET")
+                                  ],
+                                ),
+                              ));
+                        },
+                      ),
+                    ),
+                    BlocProvider(
+                      create: (context) => ConnectionStatusCubit(),
+                      child:
+                          BlocBuilder<ConnectionStatusCubit, ConnectionStatus>(
+                        builder: (context, status) {
+                          return Visibility(
+                              visible: status == ConnectionStatus.online,
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                height: 60,
+                                color: Colors.green,
+                                child: const Row(
+                                  children: [
+                                    Icon(Icons.cell_wifi),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text("CON CONEXIÓN A INTERNET")
+                                  ],
+                                ),
+                              ));
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Card(
                         child: ListTile(
                       leading: const Icon(Icons.search),
                       title: TextField(
@@ -490,19 +541,21 @@ class _PrinterAppState extends State<PrinterApp>
                               hintText: 'Buscar Chasis Etiquetado',
                               border: InputBorder.none),
                           onChanged: ((value) {
-                            searchChassis(value);
-                            searchChassisEtiquetado(value);
+                            if (value.length > 3) {
+                              searchChassisEtiquetado(value);
+                            }
                           })),
                       trailing: IconButton(
                         icon: const Icon(Icons.cancel),
                         onPressed: () {
                           setState(() {
                             controllerSearchChasis.clear();
+                            allDREtiqutado = vehicleEtiquetadoList;
                             searchChassisEtiquetado;
                           });
                         },
                       ),
-                    )),*/
+                    )),
                     const SizedBox(height: 20),
                     SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -537,7 +590,7 @@ class _PrinterAppState extends State<PrinterApp>
                               )),
                             ),
                           ],
-                          rows: vehicleEtiquetadoList
+                          rows: allDREtiqutado
                               .map(((e) => DataRow(cells: <DataCell>[
                                     DataCell(
                                       Text(
@@ -591,7 +644,7 @@ class _PrinterAppState extends State<PrinterApp>
                     const SizedBox(
                       height: 20,
                     ),
-                    /*BlocProvider(
+                    BlocProvider(
                       create: (context) => ConnectionStatusCubit(),
                       child:
                           BlocBuilder<ConnectionStatusCubit, ConnectionStatus>(
@@ -638,44 +691,55 @@ class _PrinterAppState extends State<PrinterApp>
                           BlocBuilder<ConnectionStatusCubit, ConnectionStatus>(
                         builder: (context, status) {
                           return Visibility(
-                              visible: status == ConnectionStatus.online,
-                              child: MaterialButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                ),
-                                minWidth: double.infinity,
-                                height: 50.0,
-                                color: kColorNaranja,
-                                onPressed: () async {
-                                  List<int> idList = vehicleEtiquetadoList
-                                      .map<int>(
-                                          (vehicle) => int.parse(vehicle.id))
-                                      .toList();
-
-                                  await printerAppService
-                                      .actualizarVehiculos(idList);
-
-                                  //cargarListaGeneralPrinterAppEtiquetados();
-                                  /*  await dbPrinterApp
+                            visible: status == ConnectionStatus.online,
+                            child: MaterialButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              minWidth: double.infinity,
+                              height: 50.0,
+                              color: kColorNaranja,
+                              onPressed: () async {
+                                List<int> idList = vehicleEtiquetadoList
+                                    .map<int>(
+                                        (vehicle) => int.parse(vehicle.id))
+                                    .toList();
+                                print(idList.length);
+                                await printerAppService.actualizarVehiculos(
+                                    idList,
+                                    int.parse(idS0),
+                                    int.parse(idTravel));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        '¡La actualización se realizó correctamente!'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                                cargarListVehiculos();
+                                //cargarListaGeneralPrinterAppEtiquetados();
+                                /*  await dbPrinterApp
                                       .clearTablePrinterAppEtiquetados();*/
-                                  setState(() {
-                                    vehicleEtiquetadoList.clear();
-                                    idList.clear();
-                                  });
-                                },
-                                child: const Text(
-                                  "CARGAR LISTA",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 1.5),
-                                ),
-                              ));
+                                setState(() {
+                                  vehicleEtiquetadoList.clear();
+                                  idList.clear();
+                                });
+                              },
+                              child: const Text(
+                                "SINCRONIZAR CON BASE DE DATOS",
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.5),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          );
                         },
                       ),
-                    ),*/
-                    MaterialButton(
+                    ),
+                    /*MaterialButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
@@ -714,7 +778,7 @@ class _PrinterAppState extends State<PrinterApp>
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1.5),
                       ),
-                    ),
+                    ),*/
                     const SizedBox(
                       height: 20,
                     ),
@@ -890,7 +954,7 @@ class _PrinterAppState extends State<PrinterApp>
     setState(() => allDREtiqutado = suggestion);
   }
 
-  dialogoReetiquetado(
+  /*dialogoReetiquetado(
       BuildContext context, CreateSqlLitePrinterApp allDREtiqutado) async {
     await showDialog<void>(
         context: context,
@@ -977,5 +1041,5 @@ class _PrinterAppState extends State<PrinterApp>
                     ),
                   )
                 ]));
-  }
+  }*/
 }
