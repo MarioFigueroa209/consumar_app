@@ -11,6 +11,7 @@ import 'package:consumar_app/utils/roro/sqliteBD/db_printer_app.dart';
 //import 'package:consumar_app/src/roro/printer_app/qr_pdf_reetiquetado_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../../models/operacion-roro.dart';
 import '../../../models/roro/printer_app/insert_printer_app_pendientes.dart';
 import '../../../services/roro/printer_app/printer_app_service.dart';
@@ -73,6 +74,8 @@ class _PrinterAppState extends State<PrinterApp>
   Ship? _selectedShip; // Variable para almacenar el barco seleccionado
   Travel? _selectedTravel; // Variable para almacenar el barco seleccionado
 
+  bool vsbDropTravel = false;
+
   //Metodo para obtener la lista en local de los Vehiculos Etiquetados
   obtenerListadoPrinterAppEtiquetado() async {
     vehicleEtiquetadoList =
@@ -81,11 +84,6 @@ class _PrinterAppState extends State<PrinterApp>
     setState(() {
       allDREtiqutado = vehicleEtiquetadoList;
     });
-  }
-
-  //Metodo para hacer la carga general de vehiculos etiquetados a la base de datos (roro_printer_etiquetado)
-  cargarListaGeneralPrinterAppEtiquetados() {
-    //printerAppService.createPrinterAppList(createSqlLitePrinterApp);
   }
 
   //Obtener la lista en local de vehiculos sin etiquetar cargado previamente de la BD
@@ -121,11 +119,6 @@ class _PrinterAppState extends State<PrinterApp>
     List<OperacionRoro> value =
         await printerAppService.getVehiclesOperacion(idTravel, idS0);
 
-    /* List<OperacionRoro> filteredList = value
-        .where((element) =>
-            element.labelledDate == null || element.labelledDate.)
-        .toList();*/
-
     setState(() {
       operacionList = value;
       operacionListFilter = operacionList;
@@ -133,6 +126,17 @@ class _PrinterAppState extends State<PrinterApp>
   }
 
   bool syncing = false;
+
+  cargando() async {
+    EasyLoading.show(
+        indicator: const CircularProgressIndicator(),
+        status: "Cargando",
+        maskType: EasyLoadingMaskType.black);
+
+    await cargarListaBarcos();
+    await cargarListaSO();
+    EasyLoading.dismiss();
+  }
 
   void syncData() async {
     // Mostrar el CircularProgressIndicator mientras se cargan los datos
@@ -155,8 +159,7 @@ class _PrinterAppState extends State<PrinterApp>
     _tabController.addListener(_handleTabIndex);
     // TODO: implement initState
     super.initState();
-    cargarListaBarcos();
-    cargarListaSO();
+    cargando();
     obtenerListadoPrinterAppEtiquetado();
   }
 
@@ -860,50 +863,131 @@ class _PrinterAppState extends State<PrinterApp>
                                   onChanged: (Ship? newValue) async {
                                     setState(() {
                                       _selectedShip = newValue;
+                                      _selectedTravel = null;
                                       idShip = newValue!.id;
                                       print(idShip);
                                     });
+                                    EasyLoading.show(
+                                        indicator:
+                                            const CircularProgressIndicator(),
+                                        status: "Cargando",
+                                        maskType: EasyLoadingMaskType.black);
                                     await cargarListaViaje();
+                                    EasyLoading.dismiss();
+                                    if (idShip != "") {
+                                      setState(() {
+                                        vsbDropTravel = true;
+                                      });
+                                    }
+
                                     // Llamamos a setState para forzar la reconstrucción del diálogo
-                                    setState(() {});
+                                    /* setState(() {idShip = "";});
+                                    if(idShip != ""){
+                                        vsbDropTravel = true;
+                                    }*/
                                     // Cargamos la lista de viajes después de seleccionar un barco
                                   },
                                 ),
                                 SizedBox(height: 10),
-                                DropdownButton<Travel>(
-                                  isExpanded: true,
-                                  hint: Text('Seleccione Viaje'),
-                                  value: _selectedTravel,
-                                  items: travelList.map((Travel travel) {
-                                    return DropdownMenuItem<Travel>(
-                                      value: travel,
-                                      child: Text(travel.travelNumber),
-                                    );
-                                  }).toList(),
-                                  onChanged: (Travel? newValue) {
-                                    setState(() {
-                                      _selectedTravel = newValue;
-                                      idTravel = newValue!.id;
-                                    });
-                                  },
+                                Visibility(
+                                  visible: vsbDropTravel,
+                                  child: DropdownButton<Travel>(
+                                    isExpanded: true,
+                                    hint: Text('Seleccione Viaje'),
+                                    value: _selectedTravel,
+                                    items: travelList.map((Travel travel) {
+                                      return DropdownMenuItem<Travel>(
+                                        value: travel,
+                                        child: Text(travel.travelNumber),
+                                      );
+                                    }).toList(),
+                                    onChanged: (Travel? newValue) {
+                                      setState(() {
+                                        _selectedTravel = newValue;
+                                        idTravel = newValue!.id;
+                                      });
+                                    },
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                           actions: [
-                            TextButton(
-                              onPressed: () {
-                                // Aquí puedes manejar la acción de sincronización
-                                syncData();
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('Sincronizar'),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    8.0), // Bordes redondeados
+                                color: (_selectedShip != null &&
+                                        _selectedTravel != null &&
+                                        _selectedS0 != null &&
+                                        idTravel != "")
+                                    ? Colors.orange
+                                    : Colors
+                                        .grey, // Color de fondo dependiendo de si está activado o desactivado
+                              ),
+                              child: TextButton(
+                                onPressed: (_selectedShip != null &&
+                                        _selectedTravel != null &&
+                                        _selectedS0 != null &&
+                                        idTravel != "")
+                                    ? () {
+                                        // Aquí puedes manejar la acción de sincronización
+                                        syncData();
+                                        setState(() {
+                                          _selectedTravel = null;
+                                          _selectedShip = null;
+                                          _selectedTravel = null;
+                                          idShip = "";
+                                          vsbDropTravel = false;
+                                        });
+                                        Navigator.of(context).pop();
+                                      }
+                                    : null,
+                                style: ButtonStyle(
+                                  foregroundColor:
+                                      MaterialStateProperty.resolveWith<Color>(
+                                    (Set<MaterialState> states) {
+                                      // Color del texto del botón dependiendo de si está activado o desactivado
+                                      if (states
+                                          .contains(MaterialState.disabled)) {
+                                        return Colors
+                                            .white; // Color de texto blanco cuando el botón está desactivado
+                                      }
+                                      return Colors
+                                          .white; // Color de texto blanco cuando el botón está activado
+                                    },
+                                  ),
+                                ),
+                                child: Text(
+                                  'Sincronizar',
+                                ),
+                              ),
                             ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('Cancelar'),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    8.0), // Bordes redondeados
+                                color: Colors.red[100], // Fondo rojo tenue
+                              ),
+                              child: TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _selectedTravel = null;
+                                    _selectedShip = null;
+                                    _selectedTravel = null;
+                                    idShip = "";
+                                    vsbDropTravel = false;
+                                  });
+                                  Navigator.of(context).pop();
+                                },
+                                style: ButtonStyle(
+                                  foregroundColor: MaterialStateProperty.all<
+                                      Color>(Colors
+                                          .red[
+                                      900]!), // Color del texto rojo más oscuro
+                                ),
+                                child: Text('Cancelar'),
+                              ),
                             ),
                           ],
                         );
