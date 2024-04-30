@@ -1,7 +1,7 @@
+import 'package:consumar_app/models/vehicle.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../../models/roro/printer_app/create_sql_lite_printer_app.dart';
 import '../../../models/roro/printer_app/insert_printer_app_pendientes.dart';
 
 class DbPrinterApp {
@@ -12,7 +12,7 @@ class DbPrinterApp {
         onCreate: (db, version) {
       db.execute("DROP TABLE IF EXISTS printerApp_etiquetados");
       return db.execute(
-          "CREATE TABLE printerApp_etiquetados (idPrEtiquetados INTEGER PRIMARY KEY, idOrdenServicio INTEGER, idVehicle INTEGER, idUsuario INTEGER, chasis TEXT, marca TEXT,modelo TEXT, detalle TEXT, estado TEXT, jornada INTEGER)");
+          "CREATE TABLE printerApp_etiquetados (id TEXT,chassis TEXT, idTravel TEXT, idServiceOrder TEXT)");
     }, version: 1);
   }
 
@@ -28,8 +28,8 @@ class DbPrinterApp {
   }
 
   //creacion de registro de etiquetado de vehiculos
-  Future<CreateSqlLitePrinterApp> createPrinterAppEtiquetado(
-      CreateSqlLitePrinterApp createSqlLitePrinterApp) async {
+  Future<Vehicle> createPrinterAppEtiquetado(
+      Vehicle createSqlLitePrinterApp) async {
     Database database = await openDBPrinterAppEtiquetados();
     await database.insert(
         "printerApp_etiquetados", createSqlLitePrinterApp.toJson(),
@@ -60,34 +60,21 @@ class DbPrinterApp {
   }
 
   //obtener lista de vehiculos etiquetados
-  Future<List<CreateSqlLitePrinterApp>>
-      getSqlLitePrinterAppEtiquetados() async {
+  Future<List<Vehicle>> getSqlLitePrinterAppEtiquetados() async {
     Database database = await openDBPrinterAppEtiquetados();
     List<Map> maps = await database.query("printerApp_etiquetados", columns: [
-      "idPrEtiquetados",
-      "chasis",
-      "marca",
-      "modelo",
-      "detalle",
-      "estado",
-      "idOrdenServicio",
-      "idVehicle",
-      "idUsuario",
-      "jornada",
+      "id",
+      "chassis",
+      "idTravel",
+      "idServiceOrder"
     ]);
     return List.generate(
         maps.length,
-        (i) => CreateSqlLitePrinterApp(
-              idPrEtiquetados: maps[i]['idPrEtiquetados'],
-              chasis: maps[i]['chasis'],
-              marca: maps[i]['marca'],
-              modelo: maps[i]['modelo'],
-              detalle: maps[i]['detalle'],
-              estado: maps[i]['estado'],
-              jornada: maps[i]['jornada'],
-              idUsuarios: maps[i]['idUsuario'],
-              idVehicle: maps[i]['idVehicle'],
-              idServiceOrder: maps[i]['idOrdenServicio'],
+        (i) => Vehicle(
+              id: maps[i]['id'],
+              chassis: maps[i]['chassis'],
+              idTravel: maps[i]['idTravel'],
+              idServiceOrder: maps[i]['idServiceOrder'],
             ));
   }
 

@@ -1,4 +1,5 @@
 import 'package:barcode_widget/barcode_widget.dart';
+import 'package:consumar_app/models/vehicle.dart';
 import 'package:consumar_app/src/roro/printer_app/print_page.dart';
 
 //import 'package:consumar_app/src/roro/printer_app/qr_pdf_page.dart';
@@ -8,12 +9,13 @@ import 'package:printing/printing.dart';
 import '../../../models/roro/printer_app/insert_printer_app_pendientes.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/roro/sqliteBD/db_printer_app.dart';
-class EtiquetadoPrinterApp extends StatefulWidget {
 
+class EtiquetadoPrinterApp extends StatefulWidget {
   const EtiquetadoPrinterApp(
       {Key? key,
       required this.jornada,
       required this.idUsuario,
+      required this.idTravel,
       required this.idServiceOrder,
       required this.idPendientes,
       required this.chassis})
@@ -21,7 +23,8 @@ class EtiquetadoPrinterApp extends StatefulWidget {
 
   final int jornada;
   final BigInt idUsuario;
-  final BigInt idServiceOrder;
+  final String idTravel;
+  final String idServiceOrder;
   final int idPendientes;
   final String chassis;
 
@@ -48,21 +51,14 @@ class _EtiquetadoPrinterAppState extends State<EtiquetadoPrinterApp> {
 
   //Metodo para etiquetar los vehiculos
 
-  /*createPrinterAppEtiquetado() {
-    dbPrinterApp.createPrinterAppEtiquetado(CreateSqlLitePrinterApp(
-        jornada: widget.jornada,
-        idServiceOrder: int.parse(widget.idServiceOrder.toString()),
-        idUsuarios: int.parse(widget.idUsuario.toString()),
-        idVehicle: int.parse(qrController.text),
-        chasis: chasisController.text,
-        detalle: detalleController.text,
-        estado: "etiquetado",
-        marca: marcaController.text,
-        modelo: modeloController.text));
-    insertPrinterAppPendientes.estado = "etiquetado";
-    dbPrinterApp.update(insertPrinterAppPendientes);
-    //se setea nuevamente para obtener lista actualizada
-  }*/
+  createPrinterAppEtiquetado() {
+    dbPrinterApp.createPrinterAppEtiquetado(Vehicle(
+      id: widget.idPendientes.toString(),
+      chassis: widget.chassis,
+      idTravel: widget.idTravel.toString(),
+      idServiceOrder: widget.idServiceOrder,
+    ));
+  }
 
   @override
   void initState() {
@@ -78,7 +74,10 @@ class _EtiquetadoPrinterAppState extends State<EtiquetadoPrinterApp> {
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back,color: Colors.white,),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -132,7 +131,7 @@ class _EtiquetadoPrinterAppState extends State<EtiquetadoPrinterApp> {
               height: 50.0,
               color: kColorNaranja,
               onPressed: () {
-                //createPrinterAppEtiquetado();
+                createPrinterAppEtiquetado();
                 Navigator.pop(context);
                 Navigator.push(
                     context,

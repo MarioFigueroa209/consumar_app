@@ -79,7 +79,7 @@ class _PrinterAppState extends State<PrinterApp>
 
   //Metodo para hacer la carga general de vehiculos etiquetados a la base de datos (roro_printer_etiquetado)
   cargarListaGeneralPrinterAppEtiquetados() {
-   // printerAppService.createPrinterAppList(createSqlLitePrinterApp);
+   printerAppService.createPrinterAppList(createSqlLitePrinterApp);
   }
 
   @override
@@ -802,5 +802,4 @@ class _PrinterAppState extends State<PrinterApp>
                   )
                 ]));
   }
-}
-*/
+}*/

@@ -3,14 +3,15 @@ import 'package:consumar_app/models/Travel.dart';
 import 'package:consumar_app/models/service-order.dart';
 import 'package:consumar_app/models/ship.dart';
 import 'package:consumar_app/models/vehicle.dart';
+import 'package:consumar_app/src/auth/login_page.dart';
 import 'package:consumar_app/src/roro/printer_app/etiquetado_page.dart';
 import 'package:consumar_app/utils/check_internet_connection.dart';
 import 'package:consumar_app/utils/connection_status_cubit.dart';
+import 'package:consumar_app/utils/roro/sqliteBD/db_printer_app.dart';
 //import 'package:consumar_app/src/roro/printer_app/qr_pdf_reetiquetado_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/operacion-roro.dart';
-import '../../../models/roro/printer_app/create_sql_lite_printer_app.dart';
 import '../../../models/roro/printer_app/insert_printer_app_pendientes.dart';
 import '../../../services/roro/printer_app/printer_app_service.dart';
 import '../../../utils/constants.dart';
@@ -66,20 +67,22 @@ class _PrinterAppState extends State<PrinterApp>
 
   PrinterAppService printerAppService = PrinterAppService();
 
+  DbPrinterApp dbPrinterApp = DbPrinterApp();
+
   ServiceOrder? _selectedS0;
   Ship? _selectedShip; // Variable para almacenar el barco seleccionado
   Travel? _selectedTravel; // Variable para almacenar el barco seleccionado
 
-  /*//Metodo para obtener la lista en local de los Vehiculos Etiquetados
+  //Metodo para obtener la lista en local de los Vehiculos Etiquetados
   obtenerListadoPrinterAppEtiquetado() async {
-    createSqlLitePrinterApp =
+    vehicleEtiquetadoList =
         await dbPrinterApp.getSqlLitePrinterAppEtiquetados();
 
     setState(() {
-      allDREtiqutado = createSqlLitePrinterApp;
+      allDREtiqutado = vehicleEtiquetadoList;
     });
   }
-  */
+
   //Metodo para hacer la carga general de vehiculos etiquetados a la base de datos (roro_printer_etiquetado)
   cargarListaGeneralPrinterAppEtiquetados() {
     //printerAppService.createPrinterAppList(createSqlLitePrinterApp);
@@ -154,6 +157,7 @@ class _PrinterAppState extends State<PrinterApp>
     super.initState();
     cargarListaBarcos();
     cargarListaSO();
+    obtenerListadoPrinterAppEtiquetado();
   }
 
   @override
@@ -177,6 +181,10 @@ class _PrinterAppState extends State<PrinterApp>
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
+          iconTheme: IconThemeData(
+              color: Colors
+                  .white), // Cambia el color del icono de hamburguesa aquí
+
           title: const Text(
             "Vehículos",
             style: TextStyle(color: Colors.white),
@@ -235,6 +243,44 @@ class _PrinterAppState extends State<PrinterApp>
                   ],
                 )),
               ]),
+        ),
+        drawer: Drawer(
+          backgroundColor: kColorAzul2,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              SizedBox(
+                height: 30,
+              ),
+              ListTile(
+                title: Row(
+                  children: [
+                    Icon(
+                      Icons.logout,
+                      color: Colors.white, // Cambia el color del icono aquí
+                      size: 32,
+                    ),
+                    SizedBox(width: 10), // Espacio entre el icono y el texto
+                    Text(
+                      'Cerrar sesión',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (c) => const LoginPantalla(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
         body: Container(
           color: kColorAzul2,
@@ -341,6 +387,7 @@ class _PrinterAppState extends State<PrinterApp>
                                               e.labelledDate == null
                                                   ? ElevatedButton(
                                                       onPressed: () {
+                                                        print(e.vehicleId);
                                                         Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
@@ -352,13 +399,15 @@ class _PrinterAppState extends State<PrinterApp>
                                                                           idUsuario:
                                                                               widget.idUsuario,
                                                                           idServiceOrder:
-                                                                              widget.idServiceOrder,
+                                                                              idS0,
                                                                           idPendientes:
                                                                               int.parse(e.vehicleId!),
                                                                           chassis:
                                                                               e.chassis!,
+                                                                          idTravel:
+                                                                              idTravel,
                                                                         )));
-                                                        OperacionRoro
+                                                        /*OperacionRoro
                                                             selectedVehicle =
                                                             operacionList
                                                                 .firstWhere(
@@ -370,20 +419,15 @@ class _PrinterAppState extends State<PrinterApp>
                                                         Vehicle
                                                             simplifiedVehicle =
                                                             Vehicle(
-                                                                id: selectedVehicle
-                                                                    .vehicleId!,
-                                                                chassis:
-                                                                    selectedVehicle
-                                                                        .chassis!,
-                                                                operation: '',
-                                                                tradeMark: '',
-                                                                detail: '',
-                                                                travelId: '',
-                                                                serviceOrderId:
-                                                                    '');
+                                                          id: selectedVehicle
+                                                              .vehicleId!,
+                                                          chassis:
+                                                              selectedVehicle
+                                                                  .chassis!,
+                                                        );
 
                                                         vehicleEtiquetadoList.add(
-                                                            simplifiedVehicle);
+                                                            simplifiedVehicle);*/
 
                                                         operacionList
                                                             .removeWhere(
@@ -432,13 +476,15 @@ class _PrinterAppState extends State<PrinterApp>
                                                                   .jornada,
                                                               idUsuario: widget
                                                                   .idUsuario,
-                                                              idServiceOrder: widget
-                                                                  .idServiceOrder,
+                                                              idServiceOrder:
+                                                                  idS0,
                                                               idPendientes:
                                                                   int.parse(e
                                                                       .vehicleId!),
                                                               chassis:
                                                                   e.chassis!,
+                                                              idTravel:
+                                                                  idTravel,
                                                             ),
                                                           ),
                                                         );
@@ -611,11 +657,11 @@ class _PrinterAppState extends State<PrinterApp>
                                                         jornada: widget.jornada,
                                                         idUsuario:
                                                             widget.idUsuario,
-                                                        idServiceOrder: widget
-                                                            .idServiceOrder,
+                                                        idServiceOrder: idS0,
                                                         idPendientes:
                                                             int.parse(e.id),
                                                         chassis: e.chassis,
+                                                        idTravel: idTravel,
                                                       )));
                                         },
                                         style: ButtonStyle(
@@ -700,6 +746,10 @@ class _PrinterAppState extends State<PrinterApp>
                               height: 50.0,
                               color: kColorNaranja,
                               onPressed: () async {
+                                String IdSoList =
+                                    vehicleEtiquetadoList[0].idServiceOrder;
+                                String IdIravel =
+                                    vehicleEtiquetadoList[0].idTravel;
                                 List<int> idList = vehicleEtiquetadoList
                                     .map<int>(
                                         (vehicle) => int.parse(vehicle.id))
@@ -707,8 +757,8 @@ class _PrinterAppState extends State<PrinterApp>
                                 print(idList.length);
                                 await printerAppService.actualizarVehiculos(
                                     idList,
-                                    int.parse(idS0),
-                                    int.parse(idTravel));
+                                    int.parse(IdSoList),
+                                    int.parse(IdIravel));
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
@@ -718,15 +768,15 @@ class _PrinterAppState extends State<PrinterApp>
                                 );
                                 cargarListVehiculos();
                                 //cargarListaGeneralPrinterAppEtiquetados();
-                                /*  await dbPrinterApp
-                                      .clearTablePrinterAppEtiquetados();*/
+                                await dbPrinterApp
+                                    .clearTablePrinterAppEtiquetados();
                                 setState(() {
                                   vehicleEtiquetadoList.clear();
                                   idList.clear();
                                 });
                               },
                               child: const Text(
-                                "SINCRONIZAR CON BASE DE DATOS",
+                                "SINCRONIZAR CON BD",
                                 style: TextStyle(
                                     fontSize: 17,
                                     color: Colors.white,
@@ -739,46 +789,6 @@ class _PrinterAppState extends State<PrinterApp>
                         },
                       ),
                     ),
-                    /*MaterialButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      minWidth: double.infinity,
-                      height: 50.0,
-                      color: kColorNaranja,
-                      onPressed: () async {
-                        List<int> idList = vehicleEtiquetadoList
-                            .map<int>((vehicle) => int.parse(vehicle.id))
-                            .toList();
-                        print(idList.length);
-                        await printerAppService.actualizarVehiculos(
-                            idList, int.parse(idS0), int.parse(idTravel));
-                        cargarListVehiculos();
-                        //cargarListaGeneralPrinterAppEtiquetados();
-                        /*  await dbPrinterApp
-                                      .clearTablePrinterAppEtiquetados();*/
-                        setState(() {
-                          vehicleEtiquetadoList.clear();
-                          idList.clear();
-                        });
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                '¡La actualización se realizó correctamente!'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      },
-                      child: const Text(
-                        "CARGAR LISTA",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.5),
-                      ),
-                    ),*/
                     const SizedBox(
                       height: 20,
                     ),
