@@ -157,9 +157,10 @@ class _PrinterAppState extends State<PrinterApp>
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_handleTabIndex);
-    // TODO: implement initState
+    // TODO: implement initStatef
     super.initState();
-    cargando();
+    cargarListaBarcos();
+    cargarListaSO();
     obtenerListadoPrinterAppEtiquetado();
   }
 
