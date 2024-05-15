@@ -37,6 +37,7 @@ class _PrintPageState extends State<PrintPage> {
   void initState() {
     super.initState();
     initPlatformState();
+    this.getBluetoots();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -53,7 +54,6 @@ class _PrintPageState extends State<PrintPage> {
             ),
             onPressed: () async {
               await disconnect2();
-
             },
           ),
           title: const Text('IMPRESION TICKETS'),
@@ -243,13 +243,14 @@ class _PrintPageState extends State<PrintPage> {
                           height: 15,
                         ),
                         ElevatedButton(
-                          onPressed:() async {
-                            if(connected){
+                          onPressed: () async {
+                            if (connected) {
                               await disconnect2();
-                            };
+                            }
+                            ;
 
                             //connected ?  this.disconnect2 : null,
-                          } ,
+                          },
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width *
                                 0.8, // 80% del ancho de la pantalla

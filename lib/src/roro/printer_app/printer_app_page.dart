@@ -5,6 +5,7 @@ import 'package:consumar_app/models/ship.dart';
 import 'package:consumar_app/models/vehicle.dart';
 import 'package:consumar_app/src/auth/login_page.dart';
 import 'package:consumar_app/src/roro/printer_app/etiquetado_page.dart';
+import 'package:consumar_app/src/roro/printer_app/reetiquetado_page.dart';
 import 'package:consumar_app/utils/check_internet_connection.dart';
 import 'package:consumar_app/utils/connection_status_cubit.dart';
 import 'package:consumar_app/utils/roro/sqliteBD/db_printer_app.dart';
@@ -657,16 +658,10 @@ class _PrinterAppState extends State<PrinterApp>
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      EtiquetadoPrinterApp(
-                                                        jornada: widget.jornada,
-                                                        idUsuario:
-                                                            widget.idUsuario,
-                                                        idServiceOrder: idS0,
-                                                        idPendientes:
-                                                            int.parse(e.id),
-                                                        chassis: e.chassis,
-                                                        idTravel: idTravel,
-                                                      )));
+                                                      ReetiquetadoPage(
+                                                          idPendientes:
+                                                              int.parse(e.id),
+                                                          chassis: e.chassis)));
                                         },
                                         style: ButtonStyle(
                                           backgroundColor:
