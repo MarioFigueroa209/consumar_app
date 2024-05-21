@@ -60,22 +60,18 @@ class PrinterAppService {
   }
 
   Future<void> actualizarVehiculos(
-      List<int> ids, int serviceOrderId, int travelId) async {
+      List<int> ids) async {
     final url = Uri.parse(
         'https://newbackprinter.azurewebsites.net/api/actualizar-vehiculos');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
-      'ids': ids,
-      'service_order_id': serviceOrderId,
-      'travel_id': travelId,
+      'ids': ids
     });
 
     try {
       final response = await http.put(url, headers: headers, body: body);
       if (response.statusCode == 200) {
         print(response.statusCode);
-        print("service id $serviceOrderId");
-        print("travel id $travelId");
         print(" ide  ${ids[0]}");
         print("cuantos ides mando ${ids.length}");
 

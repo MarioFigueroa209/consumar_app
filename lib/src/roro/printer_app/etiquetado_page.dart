@@ -15,6 +15,8 @@ class EtiquetadoPrinterApp extends StatefulWidget {
       {Key? key,
       required this.jornada,
       required this.idUsuario,
+      required this.ordenservicio,
+      required this.manifiesto,
       required this.idTravel,
       required this.idServiceOrder,
       required this.idPendientes,
@@ -25,6 +27,8 @@ class EtiquetadoPrinterApp extends StatefulWidget {
   final BigInt idUsuario;
   final String idTravel;
   final String idServiceOrder;
+  final String manifiesto;
+  final String ordenservicio;
   final int idPendientes;
   final String chassis;
 
@@ -57,6 +61,8 @@ class _EtiquetadoPrinterAppState extends State<EtiquetadoPrinterApp> {
       chassis: widget.chassis,
       idTravel: widget.idTravel.toString(),
       idServiceOrder: widget.idServiceOrder,
+      manifiesto: widget.manifiesto,
+      ordenservicio: widget.ordenservicio,
     ));
   }
 
