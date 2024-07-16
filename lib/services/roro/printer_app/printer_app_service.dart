@@ -59,6 +59,7 @@ class PrinterAppService {
     }
   }
 
+  /*
   Future<void> actualizarVehiculos(
       List<int> ids) async {
     final url = Uri.parse(
@@ -81,6 +82,33 @@ class PrinterAppService {
       }
     } catch (error) {
       print('Error al realizar la solicitud: $error');
+    }
+  }*/
+
+  Future<void> actualizarVehiculos(List<int> ids) async {
+    final url = Uri.parse(
+        'https://newbackprinter.azurewebsites.net/api/actualizar-vehiculos');
+    final headers = {'Content-Type': 'application/json'};
+
+    // Tamaño del lote para procesamiento por partes
+    final int batchSize = 10;
+    final int totalBatches = (ids.length / batchSize).ceil();
+
+    for (int i = 0; i < totalBatches; i++) {
+      final batch = ids.skip(i * batchSize).take(batchSize).toList();
+      final body = jsonEncode({'ids': batch});
+
+      try {
+        final response = await http.put(url, headers: headers, body: body);
+        if (response.statusCode == 200) {
+          print('Registros actualizados correctamente para el lote ${i + 1}');
+        } else {
+          print(
+              'Error al actualizar los registros para el lote ${i + 1}: ${response.reasonPhrase}');
+        }
+      } catch (error) {
+        print('Error al realizar la solicitud para el lote ${i + 1}: $error');
+      }
     }
   }
 }

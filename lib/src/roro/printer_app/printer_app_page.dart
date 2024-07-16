@@ -43,6 +43,9 @@ List<Vehicle> vehicleList = [];
 List<OperacionRoro> operacionList = [];
 List<OperacionRoro> operacionListFilter = [];
 
+List<OperacionRoro> operacionListEtiquetados = [];
+List<OperacionRoro> operacionListFilterEtiquetados = [];
+
 List<Vehicle> vehicleEtiquetadoList = [];
 
 List<Vehicle> allDR = vehicleList;
@@ -70,6 +73,8 @@ class _PrinterAppState extends State<PrinterApp>
   final controllerSearchChasis = TextEditingController();
 
   final controllerSearchChasisEtiquetado = TextEditingController();
+
+  final controllerSearchChasisEtiquetadoBD = TextEditingController();
 
   PrinterAppService printerAppService = PrinterAppService();
 
@@ -125,8 +130,17 @@ class _PrinterAppState extends State<PrinterApp>
         await printerAppService.getVehiclesOperacion(idTravel, idS0);
 
     setState(() {
-      operacionList = value;
+      //
+      //operacionList = value;
+      operacionList =
+          value.where((vehiculo) => vehiculo.labelledDate == null).toList();
+
+      operacionListEtiquetados =
+          value.where((vehiculo) => vehiculo.labelledDate != null).toList();
+
+
       operacionListFilter = operacionList;
+      operacionListFilterEtiquetados = operacionListEtiquetados;
     });
   }
 
@@ -160,7 +174,7 @@ class _PrinterAppState extends State<PrinterApp>
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_handleTabIndex);
     // TODO: implement initStatef
     super.initState();
@@ -186,25 +200,24 @@ class _PrinterAppState extends State<PrinterApp>
         operacionList.where((element) => element.labelledDate == null).toList();
 
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
           iconTheme: IconThemeData(
               color: Colors
                   .white), // Cambia el color del icono de hamburguesa aquí
-
           title: const Text(
             "Vehículos",
             style: TextStyle(color: Colors.white),
             textAlign: TextAlign.left,
           ),
-          bottom: TabBar(
+          bottom:  TabBar(
+              isScrollable: true,
               indicatorColor: Colors.white,
               labelColor: Colors.white,
               unselectedLabelColor: const Color.fromARGB(255, 223, 216, 216),
               controller: _tabController,
-              //onTap: (value) => searchChassis,
               tabs: [
                 Tab(
                   child: Row(
@@ -215,43 +228,70 @@ class _PrinterAppState extends State<PrinterApp>
                         width: 10,
                       ),
                       Container(
-                          height: 20,
-                          decoration: const BoxDecoration(
-                              //border: Border.all(color: Colors.black),
-                              color: Colors.orange),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              filteredList.length.toString(),
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          )),
+                        height: 20,
+                        decoration: const BoxDecoration(
+                          color: Colors.orange,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            filteredList.length.toString(),
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 Tab(
-                    child: Row(
-                  children: [
-                    const Text('ETIQUETADOS'),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Container(
+                  child: Row(
+                    children: [
+                      const Text('ETIQUETADOS LOCAL'),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Container(
                         height: 20,
                         decoration: const BoxDecoration(
-                            //border: Border.all(color: Colors.black),
-                            color: Colors.orange),
+                          color: Colors.orange,
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
                             vehicleEtiquetadoList.length.toString(),
                             style: TextStyle(color: Colors.black),
                           ),
-                        )),
-                  ],
-                )),
-              ]),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    children: [
+                      const Text('ETIQUETADOS BD'),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Container(
+                        height: 20,
+                        decoration: const BoxDecoration(
+                          color: Colors.orange,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            operacionListEtiquetados.length.toString(),
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+      
         ),
         drawer: Drawer(
           backgroundColor: kColorAzul2,
@@ -473,27 +513,6 @@ class _PrinterAppState extends State<PrinterApp>
                                                                           manifiesto:
                                                                               manifiesto,
                                                                         )));
-                                                        /*OperacionRoro
-                                                            selectedVehicle =
-                                                            operacionList
-                                                                .firstWhere(
-                                                                    (vehicle) =>
-                                                                        vehicle
-                                                                            .id ==
-                                                                        e.id);
-
-                                                        Vehicle
-                                                            simplifiedVehicle =
-                                                            Vehicle(
-                                                          id: selectedVehicle
-                                                              .vehicleId!,
-                                                          chassis:
-                                                              selectedVehicle
-                                                                  .chassis!,
-                                                        );
-
-                                                        vehicleEtiquetadoList.add(
-                                                            simplifiedVehicle);*/
 
                                                         operacionList
                                                             .removeWhere(
@@ -652,7 +671,7 @@ class _PrinterAppState extends State<PrinterApp>
                         child: ListTile(
                       leading: const Icon(Icons.search),
                       title: TextField(
-                          controller: controllerSearchChasis,
+                          controller: controllerSearchChasisEtiquetado,
                           decoration: const InputDecoration(
                               hintText: 'Buscar Chasis Etiquetado',
                               border: InputBorder.none),
@@ -665,7 +684,7 @@ class _PrinterAppState extends State<PrinterApp>
                         icon: const Icon(Icons.cancel),
                         onPressed: () {
                           setState(() {
-                            controllerSearchChasis.clear();
+                            controllerSearchChasisEtiquetado.clear();
                             allDREtiqutado = vehicleEtiquetadoList;
                             searchChassisEtiquetado;
                           });
@@ -810,29 +829,48 @@ class _PrinterAppState extends State<PrinterApp>
                               height: 50.0,
                               color: kColorNaranja,
                               onPressed: () async {
-                                List<int> idList = vehicleEtiquetadoList
-                                    .map<int>(
-                                        (vehicle) => int.parse(vehicle.id))
-                                    .toList();
-                                print(idList.length);
-                                await printerAppService.actualizarVehiculos(
-                                  idList,
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                        '¡La actualización se realizó correctamente!'),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
-                                cargarListVehiculos();
-                                //cargarListaGeneralPrinterAppEtiquetados();
-                                await dbPrinterApp
-                                    .clearTablePrinterAppEtiquetados();
-                                setState(() {
-                                  vehicleEtiquetadoList.clear();
-                                  idList.clear();
-                                });
+                                try {
+                                  // Convertir la lista de vehículos a una lista de IDs
+                                  List<int> idList = vehicleEtiquetadoList
+                                      .map<int>(
+                                          (vehicle) => int.parse(vehicle.id))
+                                      .toList();
+
+                                  // Llamar al servicio para actualizar los vehículos
+                                  await printerAppService
+                                      .actualizarVehiculos(idList);
+
+                                  // Recargar la lista de vehículos
+                                  await cargarListVehiculos();
+
+                                  // Limpiar la tabla de vehículos etiquetados en la base de datos local
+                                  await dbPrinterApp
+                                      .clearTablePrinterAppEtiquetados();
+
+                                  // Actualizar el estado de la UI
+                                  setState(() {
+                                    vehicleEtiquetadoList.clear();
+                                    idList.clear();
+                                  });
+
+                                  // Mostrar un mensaje de éxito
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          '¡La actualización se realizó correctamente!'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
+                                } catch (error) {
+                                  // Mostrar un mensaje de error en caso de fallo
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          'Error al actualizar los vehículos: $error'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
                               },
                               child: const Text(
                                 "SINCRONIZAR CON BD",
@@ -852,6 +890,129 @@ class _PrinterAppState extends State<PrinterApp>
                       height: 20,
                     ),
                   ]),
+                ),
+              ),
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Container(
+                    child: Column(children: [
+                      Card(
+                          child: ListTile(
+                        leading: const Icon(Icons.search),
+                        title: TextField(
+                            controller: controllerSearchChasisEtiquetadoBD,
+                            decoration: const InputDecoration(
+                                hintText: 'Buscar Placas',
+                                border: InputBorder.none),
+                            onChanged: ((value) {
+                              if (value.length > 4) {
+                                searchChassisEtiquetadosBD(value);
+                              }
+                              //searchChassisEtiquetado(value);
+                            })),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.cancel),
+                          onPressed: () {
+                            setState(() {
+                              controllerSearchChasisEtiquetadoBD.clear();
+                              operacionListFilterEtiquetados =
+                                  operacionListEtiquetados;
+                              searchChassisEtiquetadosBD;
+                            });
+                          },
+                        ),
+                      )),
+                      const SizedBox(height: 20),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          dividerThickness: 3,
+                          border: TableBorder.symmetric(
+                            inside: BorderSide(
+                              width: 1,
+                              color: Colors.grey.shade200,
+                            ),
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          headingTextStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          dataRowColor: MaterialStateProperty.resolveWith(
+                            _getDataRowColor,
+                          ),
+                          columns: const <DataColumn>[
+                            DataColumn(
+                              label: Center(
+                                child: Text(
+                                  "Chassis",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Center(
+                                child: Text(
+                                  "Estado",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
+                          rows: operacionListFilterEtiquetados
+                              .map((e) => DataRow(cells: <DataCell>[
+                                    DataCell(
+                                      Text(
+                                        e.chassis!,
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                    DataCell(
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          print(e.id);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ReetiquetadoPage(
+                                                idPendientes: int.parse(e.id!),
+                                                chassis: e.chassis!,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                            kColorNaranja,
+                                          ),
+                                          shape: MaterialStateProperty.all<
+                                              OutlinedBorder>(
+                                            RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Etiquetado',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ]))
+                              .toList(),
+                        ),
+                      ),
+                    ]),
+                  ),
                 ),
               ),
             ],
@@ -1082,10 +1243,22 @@ class _PrinterAppState extends State<PrinterApp>
         .where((element) =>
             element.chassis!.toLowerCase().contains(query.toLowerCase()))
         .toList();
+
     //setState(() => allDR = suggestion);
     setState(() {
       controllerSearchChasis;
       // controllerSearchChasisEtiquetado;
+    });
+  }
+
+  void searchChassisEtiquetadosBD(String query) {
+    operacionListFilterEtiquetados = operacionListEtiquetados
+        .where((element) =>
+            element.chassis!.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    setState(() {
+      controllerSearchChasisEtiquetadoBD;
     });
   }
 
@@ -1099,92 +1272,4 @@ class _PrinterAppState extends State<PrinterApp>
     setState(() => allDREtiqutado = suggestion);
   }
 
-  /*dialogoReetiquetado(
-      BuildContext context, CreateSqlLitePrinterApp allDREtiqutado) async {
-    await showDialog<void>(
-        context: context,
-        builder: (context) => AlertDialog(
-                //insetPadding: EdgeInsets.all(100),
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        /*  Icon(
-                          Icons.warning,
-                          color: Colors.red.shade900,
-                          size: 100,
-                        ), */
-                        /* Text(
-                          "ATENCIÓN ",
-                          style: TextStyle(
-                              color: Colors.red.shade900,
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ), */
-                        Text(
-                          "¿DESEA REETIQUETAR ESTE VEHICULO?",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20.0,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            TextButton(
-                              onPressed: () async {
-                                Navigator.pop(context);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            ReetiquetadoPrintPage(
-                                                allDREtiqutado.idVehicle!)));
-                                /*    Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            QrPdfReetiquetadoPage(
-                                              idVehicle:
-                                                  allDREtiqutado.idVehicle!,
-                                            ))); */
-                                /*   Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => PrintPage(
-                                            allDREtiqutado.idVehicle!))); */
-                              },
-                              child: const Text(
-                                "ACEPTAR",
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text(
-                                "CANCELAR",
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
-                ]));
-  }*/
 }
