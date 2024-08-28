@@ -982,7 +982,7 @@ class _PrinterAppState extends State<PrinterApp>
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   ReetiquetadoPage(
-                                                idPendientes: int.parse(e.id!),
+                                                idPendientes: int.parse(e.vehicleId!),
                                                 chassis: e.chassis!,
                                               ),
                                             ),
